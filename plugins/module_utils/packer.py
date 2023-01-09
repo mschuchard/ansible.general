@@ -1,18 +1,19 @@
 """packer module utilities"""
 __metaclass__ = type
 
-from typing import List
+from typing import List, Set
 from pathlib import Path
 
 
 # dictionary that maps input args to packer flags and args
 ARGS_MAP = dict({
     'check': '-check',
-    'upgrade': '-upgrade',
+    'upgrade': '-upgrade',#TODO: validate and build
 })
 
 
-def packer_cmd(action: str, target_dir: str, *args: str) -> List[str]:
+#TODO: default target_dir is current dir and args is empty
+def packer_cmd(action: str, args: Set[str], target_dir: str) -> List[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in ['init', 'fmt', 'validate', 'build']:
@@ -22,7 +23,7 @@ def packer_cmd(action: str, target_dir: str, *args: str) -> List[str]:
     cmd: List[str] = ['packer', action, '-machine-readable']
 
     # construct list of packer args and flags
-    for arg in *args:
+    for arg in args:
         if arg in ARGS_MAP:
             # add packer arg or flag from corresponding module arg in ARGS
             cmd.append(ARGS_MAP[arg])
