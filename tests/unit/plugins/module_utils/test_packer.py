@@ -7,7 +7,18 @@ from ansible_collections.mschuchard.general.plugins.module_utils import packer
 
 
 def test_packer_cmd_errors():
-    pass
+    """test various packer_cmd errors"""
+    # test fails on unsupported action
+    with pytest.raises(RuntimeError, match='Unsupported Packer action attempted: foo'):
+        packer.packer_cmd(action='foo', args=[], target_dir='.')
+
+    # test fails on unknown arg or flag
+    with pytest.raises(RuntimeError, match='Unknown Packer argument or flag specified: '):
+        packer.packer_cmd(action='init', args=['foo'], target_dir='.')
+
+    # test fails on nonexistent target_dir
+    with pytest.raises(RuntimeError, match='Targeted directory or file does not exist: /1234567890'):
+        packer.packer_cmd(action='init', args=[], target_dir='/1234567890')
 
 
 def test_packer_cmd():
