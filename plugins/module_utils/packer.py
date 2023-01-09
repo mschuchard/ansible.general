@@ -12,8 +12,7 @@ ARGS_MAP = dict({
 })
 
 
-#TODO: default target_dir is current dir and args is empty
-def packer_cmd(action: str, args: Set[str], target_dir: str) -> List[str]:
+def packer_cmd(action: str, args: Set[str] = [], target_dir: str = Path.cwd()) -> List[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in ['init', 'fmt', 'validate', 'build']:
