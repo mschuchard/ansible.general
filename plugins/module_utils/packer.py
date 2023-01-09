@@ -8,7 +8,7 @@ from pathlib import Path
 # dictionary that maps input args to packer flags and args
 ARGS_MAP = dict({
     'check': '-check',
-    'upgrade': '-upgrade',#TODO: validate and build
+    'upgrade': '-upgrade',  # TODO: validate and build
 })
 
 

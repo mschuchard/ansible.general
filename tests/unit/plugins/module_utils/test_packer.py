@@ -4,7 +4,7 @@ __metaclass__ = type
 
 import pytest
 from pathlib import Path
-from ansible_collections.mschuchard.general.plugins.module_utils import packer
+from mschuchard.general.plugins.module_utils import packer
 
 
 def test_packer_cmd_errors():
