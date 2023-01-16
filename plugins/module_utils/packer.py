@@ -24,10 +24,10 @@ FLAGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
 ARGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
     'build': {},
     'validate': {
-        'except': '-except',
-        'only': '-only',
-        'var': '-var',
-        'var_file': '-var-file'
+        'except': '-except=',
+        'only': '-only=',
+        'var': '-var ',
+        'var_file': '-var-file='
     },
 })
 
@@ -49,18 +49,18 @@ def packer_cmd(action: str, flags: Set[str] = [], args: Dict[str, str] = {}, tar
             cmd.append(action_flags_map[flag])
         else:
             # unsupported flag specified
-            raise RuntimeError(f"Unknown Packer flag specified: {flag}")
+            raise RuntimeError(f"Unsupported Packer flag specified: {flag}")
 
     # construct list of packer args
     # not all actions have args, so return empty list to shortcut to RuntimeError for unpported arg if arg specified for action without args
     action_args_map: Dict[str, str] = ARGS_MAP.get(action, [])
-    for arg in args:
+    for arg, arg_value in args.items():
         if arg in action_args_map:
             # add packer arg from corresponding module arg in ARGS
-            cmd.append(action_args_map[arg])
+            cmd.append(f"{action_args_map[arg]}{arg_value}")
         else:
             # unsupported arg specified
-            raise RuntimeError(f"Unknown Packer arg specified: {arg}")
+            raise RuntimeError(f"Unsupported Packer arg specified: {arg}")
 
     # return the command with the target dir appended
     if Path(target_dir).exists():
