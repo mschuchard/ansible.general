@@ -1,16 +1,23 @@
 """packer module utilities"""
 __metaclass__ = type
 
-from typing import List, Set
+from typing import Dict, List, Set, Final
 from pathlib import Path
 
 
 # dictionary that maps input args to packer flags and args
-FLAGS_MAP = dict({
-    'check': '-check',
-    'upgrade': '-upgrade',  # TODO: validate and build
-    'recursive': '-recursive',
-    'syntax-only': '-syntax-only',
+FLAGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
+    'build': {
+        'debug': '-debug',
+        'force': '-force',
+        'timestamp_ui': '-timestamp-ui',
+    },
+    'fmt': {
+        'check': '-check',
+        'recursive': '-recursive',
+    },
+    'init': {'upgrade': '-upgrade'},
+    'validate': {'syntax-only': '-syntax-only'},
 })
 
 
@@ -21,13 +28,14 @@ def packer_cmd(action: str, flags: Set[str] = [], target_dir: str = Path.cwd()) 
         raise RuntimeError(f"Unsupported Packer action attempted: {action}")
 
     # initialize packer command
-    cmd: List[str] = ['packer', action, '-machine-readable']
+    cmd: List[str] = ['packer', action, '-machine-readable', '-color=false']
 
     # construct list of packer args and flags
+    action_flags_map: Dict[str, str] = FLAGS_MAP[action]
     for flag in flags:
-        if flag in FLAGS_MAP:
+        if flag in action_flags_map:
             # add packer arg or flag from corresponding module arg in ARGS
-            cmd.append(FLAGS_MAP[flag])
+            cmd.append(action_flags_map[flag])
         else:
             # unsupported arg specified
             raise RuntimeError(f"Unknown Packer flag specified: {flag}")

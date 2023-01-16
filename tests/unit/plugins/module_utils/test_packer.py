@@ -2,8 +2,8 @@
 __metaclass__ = type
 
 
-import pytest
 from pathlib import Path
+import pytest
 from mschuchard.general.plugins.module_utils import packer
 
 
@@ -25,14 +25,14 @@ def test_packer_cmd_errors():
 def test_packer_cmd():
     """test various packer_cmd returns"""
 
-    # test init with no extra args
-    assert packer.packer_cmd(action='init', flags=[], target_dir='/home') == ['packer', 'init', '-machine-readable', '/home']
+    # test init with no flags
+    assert packer.packer_cmd(action='init', flags=[], target_dir='/home') == ['packer', 'init', '-machine-readable', '-color=false', '/home']
 
-    # test fmt with check arg
-    assert packer.packer_cmd(action='fmt', flags=['check'], target_dir='/home') == ['packer', 'fmt', '-machine-readable', '-check', '/home']
+    # test fmt with check flag
+    assert packer.packer_cmd(action='fmt', flags=['check'], target_dir='/home') == ['packer', 'fmt', '-machine-readable', '-color=false', '-check', '/home']
 
-    # TODO: test validate with default target_dir and ? args
-    assert packer.packer_cmd(action='validate', flags=[]) == ['packer', 'validate', '-machine-readable', Path.cwd()]
+    # TODO: test validate with default target_dir and no flags
+    assert packer.packer_cmd(action='validate', flags=[]) == ['packer', 'validate', '-machine-readable', '-color=false', Path.cwd()]
 
-    # TODO: test build with ?
-    assert packer.packer_cmd(action='build', flags=[], target_dir='/home') == ['packer', 'build', '-machine-readable', '/home']
+    # TODO: test build with force and debug flags
+    assert packer.packer_cmd(action='build', flags=['debug', 'force'], target_dir='/home') == ['packer', 'build', '-machine-readable', '-color=false', '-debug', '-force', '/home']
