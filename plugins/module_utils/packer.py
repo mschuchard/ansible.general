@@ -6,13 +6,15 @@ from pathlib import Path
 
 
 # dictionary that maps input args to packer flags and args
-ARGS_MAP = dict({
+FLAGS_MAP = dict({
     'check': '-check',
     'upgrade': '-upgrade',  # TODO: validate and build
+    'recursive': '-recursive',
+    'syntax-only': '-syntax-only',
 })
 
 
-def packer_cmd(action: str, args: Set[str] = [], target_dir: str = Path.cwd()) -> List[str]:
+def packer_cmd(action: str, flags: Set[str] = [], target_dir: str = Path.cwd()) -> List[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in ['init', 'fmt', 'validate', 'build']:
@@ -22,13 +24,13 @@ def packer_cmd(action: str, args: Set[str] = [], target_dir: str = Path.cwd()) -
     cmd: List[str] = ['packer', action, '-machine-readable']
 
     # construct list of packer args and flags
-    for arg in args:
-        if arg in ARGS_MAP:
+    for flag in flags:
+        if flag in FLAGS_MAP:
             # add packer arg or flag from corresponding module arg in ARGS
-            cmd.append(ARGS_MAP[arg])
+            cmd.append(FLAGS_MAP[flag])
         else:
             # unsupported arg specified
-            raise RuntimeError(f"Unknown Packer argument or flag specified: {arg}")
+            raise RuntimeError(f"Unknown Packer flag specified: {flag}")
 
     # return the command with the target dir appended
     if Path(target_dir).exists():
