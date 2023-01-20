@@ -46,14 +46,14 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir
         raise RuntimeError(f"Unsupported Packer action attempted: {action}")
 
     # initialize packer command
-    cmd: list[str] = ['packer', action, '-machine-readable', '-color=false']
+    command: list[str] = ['packer', action, '-machine-readable', '-color=false']
 
     # construct list of packer flags
     action_flags_map: dict[str, str] = FLAGS_MAP[action]
     for flag in flags:
         if flag in action_flags_map:
             # add packer flag from corresponding module flag in FLAGS
-            cmd.append(action_flags_map[flag])
+            command.append(action_flags_map[flag])
         else:
             # unsupported flag specified
             raise RuntimeError(f"Unsupported Packer flag specified: {flag}")
@@ -64,33 +64,33 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir
     for arg, arg_value in args.items():
         if arg in action_args_map:
             # add packer arg from corresponding module arg in ARGS
-            cmd.append(f"{action_args_map[arg]}{arg_value}")
+            command.append(f"{action_args_map[arg]}{arg_value}")
         else:
             # unsupported arg specified
             raise RuntimeError(f"Unsupported Packer arg specified: {arg}")
 
     # return the command with the target dir appended
     if Path(target_dir).exists():
-        return cmd + [target_dir]
+        return command + [target_dir]
 
     # otherwise error if it does not exist (possible to target file or dir)
     raise RuntimeError(f"Targeted directory or file does not exist: {target_dir}")
 
 
-def ansible_to_packer(args: dict) -> str:
+def ansible_to_packer(args: dict) -> dict[str, str]:
     """converts ansible types and syntax to packer types and formatting"""
     # in this function args dict is mutatable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
         # list[str] to comma-delimited string
         if arg in ['except', 'only']:
-            args[arg] = arg_value.join(',')
+            args[arg] = ','.join(arg_value)
         # list[dict[str, str]] to "key=value" string, TODO: finish
         elif arg in ['var']:
             args[arg] = f"{arg_value}={arg_value}"
-        # list[str] to ?, TODO: finish
+        # list[str] to str with args for n>1 values
         elif arg in ['var_file']:
-            args[arg] = arg_value
+            args[arg] = ' -var-file='.join(arg_value)
         # int to str
         elif arg in ['parallel_builds']:
             args[arg] = str(arg_value)

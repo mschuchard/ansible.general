@@ -54,3 +54,22 @@ def test_ansible_to_packer_errors():
     # test fails on unsupported on error argument value
     with pytest.raises(RuntimeError, match='Unsupported Packer arg specified: foo'):
         packer.ansible_to_packer(args={'foo': 'bar'})
+
+
+def test_ansible_to_packer():
+    """test various ansible_to_packer returns"""
+    # test all possible args with multiple values
+    assert packer.ansible_to_packer(args={
+        'except': ['foo', 'bar', 'baz'],
+        'only': ['foo', 'bar', 'baz'],
+        'on_error': 'cleanup',
+        'parallel_builds': 2,
+        #'var': '-var ',
+        'var_file': ['one.pkrvars.hcl', 'two.pkrvars.hcl', 'three.pkrvars.hcl']
+    }) == {
+        'except': 'foo,bar,baz',
+        'only': 'foo,bar,baz',
+        'on_error': 'cleanup',
+        'parallel_builds': '2',
+        'var_file': 'one.pkrvars.hcl -var-file=two.pkrvars.hcl -var-file=three.pkrvars.hcl'
+    }
