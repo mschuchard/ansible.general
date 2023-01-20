@@ -1,12 +1,12 @@
 """packer module utilities"""
 __metaclass__ = type
 
-from typing import Dict, List, Set, Final
+from typing import Final
 from pathlib import Path
 
 
 # dictionary that maps input args to packer flags
-FLAGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'build': {
         'debug': '-debug',
         'force': '-force',
@@ -21,8 +21,15 @@ FLAGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
 })
 
 # dictionary that maps input args to packer args
-ARGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
-    'build': {},
+ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
+    'build': {
+        'except': '-except=',
+        'only': '-only=',
+        'on_error': '-on-error=',
+        'parallel_builds': '-parallel-builds=',
+        'var': '-var ',
+        'var_file': '-var-file='
+    },
     'validate': {
         'except': '-except=',
         'only': '-only=',
@@ -32,17 +39,17 @@ ARGS_MAP: Final[Dict[str, Dict[str, str]]] = dict({
 })
 
 
-def packer_cmd(action: str, flags: Set[str] = [], args: Dict[str, str] = {}, target_dir: str = Path.cwd()) -> List[str]:
+def packer_cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir: str = Path.cwd()) -> list[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in FLAGS_MAP:
         raise RuntimeError(f"Unsupported Packer action attempted: {action}")
 
     # initialize packer command
-    cmd: List[str] = ['packer', action, '-machine-readable', '-color=false']
+    cmd: list[str] = ['packer', action, '-machine-readable', '-color=false']
 
     # construct list of packer flags
-    action_flags_map: Dict[str, str] = FLAGS_MAP[action]
+    action_flags_map: dict[str, str] = FLAGS_MAP[action]
     for flag in flags:
         if flag in action_flags_map:
             # add packer flag from corresponding module flag in FLAGS
@@ -53,7 +60,7 @@ def packer_cmd(action: str, flags: Set[str] = [], args: Dict[str, str] = {}, tar
 
     # construct list of packer args
     # not all actions have args, so return empty list to shortcut to RuntimeError for unpported arg if arg specified for action without args
-    action_args_map: Dict[str, str] = ARGS_MAP.get(action, [])
+    action_args_map: dict[str, str] = ARGS_MAP.get(action, [])
     for arg, arg_value in args.items():
         if arg in action_args_map:
             # add packer arg from corresponding module arg in ARGS

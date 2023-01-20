@@ -42,5 +42,5 @@ def test_packer_cmd():
     # test validate with default target_dir, no flags, only and var args
     assert packer.packer_cmd(action='validate', args={'only': 'null.this,null.that', 'var': 'foo=bar'}) == ['packer', 'validate', '-machine-readable', '-color=false', '-only=null.this,null.that', '-var foo=bar', Path.cwd()]
 
-    # TODO: test build with force and debug flags, and parallel builds arg11
-    assert packer.packer_cmd(action='build', flags=['debug', 'force'], target_dir='/home') == ['packer', 'build', '-machine-readable', '-color=false', '-debug', '-force', '/home']
+    # test build with force and debug flags, and parallel builds args
+    assert packer.packer_cmd(action='build', flags=['debug', 'force'], args={'parallel_builds': '1'}, target_dir='/home') == ['packer', 'build', '-machine-readable', '-color=false', '-debug', '-force', '-parallel-builds=1', '/home']
