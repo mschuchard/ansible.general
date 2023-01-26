@@ -2,6 +2,9 @@
 __metaclass__ = type
 
 
+from pathlib import Path
+
+
 DOCUMENTATION = r'''
 ---
 module: packer_init
@@ -58,10 +61,30 @@ from mschuchard.general.plugins.module_utils import packer
 
 
 def run_module():
-    pass
+    """primary function for packer init module"""
+    # define packer_init params
+    module_args: dict[str, dict] = dict(
+        name=dict(type='str', required=False, default=Path.cwd()),
+        new=dict(type='bool', required=False, default=False)
+    )
+
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=True
+    )
+
+    # check on optionl upgrade param
+    flags: list[str] = []
+    if module.params['upgrade']:
+        flags = ['upgrade']
+
+    # determine packer command
+    command: str = packer.cmd(action='init', flags=flags, target_dir=module.params['config_dir'])
 
 
 def main():
+    """module entrypoint"""
     run_module()
 
 

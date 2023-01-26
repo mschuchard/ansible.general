@@ -78,7 +78,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir
 
 
 def ansible_to_packer(args: dict) -> dict[str, str]:
-    """converts ansible types and syntax to packer types and formatting"""
+    """converts ansible types and syntax to packer types and formatting for arguments only"""
     # in this function args dict is mutatable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
