@@ -64,12 +64,13 @@ def test_ansible_to_packer():
         'only': ['foo', 'bar', 'baz'],
         'on_error': 'cleanup',
         'parallel_builds': 2,
-        #'var': '-var ',
+        'var': [{'var1': 'value1'}, {'var2': 'value2'}, {'var3': 'value3'}],
         'var_file': ['one.pkrvars.hcl', 'two.pkrvars.hcl', 'three.pkrvars.hcl']
     }) == {
         'except': 'foo,bar,baz',
         'only': 'foo,bar,baz',
         'on_error': 'cleanup',
         'parallel_builds': '2',
+        'var': 'var1=value1 -var var2=value2 -var var3=value3',
         'var_file': 'one.pkrvars.hcl -var-file=two.pkrvars.hcl -var-file=three.pkrvars.hcl'
     }

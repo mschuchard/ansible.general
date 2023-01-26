@@ -85,9 +85,12 @@ def ansible_to_packer(args: dict) -> dict[str, str]:
         # list[str] to comma-delimited string
         if arg in ['except', 'only']:
             args[arg] = ','.join(arg_value)
-        # list[dict[str, str]] to "key=value" string, TODO: finish
+        # list[dict[str, str]] to "key=value" string with args for n>1 values
         elif arg in ['var']:
-            args[arg] = f"{arg_value}={arg_value}"
+            # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
+            var_strings = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
+            # transform list["<var name>=<var value>"] into cli arg string
+            args[arg] = ' -var '.join(var_strings)
         # list[str] to str with args for n>1 values
         elif arg in ['var_file']:
             args[arg] = ' -var-file='.join(arg_value)
