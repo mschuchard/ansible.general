@@ -60,27 +60,44 @@ from ansible.module_utils.basic import AnsibleModule
 from mschuchard.general.plugins.module_utils import packer
 
 
-def run_module():
+def run_module() -> None:
     """primary function for packer init module"""
-    # define packer_init params
-    module_args: dict[str, dict] = dict(
-        name=dict(type='str', required=False, default=Path.cwd()),
-        new=dict(type='bool', required=False, default=False)
-    )
-
     # instanstiate ansible module
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=dict(
+            name=dict(type='str', required=False, default=Path.cwd()),
+            new=dict(type='bool', required=False, default=False)
+        ),
         supports_check_mode=True
     )
 
+    # initialize
+    changed: bool = False
+    config_dir: str = module.params.get('config_dir')
+
     # check on optionl upgrade param
     flags: list[str] = []
-    if module.params['upgrade']:
+    if module.params.get('upgrade'):
         flags = ['upgrade']
 
     # determine packer command
-    command: str = packer.cmd(action='init', flags=flags, target_dir=module.params['config_dir'])
+    command: str = packer.cmd(action='init', flags=flags, target_dir=config_dir)
+
+    # execute packer
+    rc, stdout, stderr = module.run_command(command, cwd=config_dir)
+
+    # check idempotence
+    if 'Installed plugin' in stdout:
+        changed = True
+
+    # post-process
+    if rc == 0:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), rc=rc, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
 
 
 def main():
