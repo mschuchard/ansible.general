@@ -3,6 +3,8 @@ __metaclass__ = type
 
 
 from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
+from mschuchard.general.plugins.module_utils import packer
 
 
 DOCUMENTATION = r'''
@@ -56,24 +58,20 @@ TODO
 '''
 
 
-from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import packer
-
-
 def run_module() -> None:
     """primary function for packer init module"""
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            name=dict(type='str', required=False, default=Path.cwd()),
-            new=dict(type='bool', required=False, default=False)
+            config_dir=dict(type='str', required=False, default=Path.cwd()),
+            upgrade=dict(type='bool', required=False, default=False)
         ),
         supports_check_mode=True
     )
 
     # initialize
     changed: bool = False
-    config_dir: str = module.params.get('config_dir')
+    config_dir: Path = Path(module.params.get('config_dir'))
 
     # check on optionl upgrade param
     flags: list[str] = []
@@ -82,6 +80,10 @@ def run_module() -> None:
 
     # determine packer command
     command: str = packer.cmd(action='init', flags=flags, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
 
     # execute packer
     rc, stdout, stderr = module.run_command(command, cwd=config_dir)
@@ -100,7 +102,7 @@ def run_module() -> None:
             stderr=stderr, stderr_lines=stderr.splitlines())
 
 
-def main():
+def main() -> None:
     """module entrypoint"""
     run_module()
 

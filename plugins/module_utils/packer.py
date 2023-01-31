@@ -39,7 +39,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 })
 
 
-def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir: str = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in FLAGS_MAP:
@@ -71,7 +71,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir
 
     # return the command with the target dir appended
     if Path(target_dir).exists():
-        return command + [target_dir]
+        return command + [str(target_dir)]
 
     # otherwise error if it does not exist (possible to target file or dir)
     raise RuntimeError(f"Targeted directory or file does not exist: {target_dir}")
