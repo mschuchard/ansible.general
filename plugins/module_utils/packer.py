@@ -46,7 +46,9 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir
         raise RuntimeError(f"Unsupported Packer action attempted: {action}")
 
     # initialize packer command
-    command: list[str] = ['packer', action, '-machine-readable', '-color=false']
+    command: list[str] = ['packer', action, '-machine-readable']
+    if action == 'build':
+        command.append('-color=false')
 
     # construct list of packer flags
     action_flags_map: dict[str, str] = FLAGS_MAP[action]

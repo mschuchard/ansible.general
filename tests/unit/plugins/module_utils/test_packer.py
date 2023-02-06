@@ -33,13 +33,13 @@ def test_cmd_errors():
 def test_cmd():
     """test various cmd returns"""
     # test init with no flags and no args
-    assert packer.cmd(action='init', target_dir='/home') == ['packer', 'init', '-machine-readable', '-color=false', '/home']
+    assert packer.cmd(action='init', target_dir='/home') == ['packer', 'init', '-machine-readable', '/home']
 
     # test fmt with check flag and no args
-    assert packer.cmd(action='fmt', flags=['check'], target_dir='/home') == ['packer', 'fmt', '-machine-readable', '-color=false', '-check', '/home']
+    assert packer.cmd(action='fmt', flags=['check'], target_dir='/home') == ['packer', 'fmt', '-machine-readable', '-check', '/home']
 
     # test validate with default target_dir, no flags, only and var args
-    assert packer.cmd(action='validate', args={'only': 'null.this,null.that', 'var': 'foo=bar'}) == ['packer', 'validate', '-machine-readable', '-color=false', '-only=null.this,null.that', '-var foo=bar', str(Path.cwd())]
+    assert packer.cmd(action='validate', args={'only': 'null.this,null.that', 'var': 'foo=bar'}) == ['packer', 'validate', '-machine-readable', '-only=null.this,null.that', '-var foo=bar', str(Path.cwd())]
 
     # test build with force and debug flags, and parallel builds args
     assert packer.cmd(action='build', flags=['debug', 'force'], args={'parallel_builds': '1'}, target_dir='/home') == ['packer', 'build', '-machine-readable', '-color=false', '-debug', '-force', '-parallel-builds=1', '/home']
