@@ -37,24 +37,28 @@ author: Matthew Schuchard (@mschuchard)
 
 EXAMPLES = r'''
 # initialize directory in /path/to/packer_config_dir
-- name: initialize packer directory in /path/to/packer_config_dir
+- name: Initialize packer directory in /path/to/packer_config_dir
   mschuchard.general.packer_init:
     config_dir: /path/to/packer_config_dir
 
 # initialize current directory and upgrade plugins
-- name: initialize current packer directory and upgrade plugins
+- name: Initialize current packer directory and upgrade plugins
   mschuchard.general.packer_init:
     upgrade: true
 
 # initialize directory in /path/to/packer_config_dir and upgrade plugins
-- name: initialize packer directory in /path/to/packer_config_dir and upgrade plugins
+- name: Initialize packer directory in /path/to/packer_config_dir and upgrade plugins
   mschuchard.general.packer_init:
     config_dir: /path/to/packer_config_dir
     upgrade: true
 '''
 
 RETURN = r'''
-TODO
+command:
+    description: The literal Packer command executed.
+    type: str
+    returned: always
+    sample: 'packer init -machine-readable /home/packer'
 '''
 
 
