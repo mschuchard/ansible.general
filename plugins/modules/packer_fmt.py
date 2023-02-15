@@ -61,3 +61,60 @@ EXAMPLES = r'''
 RETURN = r'''
 TODO
 '''
+
+
+def run_module() -> None:
+    """primary function for packer fmt module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec=dict(
+            check=dict(type='bool', required=False, default=False),
+            config_dir=dict(type='str', required=False, default=Path.cwd()),
+            recursive=dict(type='bool', required=False, default=False)
+        ),
+        supports_check_mode=True
+    )
+
+    # initialize
+    changed: bool = False
+    check: bool = module.params.get('check')
+    config_dir: Path = Path(module.params.get('config_dir'))
+
+    # check optionl params
+    flags: list[str] = []
+    if check:
+        flags.append('check')
+    if module.params.get('recursive'):
+        flags.append('recursive')
+
+    # determine packer command
+    command: str = packer.cmd(action='fmt', flags=flags, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute packer
+    rc, stdout, stderr = module.run_command(command, cwd=config_dir)
+
+    # check idempotence
+    if 'Installed plugin' in stdout and not check:
+        changed = True
+
+    # post-process
+    if rc == 0:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), rc=rc, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
+
+
+def main() -> None:
+    """module entrypoint"""
+    run_module()
+
+
+if __name__ == '__main__':
+    main()
