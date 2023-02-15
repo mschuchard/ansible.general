@@ -80,7 +80,7 @@ def run_module() -> None:
     # check on optionl upgrade param
     flags: list[str] = []
     if module.params.get('upgrade'):
-        flags = ['upgrade']
+        flags.append('upgrade')
 
     # determine packer command
     command: str = packer.cmd(action='init', flags=flags, target_dir=config_dir)
@@ -90,18 +90,21 @@ def run_module() -> None:
         module.exit_json(changed=False, command=command)
 
     # execute packer
-    rc, stdout, stderr = module.run_command(command, cwd=config_dir)
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
 
     # check idempotence
     if 'Installed plugin' in stdout:
         changed = True
 
     # post-process
-    if rc == 0:
+    if return_code == 0:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), rc=rc, cmd=command,
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
             stdout=stdout, stdout_lines=stdout.splitlines(),
             stderr=stderr, stderr_lines=stderr.splitlines())
 
