@@ -32,7 +32,6 @@ def test_packer_init_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    print(info)
     assert info['return_code'] == 1
     assert '/tmp' in info['cmd']
     assert 'ui,error,Error: Could not find any config file in /tmp' in info['stdout']

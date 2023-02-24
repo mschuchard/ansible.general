@@ -42,11 +42,11 @@ options:
         description: Variables for templates.
         required: false
         default: []
-        type: dict
+        type: list
     var_file:
         description: HCL2 files containing user variables.
         required: false
-        default: {}
+        default: []
         type: list
 
 requirements:
@@ -75,8 +75,8 @@ EXAMPLES = r'''
   mschuchard.general.packer_validate:
     config_dir: /path/to/packer_dir
     var:
-      var_name: var_value
-      var_name_other: var_value_other
+    - var_name: var_value
+    - var_name_other: var_value_other
     var_file:
     - one.pkrvars.hcl
     - two.pkrvars.hcl
@@ -96,7 +96,7 @@ def run_module() -> None:
             excepts=dict(type='list', required=False, default=[]),
             only=dict(type='list', required=False, default=[]),
             syntax_only=dict(type='bool', required=False, default=False),
-            var=dict(type='dict', required=False, default={}),
+            var=dict(type='list', required=False, default=[]),
             var_file=dict(type='list', required=False, default=[])
         ),
         supports_check_mode=True
@@ -107,7 +107,7 @@ def run_module() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
     excepts: list[str] = module.params.get('excepts')
     only: list[str] = module.params.get('only')
-    var: list[str] = module.params.get('var')
+    var: list[dict] = module.params.get('var')
     var_file: list[str] = module.params.get('var_file')
 
     # check optionl params
@@ -117,7 +117,7 @@ def run_module() -> None:
 
     args: dict = {}
     if len(excepts) > 0:
-        args.update({'except': excepts})
+        args.update({'excepts': excepts})
     if len(only) > 0:
         args.update({'only': only})
     if len(var) > 0:

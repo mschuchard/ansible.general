@@ -32,7 +32,6 @@ def test_packer_fmt_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    print(info)
     assert not info['changed']
     assert '/tmp' in info['command']
     assert len(info['stdout']) == 0
