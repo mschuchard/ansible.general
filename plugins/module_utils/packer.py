@@ -23,7 +23,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 # dictionary that maps input args to packer args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'build': {
-        'except': '-except=',
+        'excepts': '-except=',
         'only': '-only=',
         'on_error': '-on-error=',
         'parallel_builds': '-parallel-builds=',
@@ -31,7 +31,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'var_file': '-var-file='
     },
     'validate': {
-        'except': '-except=',
+        'excepts': '-except=',
         'only': '-only=',
         'var': '-var ',
         'var_file': '-var-file='
@@ -85,7 +85,7 @@ def ansible_to_packer(args: dict) -> dict[str, str]:
     # iterate through ansible module argument
     for arg, arg_value in args.items():
         # list[str] to comma-delimited string
-        if arg in ['except', 'only']:
+        if arg in ['excepts', 'only']:
             args[arg] = ','.join(arg_value)
         # list[dict[str, str]] to "key=value" string with args for n>1 values
         elif arg in ['var']:
