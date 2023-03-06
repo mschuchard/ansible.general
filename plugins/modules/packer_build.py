@@ -119,7 +119,85 @@ TODO
 
 
 def run_module() -> None:
-    
+    """primary function for packer build module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec=dict(
+            config_dir=dict(type='str', required=False, default=Path.cwd()),
+            debug=dict(type='bool', required=False, default=False),
+            excepts=dict(type='list', required=False, default=[]),
+            force=dict(type='bool', required=False, default=False),
+            on_error=dict(type='str', required=False, default=''),
+            only=dict(type='list', required=False, default=[]),
+            parallel_builds=dict(type='int', required=False, default=0),
+            timestamp_ui=dict(type='bool', required=False, default=False),
+            var=dict(type='list', required=False, default=[]),
+            var_file=dict(type='list', required=False, default=[])
+        ),
+        supports_check_mode=True
+    )
+
+    # initialize
+    changed: bool = False
+    config_dir: Path = Path(module.params.get('config_dir'))
+    excepts: list[str] = module.params.get('excepts')
+    on_error: str = module.params.get('on_error')
+    only: list[str] = module.params.get('only')
+    parallel_builds: int = module.params.get('parallel_builds')
+    var: list[dict] = module.params.get('var')
+    var_file: list[str] = module.params.get('var_file')
+
+    # check optionl params
+    flags: list[str] = []
+    if module.params.get('debug'):
+        flags.append('debug')
+    if module.params.get('force'):
+        flags.append('force')
+    if module.params.get('timestamp_ui'):
+        flags.append('timestamp_ui')
+
+    args: dict = {}
+    if len(excepts) > 0:
+        args.update({'excepts': excepts})
+    if len(on_error) > 0:
+        args.update({'on_error': on_error})
+    if len(only) > 0:
+        args.update({'only': only})
+    if parallel_builds > 0:
+        args.update({'parallel_builds': parallel_builds})
+    if len(var) > 0:
+        args.update({'var': var})
+    if len(var_file) > 0:
+        args.update({'var_file': var_file})
+
+    # convert ansible params to packer args
+    args = packer.ansible_to_packer(args)
+
+    # determine packer command
+    command: str = packer.cmd(action='build', flags=flags, args=args, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute packer
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
+
+    # check idempotence
+    if 'artifacts of successful builds' in stdout:
+        changed = True
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
 
 
 def main() -> None:
