@@ -61,7 +61,7 @@ EXAMPLES = r'''
   mschuchard.general.packer_validate:
     config_dir: /path/to/packer_dir
 
-# validate only the the syntax of the null.this and null.that builds in the packer files
+# validate only the syntax of the null.this and null.that builds in the packer files
 - name: Validate only the null.this and null.that builds in the packer files
   mschuchard.general.packer_validate:
     config_dir: /path/to/packer_dir
