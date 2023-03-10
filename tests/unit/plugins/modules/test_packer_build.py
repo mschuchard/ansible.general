@@ -82,6 +82,8 @@ def test_packer_build_var_varfile(capfd):
     info = json.loads(stdout)
     print(info)
     assert info['return_code'] == 1
-    assert '-var var_name=var_value -var var_name_other=var_value_other' in info['cmd']
-    assert '-var-file=one.pkrvars.hcl -var-file=two.pkrvars.hcl' in info['cmd']
+    assert '-var var_name=var_value' in info['cmd']
+    assert '-var var_name_other=var_value_other' in info['cmd']
+    assert '-var-file=one.pkrvars.hcl' in info['cmd']
+    assert '-var-file=two.pkrvars.hcl' in info['cmd']
     assert 'ui,error,Error: Could not find any config file in' in info['stdout']

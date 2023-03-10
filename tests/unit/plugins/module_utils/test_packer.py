@@ -29,6 +29,14 @@ def test_cmd_errors():
     with pytest.raises(RuntimeError, match='Targeted directory or file does not exist: /1234567890'):
         packer.cmd(action='init', target_dir='/1234567890')
 
+    # test fails on unsupported arg value type
+    with pytest.raises(RuntimeError, match='Unexpected issue with argument name \'var\' and argument value \'1\''):
+        packer.cmd(action='validate', args={'var': 1})
+
+    # test fails on arg expecting value of list type and str type is provided
+    with pytest.raises(RuntimeError, match='Unexpected issue with argument name \'var\' and argument value \'foo\''):
+        packer.cmd(action='validate', args={'var': 'foo'})
+
 
 def test_cmd():
     """test various cmd returns"""
