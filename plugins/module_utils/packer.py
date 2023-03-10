@@ -99,11 +99,12 @@ def ansible_to_packer(args: dict) -> dict[str, Union[str, list[str]]]:
         elif arg in ['var']:
             # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
             var_strings = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
-            # transform list["<var name>=<var value>"] into list with arg name prefixed
-            args[arg] = list(map(lambda var_value: f"-var {var_value}", var_strings))
-        # list[str] to list[str] with arg name prefixed
+            # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
+            # various language limitations force this non-ideal implementation
+            args[arg] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+        # list[str] to list[str] with "-var-file=" prefixed
         elif arg in ['var_file']:
-            args[arg] = list(map(lambda var_file: f"-var-file={var_file}", args[arg]))
+            args[arg] = [f"-var-file={var_file}" for var_file in args[arg]]
         # int to str
         elif arg in ['parallel_builds']:
             args[arg] = str(arg_value)

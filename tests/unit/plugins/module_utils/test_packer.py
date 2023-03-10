@@ -79,6 +79,6 @@ def test_ansible_to_packer():
         'only': 'foo,bar,baz',
         'on_error': 'cleanup',
         'parallel_builds': '2',
-        'var': ['-var var1=value1', '-var var2=value2', '-var var3=value3'],
+        'var': ['-var', 'var1=value1', '-var', 'var2=value2', '-var', 'var3=value3'],
         'var_file': ['-var-file=one.pkrvars.hcl', '-var-file=two.pkrvars.hcl', '-var-file=three.pkrvars.hcl']
     }
