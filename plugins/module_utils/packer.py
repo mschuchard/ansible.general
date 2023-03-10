@@ -33,8 +33,8 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'validate': {
         'excepts': '-except=',
         'only': '-only=',
-        'var': '-var ',
-        'var_file': '-var-file='
+        'var': '',
+        'var_file': ''
     },
 })
 
@@ -61,8 +61,8 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, target_dir
             raise RuntimeError(f"Unsupported Packer flag specified: {flag}")
 
     # construct list of packer args
-    # not all actions have args, so return empty list to shortcut to RuntimeError for unpported arg if arg specified for action without args
-    action_args_map: dict[str, str] = ARGS_MAP.get(action, [])
+    # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unpported arg if arg specified for action without args
+    action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
     for arg, arg_value in args.items():
         if arg in action_args_map:
             # add packer arg from corresponding module arg in ARGS
@@ -91,11 +91,11 @@ def ansible_to_packer(args: dict) -> dict[str, str]:
         elif arg in ['var']:
             # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
             var_strings = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
-            # transform list["<var name>=<var value>"] into cli arg string
-            args[arg] = ' -var '.join(var_strings)
-        # list[str] to str with args for n>1 values
+            # transform list["<var name>=<var value>"] into list with arg name prefixed
+            args[arg] = list(map(lambda var_value: f"-var {var_value}", var_strings))
+        # list[str] to list[str] with arg name prefixed
         elif arg in ['var_file']:
-            args[arg] = ' -var-file='.join(arg_value)
+            args[arg] = list(map(lambda var_file: f"-var-file={var_file}", args[arg]))
         # int to str
         elif arg in ['parallel_builds']:
             args[arg] = str(arg_value)
