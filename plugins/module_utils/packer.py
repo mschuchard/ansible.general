@@ -61,7 +61,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, Union[str, list[str]]
             raise RuntimeError(f"Unsupported Packer flag specified: {flag}")
 
     # construct list of packer args
-    # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unpported arg if arg specified for action without args
+    # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
     action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
     for arg, arg_value in args.items():
         # verify this is a valid action argument
