@@ -7,7 +7,7 @@ import pytest
 from mschuchard.general.plugins.module_utils import packer
 
 
-def test_cmd_errors():
+def test_packer_cmd_errors():
     """test various cmd errors"""
     # test fails on unsupported action
     with pytest.raises(RuntimeError, match='Unsupported Packer action attempted: foo'):
@@ -38,7 +38,7 @@ def test_cmd_errors():
         packer.cmd(action='validate', args={'var': 'foo'})
 
 
-def test_cmd():
+def test_packer_cmd():
     """test various cmd returns"""
     # test init with no flags and no args
     assert packer.cmd(action='init', target_dir='/home') == ['packer', 'init', '-machine-readable', '/home']
