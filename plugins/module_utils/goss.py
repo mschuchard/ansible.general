@@ -12,7 +12,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 
 # dictionary that maps input args to goss args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
-    'build': {
+    'serve': {
         'endpoint': '-e',
         'format': '-f',
         'port': '-l',
@@ -28,14 +28,15 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the goss command to execute"""
     # verify command
-    if action not in FLAGS_MAP.update(ARGS_MAP):
+    if action not in {**FLAGS_MAP, **ARGS_MAP}:
         raise RuntimeError(f"Unsupported GoSS action attempted: {action}")
 
     # initialize goss command
     command: list[str] = ['goss', action]
 
     # construct list of goss flags
-    action_flags_map: dict[str, str] = FLAGS_MAP[action]
+    # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
+    action_flags_map: dict[str, str] = FLAGS_MAP.get(action, {})
     for flag in flags:
         if flag in action_flags_map:
             # add goss flag from corresponding module flag in FLAGS
@@ -50,14 +51,21 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
+            # port arg requires int-->str and : prefix
+            if arg == 'port':
+                arg_value = f":{arg_value}"
             # append the value interpolated with the arg name from the dict to the command
-            command.append(f"{action_args_map[arg]} {arg_value}")
+            command.extend([action_args_map[arg], arg_value])
         else:
             # unsupported arg specified
             raise RuntimeError(f"Unsupported GoSS arg specified: {arg}")
 
-    # return the command with the target dir appended
+    # return the command with the gossfile appended
     if Path(gossfile).exists():
+        # check if gossfile is default so we use implicit cwd within goss cli instead of module
+        if gossfile == Path.cwd():
+            return command
+
         return command + ['-g', str(gossfile)]
 
     # otherwise error if it does not exist (possible to target file or dir)

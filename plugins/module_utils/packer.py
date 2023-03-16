@@ -50,8 +50,8 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, Union[str, list[str]]
     if action == 'build':
         command.append('-color=false')
 
-    # construct list of packer flags
-    action_flags_map: dict[str, str] = FLAGS_MAP[action]
+    # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
+    action_flags_map: dict[str, str] = FLAGS_MAP.get(action, {})
     for flag in flags:
         if flag in action_flags_map:
             # add packer flag from corresponding module flag in FLAGS
