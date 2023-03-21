@@ -68,7 +68,7 @@ def run_module() -> None:
     gossfile: Path = Path(module.params.get('gossfile'))
     cwd: str = str(Path.cwd())
     if gossfile != Path.cwd():
-        cwd = str(Path.parent(gossfile))
+        cwd = str(gossfile.parent)
 
     # check on optionl upgrade param
     flags: list[str] = []
