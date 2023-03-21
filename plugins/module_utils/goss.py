@@ -32,7 +32,18 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
         raise RuntimeError(f"Unsupported GoSS action attempted: {action}")
 
     # initialize goss command
-    command: list[str] = ['goss', action]
+    command: list[str] = ['goss']
+
+    # check if gossfile is default so we use implicit cwd within goss cli instead of module logic
+    if gossfile == Path.cwd():
+        command.append(action)
+    else:
+        if Path(gossfile).exists():
+            # the gossfile argument is universal and must be immediately specified before action
+            command.extend(['-g', str(gossfile), action])
+        else:
+            # error if gossfile does not exist
+            raise FileNotFoundError(f"GoSSfile does not exist: {gossfile}")
 
     # construct list of goss flags
     # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
@@ -60,13 +71,4 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
             # unsupported arg specified
             raise RuntimeError(f"Unsupported GoSS arg specified: {arg}")
 
-    # return the command with the gossfile appended
-    if Path(gossfile).exists():
-        # check if gossfile is default so we use implicit cwd within goss cli instead of module
-        if gossfile == Path.cwd():
-            return command
-
-        return command + ['-g', str(gossfile)]
-
-    # otherwise error if it does not exist (possible to target file or dir)
-    raise RuntimeError(f"GoSSfile does not exist: {gossfile}")
+    return command

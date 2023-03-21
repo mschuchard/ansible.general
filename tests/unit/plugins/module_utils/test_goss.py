@@ -26,17 +26,17 @@ def test_goss_cmd_errors():
         goss.cmd(action='render', args={'foo': 'bar'})
 
     # test fails on nonexistent target_dir
-    with pytest.raises(RuntimeError, match='GoSSfile does not exist: /gossfile.yaml'):
+    with pytest.raises(FileNotFoundError, match='GoSSfile does not exist: /gossfile.yaml'):
         goss.cmd(action='render', gossfile='/gossfile.yaml')
 
 
 def test_goss_cmd():
     """test various cmd returns"""
     # test render with no flags and no args
-    assert goss.cmd(action='render', gossfile='/home') == ['goss', 'render', '-g', '/home']
+    assert goss.cmd(action='render', gossfile='/home') == ['goss', '-g', '/home', 'render']
 
     # test render with debug flag and no args
-    assert goss.cmd(action='render', flags=['debug'], gossfile='/home') == ['goss', 'render', '--debug', '-g', '/home']
+    assert goss.cmd(action='render', flags=['debug'], gossfile='/home') == ['goss', '-g', '/home', 'render', '--debug']
 
     # test validate with default gossfile, no flags, format and vars args
     assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'vars.yaml'}) == ['goss', 'validate', '-f', 'rspecish', '--vars', 'vars.yaml']
