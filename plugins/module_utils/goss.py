@@ -16,12 +16,8 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'endpoint': '-e',
         'format': '-f',
         'port': '-l',
-        'vars': '--vars'
     },
-    'validate': {
-        'format': '-f',
-        'vars': '--vars'
-    },
+    'validate': {'format': '-f'}
 })
 
 
@@ -34,6 +30,12 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     # initialize goss command
     command: list[str] = ['goss']
 
+    # check universal args
+    # check if vars is specified
+    if 'vars' in args:
+        command.extend(['--vars', args['vars']])
+        # remove vars from args to avoid doublecheck with action args
+        del args['vars']
     # check if gossfile is default so we use implicit cwd within goss cli instead of module logic
     if gossfile == Path.cwd():
         command.append(action)
@@ -44,6 +46,10 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
         else:
             # error if gossfile does not exist
             raise FileNotFoundError(f"GoSSfile does not exist: {gossfile}")
+
+    # disable color if validate action
+    if action == 'validate':
+        command.append('--no-color')
 
     # construct list of goss flags
     # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags

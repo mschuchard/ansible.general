@@ -39,7 +39,7 @@ def test_goss_cmd():
     assert goss.cmd(action='render', flags=['debug'], gossfile='/home') == ['goss', '-g', '/home', 'render', '--debug']
 
     # test validate with default gossfile, no flags, format and vars args
-    assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'vars.yaml'}) == ['goss', 'validate', '-f', 'rspecish', '--vars', 'vars.yaml']
+    assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'vars.yaml'}) == ['goss', '--vars', 'vars.yaml', 'validate', '--no-color', '-f', 'rspecish']
 
     # test serve with default gossfile, no flags, endpoint and port args
     assert goss.cmd(action='serve', args={'endpoint': 'https://example.com/goss', 'port': 8765}) == ['goss', 'serve', '-e', 'https://example.com/goss', '-l', ':8765']
