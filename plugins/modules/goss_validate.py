@@ -29,9 +29,8 @@ options:
         default: `cwd`/goss.yaml
         type: str
     vars:
-        description: Additionally validate the golang template prior to validateing the gossfile.
+        description: Path to YAMl or JSON format file containing variables for template.
         required: false
-        default: false
         type: bool
 
 requirements:
@@ -59,7 +58,58 @@ TODO
 
 
 def run_module() -> None:
-    
+    """primary function for goss validate module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec=dict(
+            format=dict(type='str', required=False),
+            gossfile=dict(type='str', required=False, default=Path.cwd()),
+            vars=dict(type='str', required=False)
+        ),
+        supports_check_mode=True
+    )
+
+    # initialize
+    changed: bool = False
+    the_format: str = module.params.get('format')
+    the_vars: Path = Path(module.params.get('vars'))
+    gossfile: Path = Path(module.params.get('gossfile'))
+    cwd: str = str(Path.cwd())
+    if gossfile != Path.cwd():
+        cwd = str(gossfile.parent)
+
+    # check args
+    args: dict = {}
+    if the_format is not None:
+        args.update({'format': the_format})
+    if the_vars is not None:
+        args.update({'vars': the_vars})
+
+    # determine goss command
+    command: str = goss.cmd(action='validate', args=args, gossfile=gossfile)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute goss
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=cwd)
+
+    # check symbolic idempotence
+    if len(stdout) > 0:
+        changed = True
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
 
 
 def main() -> None:
