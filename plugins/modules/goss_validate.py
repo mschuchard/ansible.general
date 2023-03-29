@@ -62,9 +62,9 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            format=dict(type='str', required=False),
+            format=dict(type='str', required=False, default=''),
             gossfile=dict(type='str', required=False, default=Path.cwd()),
-            vars=dict(type='str', required=False)
+            vars=dict(type='str', required=False, default=Path.cwd())
         ),
         supports_check_mode=True
     )
@@ -80,10 +80,10 @@ def run_module() -> None:
 
     # check args
     args: dict = {}
-    if the_format is not None:
+    if len(the_format) > 0:
         args.update({'format': the_format})
-    if the_vars is not None:
-        args.update({'vars': the_vars})
+    if the_vars != Path.cwd():
+        args.update({'vars': str(the_vars)})
 
     # determine goss command
     command: str = goss.cmd(action='validate', args=args, gossfile=gossfile)

@@ -21,7 +21,6 @@ def test_goss_render_defaults(capfd):
     assert 'render' in info['cmd']
     assert '-g' in info['cmd']
     assert '/tmp' in info['cmd']
-    print(info)
     assert 'unknown file extension:' in info['stderr']
 
 
@@ -36,6 +35,7 @@ def test_goss_render_config(capfd):
 
     info = json.loads(stdout)
     assert info['return_code'] == 1
+    assert 'render' in info['cmd']
     assert '-g' not in info['cmd']
     assert '--debug' in info['cmd']
     assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
