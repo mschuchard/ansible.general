@@ -7,7 +7,7 @@ from mschuchard.general.plugins.modules import goss_render
 from mschuchard.general.tests.unit.plugins.modules import utils
 
 
-def test_goss_render_defaults(capfd):
+def test_goss_render_gossfile(capfd):
     """test goss render with gossfile"""
     utils.set_module_args({'gossfile': '/tmp'})
     with pytest.raises(SystemExit, match='1'):
@@ -24,8 +24,8 @@ def test_goss_render_defaults(capfd):
     assert 'unknown file extension:' in info['stderr']
 
 
-def test_goss_render_config(capfd):
-    """test goss render with config"""
+def test_goss_render_debug(capfd):
+    """test goss render with debug"""
     utils.set_module_args({'debug': True})
     with pytest.raises(SystemExit, match='1'):
         goss_render.main()

@@ -7,7 +7,7 @@ from mschuchard.general.plugins.modules import goss_validate
 from mschuchard.general.tests.unit.plugins.modules import utils
 
 
-def test_goss_validate_defaults(capfd):
+def test_goss_validate_gossfile(capfd):
     """test goss validate with gossfile"""
     utils.set_module_args({'gossfile': '/tmp'})
     with pytest.raises(SystemExit, match='1'):
@@ -24,8 +24,8 @@ def test_goss_validate_defaults(capfd):
     assert 'Error: unknown file extension:' in info['stdout']
 
 
-def test_goss_validate_config(capfd):
-    """test goss validate with config"""
+def test_goss_validate_format_vars(capfd):
+    """test goss validate with format and vars"""
     utils.set_module_args({'format': 'json', 'vars': '/tmp'})
     with pytest.raises(SystemExit, match='1'):
         goss_validate.main()
