@@ -1,0 +1,32 @@
+---
+name: test
+
+on:
+  push:
+    branches: [master]
+    paths:
+    - '**.py'
+  pull_request:
+    branches: [master]
+    paths:
+    - '**.py'
+
+jobs:
+  go-build:
+    env:
+      PYTHONPATH: $GITHUB_WORKSPACE
+    runs-on: ubuntu-22.04
+    container: python:3.10-slim
+    steps:
+    - name: setup ansible collection namespace dir structure
+      run: mkdir mschuchard
+    - name: checkout
+      uses: actions/checkout@v3
+      with:
+        path: mschuchard/general
+    - name: install prereqs
+      run: pip install --no-cache-dir pylint flake8
+    - name: pylint
+      run: pylint --recursive=y mschuchard/general
+    - name: flake8
+      run: flake8 --config mschuchard/general/.flake8 mschuchard/general
