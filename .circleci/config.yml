@@ -1,0 +1,39 @@
+---
+version: 2.1
+
+jobs:
+  test:
+    environment:
+      PYTHONPATH: /tmp/project
+    working_directory: /tmp/project
+    docker:
+    - image: python:3.10-slim
+    resource_class: small
+    steps:
+    - run:
+        name: setup ansible collection namespace dir structure
+        command: mkdir mschuchard
+    - run:
+        name: clone code to custom location
+        command: git clone $CIRCLE_REPOSITORY_URL mschuchard/general
+    - restore_cache:
+        keys:
+        - mschuchard-ansible-general
+    - run:
+        name: install prereqs
+        command: pip install --no-cache-dir pylint flake8
+    - run:
+        name: pylint
+        command: pylint --recursive=y mschuchard/general
+    - run:
+        name: flake8
+        command: flake8 --config mschuchard/general/.flake8 mschuchard/general
+    - save_cache:
+        paths:
+        - /usr/lib/python3/dist-packages
+        key: mschuchard-ansible-general
+
+workflows:
+  execute_tests:
+    jobs:
+    - test
