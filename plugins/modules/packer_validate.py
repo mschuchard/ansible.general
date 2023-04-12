@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""ansible module for packer validate"""
 __metaclass__ = type
 
 
@@ -92,12 +93,12 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            config_dir=dict(type='str', required=False, default=Path.cwd()),
-            excepts=dict(type='list', required=False, default=[]),
-            only=dict(type='list', required=False, default=[]),
-            syntax_only=dict(type='bool', required=False, default=False),
-            var=dict(type='list', required=False, default=[]),
-            var_file=dict(type='list', required=False, default=[])
+            config_dir={'type': 'path', 'required': False, 'default': Path.cwd()},
+            excepts={'type': 'list', 'required': False, 'default': []},
+            only={'type': 'list', 'required': False, 'default': []},
+            syntax_only={'type': 'bool', 'required': False, 'default': False},
+            var={'type': 'list', 'required': False, 'default': []},
+            var_file={'type': 'list', 'required': False, 'default': []}
         ),
         supports_check_mode=True
     )

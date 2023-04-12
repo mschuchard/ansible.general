@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""ansible module for packer init"""
 __metaclass__ = type
 
 
@@ -67,8 +68,8 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            config_dir=dict(type='str', required=False, default=Path.cwd()),
-            upgrade=dict(type='bool', required=False, default=False)
+            config_dir={'type': 'path', 'required': False, 'default': Path.cwd()},
+            upgrade={'type': 'bool', 'required': False, 'default': False}
         ),
         supports_check_mode=True
     )

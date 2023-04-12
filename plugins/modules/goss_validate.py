@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""ansible module for goss validate"""
 __metaclass__ = type
 
 
@@ -62,9 +63,9 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            format=dict(type='str', required=False, default=''),
-            gossfile=dict(type='str', required=False, default=Path.cwd()),
-            vars=dict(type='str', required=False, default=Path.cwd())
+            format={'type': 'str', 'required': False, 'default': ''},
+            gossfile={'type': 'path', 'required': False, 'default': Path.cwd()},
+            vars={'type': 'str', 'required': False, 'default': Path.cwd()}
         ),
         supports_check_mode=True
     )

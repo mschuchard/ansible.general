@@ -1,4 +1,5 @@
-#!/usr/bin/python
+y#!/usr/bin/python
+"""ansible module for packer build"""
 __metaclass__ = type
 
 
@@ -123,16 +124,16 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            config_dir=dict(type='str', required=False, default=Path.cwd()),
-            debug=dict(type='bool', required=False, default=False),
-            excepts=dict(type='list', required=False, default=[]),
-            force=dict(type='bool', required=False, default=False),
-            on_error=dict(type='str', required=False, default=''),
-            only=dict(type='list', required=False, default=[]),
-            parallel_builds=dict(type='int', required=False, default=0),
-            timestamp_ui=dict(type='bool', required=False, default=False),
-            var=dict(type='list', required=False, default=[]),
-            var_file=dict(type='list', required=False, default=[])
+            config_dir={'type': 'path', 'required': False, 'default': Path.cwd()},
+            debug={'type': 'bool', 'required': False, 'default': False},
+            excepts={'type': 'list', 'required': False, 'default': []},
+            force={'type': 'bool', 'required': False, 'default': False},
+            on_error={'type': 'str', 'required': False, 'default': ''},
+            only={'type': 'list', 'required': False, 'default': []},
+            parallel_builds={'type': 'int', 'required': False, 'default': 0},
+            timestamp_ui={'type': 'bool', 'required': False, 'default': False},
+            var={'type': 'list', 'required': False, 'default': []},
+            var_file={'type': 'list', 'required': False, 'default': []}
         ),
         supports_check_mode=True
     )

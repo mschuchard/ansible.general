@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""ansible module for goss serve"""
 __metaclass__ = type
 
 
@@ -78,11 +79,11 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            endpoint=dict(type='str', required=False, default=''),
-            format=dict(type='str', required=False, default=''),
-            gossfile=dict(type='str', required=False, default=Path.cwd()),
-            port=dict(type='int', required=False, default=0),
-            vars=dict(type='str', required=False, default=Path.cwd())
+            endpoint={'type': 'str', 'required': False, 'default': ''},
+            format={'type': 'str', 'required': False, 'default': ''},
+            gossfile={'type': 'path', 'required': False, 'default': Path.cwd()},
+            port={'type': 'int', 'required': False, 'default': 0},
+            vars={'type': 'str', 'required': False, 'default': Path.cwd()}
         ),
         supports_check_mode=True
     )

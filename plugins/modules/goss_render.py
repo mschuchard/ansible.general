@@ -1,4 +1,5 @@
 #!/usr/bin/python
+"""ansible module for goss render"""
 __metaclass__ = type
 
 
@@ -57,8 +58,8 @@ def run_module() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec=dict(
-            debug=dict(type='bool', required=False, default=False),
-            gossfile=dict(type='str', required=False, default=Path.cwd())
+            debug={'type': 'bool', 'required': False, 'default': False},
+            gossfile={'type': 'path', 'required': False, 'default': Path.cwd()}
         ),
         supports_check_mode=True
     )

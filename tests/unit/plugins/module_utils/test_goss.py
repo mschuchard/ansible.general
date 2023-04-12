@@ -2,7 +2,6 @@
 __metaclass__ = type
 
 
-from pathlib import Path
 import pytest
 from mschuchard.general.plugins.module_utils import goss
 
