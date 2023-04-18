@@ -1,3 +1,4 @@
+"""unit test for packer validate module"""
 __metaclass__ = type
 
 

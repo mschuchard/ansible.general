@@ -1,3 +1,4 @@
+"""unit test for packer fmt module"""
 __metaclass__ = type
 
 

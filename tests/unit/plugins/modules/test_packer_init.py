@@ -1,3 +1,4 @@
+"""unit test for packer init module"""
 __metaclass__ = type
 
 

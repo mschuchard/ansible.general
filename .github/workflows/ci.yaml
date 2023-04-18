@@ -14,7 +14,7 @@ on:
 jobs:
   go-build:
     env:
-      PYTHONPATH: $GITHUB_WORKSPACE
+      PYTHONPATH: ${{ github.workspace }}
     runs-on: ubuntu-22.04
     container: python:3.10-slim
     steps:

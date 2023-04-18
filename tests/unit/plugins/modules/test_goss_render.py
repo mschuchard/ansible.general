@@ -1,3 +1,4 @@
+"""unit test for goss render module"""
 __metaclass__ = type
 
 

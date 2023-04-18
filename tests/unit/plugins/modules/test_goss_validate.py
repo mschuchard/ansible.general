@@ -1,3 +1,4 @@
+"""unit test for goss validate module"""
 __metaclass__ = type
 
 
