@@ -53,14 +53,14 @@ TODO
 '''
 
 
-def run_module() -> None:
+def main() -> None:
     """primary function for goss render module"""
     # instanstiate ansible module
     module = AnsibleModule(
-        argument_spec=dict(
-            debug={'type': 'bool', 'required': False, 'default': False},
-            gossfile={'type': 'path', 'required': False, 'default': Path.cwd()}
-        ),
+        argument_spec={
+            'debug': {'type': 'bool', 'required': False, 'default': False},
+            'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()}
+        },
         supports_check_mode=True
     )
 
@@ -101,11 +101,6 @@ def run_module() -> None:
             msg=stderr.rstrip(), return_code=return_code, cmd=command,
             stdout=stdout, stdout_lines=stdout.splitlines(),
             stderr=stderr, stderr_lines=stderr.splitlines())
-
-
-def main() -> None:
-    """module entrypoint"""
-    run_module()
 
 
 if __name__ == '__main__':

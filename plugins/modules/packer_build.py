@@ -1,4 +1,4 @@
-y#!/usr/bin/python
+#!/usr/bin/python
 """ansible module for packer build"""
 __metaclass__ = type
 
@@ -119,22 +119,22 @@ TODO
 '''
 
 
-def run_module() -> None:
+def main() -> None:
     """primary function for packer build module"""
     # instanstiate ansible module
     module = AnsibleModule(
-        argument_spec=dict(
-            config_dir={'type': 'path', 'required': False, 'default': Path.cwd()},
-            debug={'type': 'bool', 'required': False, 'default': False},
-            excepts={'type': 'list', 'required': False, 'default': []},
-            force={'type': 'bool', 'required': False, 'default': False},
-            on_error={'type': 'str', 'required': False, 'default': ''},
-            only={'type': 'list', 'required': False, 'default': []},
-            parallel_builds={'type': 'int', 'required': False, 'default': 0},
-            timestamp_ui={'type': 'bool', 'required': False, 'default': False},
-            var={'type': 'list', 'required': False, 'default': []},
-            var_file={'type': 'list', 'required': False, 'default': []}
-        ),
+        argument_spec={
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'debug': {'type': 'bool', 'required': False, 'default': False},
+            'excepts': {'type': 'list', 'required': False, 'default': []},
+            'force': {'type': 'bool', 'required': False, 'default': False},
+            'on_error': {'type': 'str', 'required': False, 'default': ''},
+            'only': {'type': 'list', 'required': False, 'default': []},
+            'parallel_builds': {'type': 'int', 'required': False, 'default': 0},
+            'timestamp_ui': {'type': 'bool', 'required': False, 'default': False},
+            'var': {'type': 'list', 'required': False, 'default': []},
+            'var_file': {'type': 'list', 'required': False, 'default': []}
+        },
         supports_check_mode=True
     )
 
@@ -199,11 +199,6 @@ def run_module() -> None:
             msg=stderr.rstrip(), return_code=return_code, cmd=command,
             stdout=stdout, stdout_lines=stdout.splitlines(),
             stderr=stderr, stderr_lines=stderr.splitlines())
-
-
-def main() -> None:
-    """module entrypoint"""
-    run_module()
 
 
 if __name__ == '__main__':

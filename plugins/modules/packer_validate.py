@@ -88,18 +88,18 @@ TODO
 '''
 
 
-def run_module() -> None:
+def main() -> None:
     """primary function for packer validate module"""
     # instanstiate ansible module
     module = AnsibleModule(
-        argument_spec=dict(
-            config_dir={'type': 'path', 'required': False, 'default': Path.cwd()},
-            excepts={'type': 'list', 'required': False, 'default': []},
-            only={'type': 'list', 'required': False, 'default': []},
-            syntax_only={'type': 'bool', 'required': False, 'default': False},
-            var={'type': 'list', 'required': False, 'default': []},
-            var_file={'type': 'list', 'required': False, 'default': []}
-        ),
+        argument_spec={
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'excepts': {'type': 'list', 'required': False, 'default': []},
+            'only': {'type': 'list', 'required': False, 'default': []},
+            'syntax_only': {'type': 'bool', 'required': False, 'default': False},
+            'var': {'type': 'list', 'required': False, 'default': []},
+            'var_file': {'type': 'list', 'required': False, 'default': []}
+        },
         supports_check_mode=True
     )
 
@@ -150,11 +150,6 @@ def run_module() -> None:
             msg=stderr.rstrip(), return_code=return_code, cmd=command,
             stdout=stdout, stdout_lines=stdout.splitlines(),
             stderr=stderr, stderr_lines=stderr.splitlines())
-
-
-def main() -> None:
-    """module entrypoint"""
-    run_module()
 
 
 if __name__ == '__main__':

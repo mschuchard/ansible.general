@@ -13,9 +13,10 @@ jobs:
     - run:
         name: setup ansible collection namespace dir structure
         command: mkdir mschuchard
+    - checkout
     - run:
-        name: clone code to custom location
-        command: git clone $CIRCLE_REPOSITORY_URL mschuchard/general
+        name: moving code clone
+        command: mv ansible.general mschuchard/general
     - restore_cache:
         keys:
         - mschuchard-ansible-general
@@ -24,7 +25,7 @@ jobs:
         command: pip install --no-cache-dir pylint flake8
     - run:
         name: pylint
-        command: pylint --recursive=y mschuchard/general
+        command: pylint --recursive=y --rcfile=mschuchard/general/.pylintrc mschuchard/general
     - run:
         name: flake8
         command: flake8 --config mschuchard/general/.flake8 mschuchard/general
