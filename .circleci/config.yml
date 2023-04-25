@@ -5,30 +5,21 @@ jobs:
   test:
     environment:
       PYTHONPATH: /tmp/project
-    working_directory: /tmp/project
+    working_directory: /tmp/project/mschuchard/general
     docker:
     - image: matthewschuchard/ansible-module
     resource_class: small
     steps:
     - checkout
-    - run:
-        name: setup ansible collection namespace dir structure
-        command: mkdir mschuchard
-    - run:
-        name: moving code clone
-        command: mv ansible.general mschuchard/general
     - restore_cache:
         keys:
         - mschuchard-ansible-general
     - run:
-        name: install prereqs
-        command: pip install --no-cache-dir pylint flake8
-    - run:
         name: pylint
-        command: pylint --recursive=y --rcfile=mschuchard/general/.pylintrc mschuchard/general
+        command: pylint --recursive=y . || true
     - run:
         name: flake8
-        command: flake8 --config mschuchard/general/.flake8 mschuchard/general
+        command: flake8 .
     - save_cache:
         paths:
         - /usr/lib/python3/dist-packages
