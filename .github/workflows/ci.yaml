@@ -16,7 +16,7 @@ jobs:
     env:
       PYTHONPATH: ${{ github.workspace }}
     runs-on: ubuntu-22.04
-    container: python:3.10-slim
+    container: matthewschuchard/ansible-module
     steps:
     - name: setup ansible collection namespace dir structure
       run: mkdir mschuchard

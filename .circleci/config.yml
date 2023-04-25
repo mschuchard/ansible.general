@@ -7,7 +7,7 @@ jobs:
       PYTHONPATH: /tmp/project
     working_directory: /tmp/project
     docker:
-    - image: python:3.10-slim
+    - image: matthewschuchard/ansible-module
     resource_class: small
     steps:
     - checkout

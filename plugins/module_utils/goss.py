@@ -33,14 +33,18 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     # check universal args
     # check if vars is specified
     if 'vars' in args:
-        command.extend(['--vars', args['vars']])
-        # remove vars from args to avoid doublecheck with action args
-        del args['vars']
+        # verify vars file exists
+        if Path(args['vars']).is_file():
+            command.extend(['--vars', args['vars']])
+            # remove vars from args to avoid doublecheck with action args
+            del args['vars']
+        else:
+            raise FileNotFoundError(f"Vars file does not exist: {args['vars']}")
     # check if gossfile is default so we use implicit cwd within goss cli instead of module logic
     if gossfile == Path.cwd():
         command.append(action)
     else:
-        if Path(gossfile).exists():
+        if Path(gossfile).is_file():
             # the gossfile argument is universal and must be immediately specified before action
             command.extend(['-g', str(gossfile), action])
         else:
