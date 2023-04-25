@@ -96,20 +96,28 @@ def ansible_to_packer(args: dict) -> dict[str, Union[str, list[str]]]:
         if arg in ['excepts', 'only']:
             args[arg] = ','.join(arg_value)
         # list[dict[str, str]] to "key=value" string with args for n>1 values
-        elif arg in ['var']:
+        elif arg == 'var':
             # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
             var_strings = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
             # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
             # various language limitations force this non-ideal implementation
-            args[arg] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+            args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
         # list[str] to list[str] with "-var-file=" prefixed
-        elif arg in ['var_file']:
-            args[arg] = [f"-var-file={var_file}" for var_file in args[arg]]
+        elif arg == 'var_file':
+            # reset arg because file check does not allow generator pattern
+            args['var_file'] = []
+
+            for var_file in arg_value:
+                # verify vars file exists before conversion
+                if Path(var_file).is_file():
+                    args['var_file'].append(f"-var-file={var_file}")
+                else:
+                    raise FileNotFoundError(f"Var file does not exist: {var_file}")
         # int to str
-        elif arg in ['parallel_builds']:
-            args[arg] = str(arg_value)
+        elif arg == 'parallel_builds':
+            args['parallel_builds'] = str(arg_value)
         # validate on_error arg value
-        elif arg in ['on_error']:
+        elif arg == 'on_error':
             if arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
                 raise RuntimeError(f"Unsupported on error argument value specified: {arg_value}")
         # unsupported argument

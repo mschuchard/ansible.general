@@ -63,6 +63,10 @@ def test_ansible_to_packer_errors():
     with pytest.raises(RuntimeError, match='Unsupported Packer arg specified: foo'):
         packer.ansible_to_packer(args={'foo': 'bar'})
 
+    # test fails on nonexistent var file
+    with pytest.raises(FileNotFoundError, match='Var file does not exist: one.pkrvars.hcl'):
+        packer.ansible_to_packer(args={'var_file': ['galaxy.yml', 'one.pkrvars.hcl']})
+
 
 def test_ansible_to_packer():
     """test various ansible_to_packer returns"""
@@ -73,12 +77,12 @@ def test_ansible_to_packer():
         'on_error': 'cleanup',
         'parallel_builds': 2,
         'var': [{'var1': 'value1'}, {'var2': 'value2'}, {'var3': 'value3'}],
-        'var_file': ['one.pkrvars.hcl', 'two.pkrvars.hcl', 'three.pkrvars.hcl']
+        'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml']
     }) == {
         'excepts': 'foo,bar,baz',
         'only': 'foo,bar,baz',
         'on_error': 'cleanup',
         'parallel_builds': '2',
         'var': ['-var', 'var1=value1', '-var', 'var2=value2', '-var', 'var3=value3'],
-        'var_file': ['-var-file=one.pkrvars.hcl', '-var-file=two.pkrvars.hcl', '-var-file=three.pkrvars.hcl']
+        'var_file': ['-var-file=galaxy.yml', '-var-file=galaxy.yml', '-var-file=galaxy.yml']
     }
