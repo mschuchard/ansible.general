@@ -24,6 +24,11 @@ options:
         required: false
         default: cwd
         type: str
+    evaluate_datasources:
+        description: Evaluate data sources during validation (>= 1.8.5)
+        required: false
+        default: false
+        type: bool
     excepts:
         description: Validate all builds other than these.
         required: false
@@ -49,6 +54,11 @@ options:
         required: false
         default: []
         type: list
+    warn_undeclared_var:
+        description: Warnings for user variable files containing undeclared variables (>= 1.8.5)
+        required: false
+        default: true
+        type: bool
 
 requirements:
     - packer >= 1.7.0
@@ -61,6 +71,13 @@ EXAMPLES = r'''
 - name: Validate packer templates and configs in /path/to/packer_dir
   mschuchard.general.packer_validate:
     config_dir: /path/to/packer_dir
+
+# validate packer files without warning on undeclared variables, and while evaluating datasources
+- name: Validate packer files without warning on undeclared variables, and while evaluating datasources
+  mschuchard.general.packer_validate:
+    config_dir: /path/to/packer_dir
+    evaluate_datasources: true
+    warn_undeclared_var: false
 
 # validate only the syntax of the null.this and null.that builds in the packer files
 - name: Validate only the null.this and null.that builds in the packer files
@@ -94,11 +111,13 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'evaluate_datasources': {'type': 'bool', 'required': False, 'default': False},
             'excepts': {'type': 'list', 'required': False, 'default': []},
             'only': {'type': 'list', 'required': False, 'default': []},
             'syntax_only': {'type': 'bool', 'required': False, 'default': False},
             'var': {'type': 'list', 'required': False, 'default': []},
-            'var_file': {'type': 'list', 'required': False, 'default': []}
+            'var_file': {'type': 'list', 'required': False, 'default': []},
+            'warn_undeclared_var': {'type': 'bool', 'required': False, 'default': True},
         },
         supports_check_mode=True
     )
@@ -113,8 +132,12 @@ def main() -> None:
 
     # check optionl params
     flags: list[str] = []
+    if module.params.get('evaluate_datasources'):
+        flags.append('evaluate_datasources')
     if module.params.get('syntax_only'):
         flags.append('syntax_only')
+    if not module.params.get('warn_undeclared_var'):
+        flags.append('no_warn_undeclared_var')
 
     args: dict = {}
     if len(excepts) > 0:

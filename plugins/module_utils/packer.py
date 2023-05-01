@@ -17,7 +17,11 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'recursive': '-recursive',
     },
     'init': {'upgrade': '-upgrade'},
-    'validate': {'syntax_only': '-syntax-only'},
+    'validate': {
+        'evaluate_datasources': '-evaluate-datasources',
+        'syntax_only': '-syntax-only',
+        'no_warn_undeclared_var': '-no-warn-undeclared-var',
+    },
 })
 
 # dictionary that maps input args to packer args

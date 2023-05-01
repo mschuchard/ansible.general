@@ -22,6 +22,25 @@ def test_packer_validate_defaults(capfd):
     assert 'ui,error,Error: Could not find any config file in' in info['stdout']
 
 
+def test_packer_validate_eval_datasource_warn_undeclared(capfd):
+    """test packer validate with evaluate datasources and do not warn undeclared vars"""
+    utils.set_module_args({
+        'evaluate_datasources': True,
+        'warn_undeclared_var': False
+    })
+    with pytest.raises(SystemExit, match='1'):
+        packer_validate.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert info['return_code'] == 1
+    assert '-evaluate-datasources' in info['cmd']
+    assert '-no-warn-undeclared-var' in info['cmd']
+    assert 'ui,error,Error: Could not find any config file in' in info['stdout']
+
+
 def test_packer_validate_syntax_except(capfd):
     """test packer validate with syntax_only and except"""
     utils.set_module_args({
