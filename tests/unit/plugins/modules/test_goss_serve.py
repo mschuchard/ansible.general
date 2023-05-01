@@ -10,7 +10,7 @@ from mschuchard.general.tests.unit.plugins.modules import utils
 
 def test_goss_serve_gossfile(capfd):
     """test goss serve with gossfile"""
-    utils.set_module_args({'gossfile': '/tmp'})
+    utils.set_module_args({'gossfile': 'galaxy.yml'})
     with pytest.raises(SystemExit, match='1'):
         goss_serve.main()
 
@@ -21,14 +21,14 @@ def test_goss_serve_gossfile(capfd):
     assert info['return_code'] == 1
     assert 'serve' in info['cmd']
     assert '-g' in info['cmd']
-    assert '/tmp' in info['cmd']
+    assert 'galaxy.yml' in info['cmd']
     assert '--vars' not in info['cmd']
-    assert 'unknown file extension:' in info['stderr']
+    assert 'found 0 tests, source: galaxy.yml' in info['stderr']
 
 
 def test_goss_serve_format_vars(capfd):
     """test goss serve with format and vars"""
-    utils.set_module_args({'format': 'json', 'vars': '/tmp'})
+    utils.set_module_args({'format': 'json', 'vars': 'galaxy.yml'})
     with pytest.raises(SystemExit, match='1'):
         goss_serve.main()
 
@@ -42,8 +42,8 @@ def test_goss_serve_format_vars(capfd):
     assert '-f' in info['cmd']
     assert 'json' in info['cmd']
     assert '--vars' in info['cmd']
-    assert '/tmp' in info['cmd']
-    assert 'failed while loading vars file "/tmp": Error: loading vars file \'/tmp\'\nread /tmp: is a directory' in info['stderr']
+    assert 'galaxy.yml' in info['cmd']
+    assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
 
 
 def test_goss_serve_endpoint_port(capfd):

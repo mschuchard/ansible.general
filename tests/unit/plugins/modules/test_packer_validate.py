@@ -66,7 +66,7 @@ def test_packer_validate_var_varfile(capfd):
     """test packer validate with var and var_file"""
     utils.set_module_args({
         'var': [{'var_name': 'var_value'}, {'var_name_other': 'var_value_other'}],
-        'var_file': ['one.pkrvars.hcl', 'two.pkrvars.hcl']
+        'var_file': ['galaxy.yml', 'galaxy.yml']
     })
     with pytest.raises(SystemExit, match='1'):
         packer_validate.main()
@@ -80,6 +80,6 @@ def test_packer_validate_var_varfile(capfd):
     assert '-var' in info['cmd']
     assert 'var_name=var_value' in info['cmd']
     assert 'var_name_other=var_value_other' in info['cmd']
-    assert '-var-file=one.pkrvars.hcl' in info['cmd']
-    assert '-var-file=two.pkrvars.hcl' in info['cmd']
+    assert '-var-file=galaxy.yml' in info['cmd']
+    assert '-var-file=galaxy.yml' in info['cmd']
     assert 'ui,error,Error: Could not find any config file in' in info['stdout']

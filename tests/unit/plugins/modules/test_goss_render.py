@@ -10,19 +10,21 @@ from mschuchard.general.tests.unit.plugins.modules import utils
 
 def test_goss_render_gossfile(capfd):
     """test goss render with gossfile"""
-    utils.set_module_args({'gossfile': '/tmp'})
-    with pytest.raises(SystemExit, match='1'):
+    utils.set_module_args({'gossfile': 'galaxy.yml'})
+    with pytest.raises(SystemExit, match='0'):
         goss_render.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
-    assert 'render' in info['cmd']
-    assert '-g' in info['cmd']
-    assert '/tmp' in info['cmd']
-    assert 'unknown file extension:' in info['stderr']
+    print(info)
+    assert info['changed']
+    assert info['stdout'] == '{}\n'
+    assert not info['stderr']
+    assert 'render' in info['command']
+    assert '-g' in info['command']
+    assert 'galaxy.yml' in info['command']
 
 
 def test_goss_render_debug(capfd):
