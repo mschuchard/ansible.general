@@ -3,6 +3,7 @@ __metaclass__ = type
 
 from typing import Final
 from pathlib import Path
+from mschuchard.general.plugins.module_utils import universal
 
 
 # dictionary that maps input args to goss flags
@@ -33,9 +34,10 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     # check universal args
     # check if vars is specified
     if 'vars' in args:
+        vars_file: str = args['vars']
         # verify vars file exists
-        if Path(args['vars']).is_file():
-            command.extend(['--vars', args['vars']])
+        if Path(vars_file).is_file() and universal.validate_json_yaml_file(Path(vars_file)):
+            command.extend(['--vars', vars_file])
             # remove vars from args to avoid doublecheck with action args
             del args['vars']
         else:
@@ -44,7 +46,8 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     if gossfile == Path.cwd():
         command.append(action)
     else:
-        if Path(gossfile).is_file():
+        # verify gossfile is a file, and a valid json or yaml file
+        if Path(gossfile).is_file() and universal.validate_json_yaml_file(Path(gossfile)):
             # the gossfile argument is universal and must be immediately specified before action
             command.extend(['-g', str(gossfile), action])
         else:

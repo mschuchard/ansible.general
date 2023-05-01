@@ -83,7 +83,7 @@ def main() -> None:
             'format': {'type': 'str', 'required': False, 'default': ''},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'port': {'type': 'int', 'required': False, 'default': 0},
-            'vars': {'type': 'str', 'required': False, 'default': Path.cwd()}
+            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()}
         },
         supports_check_mode=True
     )

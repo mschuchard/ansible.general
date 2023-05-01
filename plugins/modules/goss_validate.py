@@ -65,7 +65,7 @@ def main() -> None:
         argument_spec={
             'format': {'type': 'str', 'required': False, 'default': ''},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'vars': {'type': 'str', 'required': False, 'default': Path.cwd()}
+            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()}
         },
         supports_check_mode=True
     )

@@ -28,9 +28,13 @@ def test_goss_cmd_errors():
     with pytest.raises(FileNotFoundError, match='Vars file does not exist: /foo'):
         goss.cmd(action='render', args={'vars': '/foo'})
 
-    # test fails on nonexistent target_dir
+    # test fails on nonexistent gossfile
     with pytest.raises(FileNotFoundError, match='GoSSfile does not exist: /gossfile.yaml'):
         goss.cmd(action='render', gossfile='/gossfile.yaml')
+
+    # test fails on gossfile with invalid yaml content
+    with pytest.raises(RuntimeError, match='Specified YAML or JSON file does not contain valid YAML or JSON: .gitignore'):
+        goss.cmd(action='render', gossfile='.gitignore')
 
 
 def test_goss_cmd():
