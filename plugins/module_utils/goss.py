@@ -1,6 +1,7 @@
 """goss module utilities"""
 __metaclass__ = type
 
+import json
 from typing import Final
 from pathlib import Path
 from mschuchard.general.plugins.module_utils import universal
@@ -12,6 +13,11 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 })
 
 # dictionary that maps input args to goss args
+GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({
+    'package': '--package',
+    'vars': '--vars',
+    'vars-inline': '--vars-inline'
+})
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'serve': {
         'endpoint': '-e',
@@ -42,6 +48,21 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
             del args['vars']
         else:
             raise FileNotFoundError(f"Vars file does not exist: {args['vars']}")
+    # check if vars_inline is specified (exclusive with vars)
+    elif 'vars_inline' in args:
+        # simultaneously validate the content of the vars inline param value as a valid json string
+        try:
+            command.extend(['--vars-inline', json.loads(args['vars_inline'])])
+        except ValueError as exc:
+            print(f"The vars_inline parameter value {args['vars_inline']} is not valid JSON")
+            raise ValueError(exc) from exc
+        # remove vars_inline from args to avoid doublecheck with action args
+        del args['vars_inline']
+    # check if package is specified
+    if 'package' in args:
+        command.extend(['--package', args['package']])
+        # remove package from args to avoid doublecheck with action args
+        del args['package']
     # check if gossfile is default so we use implicit cwd within goss cli instead of module logic
     if gossfile == Path.cwd():
         command.append(action)

@@ -65,8 +65,11 @@ def main() -> None:
         argument_spec={
             'format': {'type': 'str', 'required': False, 'default': ''},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()}
+            'package': {'type': 'str', 'required': False, 'default': ''},
+            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
         },
+        mutually_exclusive=[('vars', 'vars_inline')],
         supports_check_mode=True
     )
 
@@ -74,6 +77,8 @@ def main() -> None:
     changed: bool = False
     the_format: str = module.params.get('format')
     the_vars: Path = Path(module.params.get('vars'))
+    vars_inline: dict = module.params.get('vars_inline')
+    package: str = module.params.get('package')
     gossfile: Path = Path(module.params.get('gossfile'))
     cwd: str = str(Path.cwd())
     if gossfile != Path.cwd():
@@ -83,8 +88,12 @@ def main() -> None:
     args: dict = {}
     if len(the_format) > 0:
         args.update({'format': the_format})
+    if len(package) > 0:
+        args.update({'package': package})
     if the_vars != Path.cwd():
         args.update({'vars': str(the_vars)})
+    elif len(vars_inline) > 0:
+        args.update({'vars_inline': vars_inline})
 
     # determine goss command
     command: str = goss.cmd(action='validate', args=args, gossfile=gossfile)

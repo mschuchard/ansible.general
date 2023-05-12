@@ -13,7 +13,7 @@ def validate_json_yaml_file(file: Path) -> bool:
 
     try:
         # verify its decoded json contents
-        if json.loads(content) is not None or yaml.safe_load(content) is not None:
+        if json.loads(content) is not None:
             return True
 
         return False
