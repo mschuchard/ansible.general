@@ -34,6 +34,10 @@ options:
         required: false
         default: `cwd`/goss.yaml
         type: str
+    package:
+        description: The package type to use.
+        required: false
+        type: str
     port:
         description: Address to listen on.
         required: false
@@ -43,6 +47,10 @@ options:
         description: Path to YAMl or JSON format file containing variables for template.
         required: false
         type: bool
+    vars_inline:
+        description: Variables for the template.
+        required: false
+        type: dict
 
 requirements:
     - goss >= 0.3.0
@@ -67,6 +75,14 @@ EXAMPLES = r'''
   mschuchard.general.goss_serve:
     endpoint: /check
     port: 8765
+
+# serve a health endpoint with a default location gossfile and its corresponding golang template with inline variables and rpm package
+- name: Serve a health endpoint with a default location gossfile and its corresponding golang template with inline variables and rpm package
+  mschuchard.general.goss_serve:
+    package: rpm
+    vars_inline:
+      my_service: httpd
+      my_package: apache
 '''
 
 RETURN = r'''

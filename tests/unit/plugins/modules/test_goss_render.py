@@ -42,3 +42,20 @@ def test_goss_render_debug(capfd):
     assert '-g' not in info['cmd']
     assert '--debug' in info['cmd']
     assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
+
+
+def test_goss_render_vars_inline(capfd):
+    """test goss render with inline vars"""
+    utils.set_module_args({'vars_inline': {'my_service': 'httpd', 'my_package': 'apache'}})
+    with pytest.raises(SystemExit, match='1'):
+        goss_render.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert info['return_code'] == 1
+    assert 'render' in info['cmd']
+    assert '--vars-inline' in info['cmd']
+    assert '{"my_service": "httpd", "my_package": "apache"}' in info['cmd']
+    assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']

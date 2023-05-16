@@ -43,3 +43,22 @@ def test_goss_validate_format_vars(capfd):
     assert '--vars' in info['cmd']
     assert 'galaxy.yml' in info['cmd']
     assert 'Error: file error: open ./goss.yaml: no such file or directory\n' == info['stdout']
+
+
+def test_goss_validate_package_vars_inline(capfd):
+    """test goss validate with package and inline vars"""
+    utils.set_module_args({'package': 'dpkg', 'vars_inline': {'my_service': 'httpd', 'my_package': 'apache'}})
+    with pytest.raises(SystemExit, match='1'):
+        goss_validate.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert info['return_code'] == 1
+    assert 'validate' in info['cmd']
+    assert '--package' in info['cmd']
+    assert 'dpkg' in info['cmd']
+    assert '--vars-inline' in info['cmd']
+    assert '{"my_service": "httpd", "my_package": "apache"}' in info['cmd']
+    assert 'Error: file error: open ./goss.yaml: no such file or directory\n' == info['stdout']

@@ -29,10 +29,18 @@ options:
         required: false
         default: `cwd`/goss.yaml
         type: str
+    package:
+        description: The package type to use.
+        required: false
+        type: str
     vars:
         description: Path to YAMl or JSON format file containing variables for template.
         required: false
         type: bool
+    vars_inline:
+        description: Variables for the template.
+        required: false
+        type: dict
 
 requirements:
     - goss >= 0.3.0
@@ -51,6 +59,14 @@ EXAMPLES = r'''
   mschuchard.general.goss_validate:
     format: json
     vars: /path/to/vars.yaml
+
+# validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
+- name: Validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
+  mschuchard.general.goss_validate:
+    package: rpm
+    vars_inline:
+      my_service: httpd
+      my_package: apache
 '''
 
 RETURN = r'''

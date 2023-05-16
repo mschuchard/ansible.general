@@ -29,6 +29,18 @@ options:
         required: false
         default: `cwd`/goss.yaml
         type: str
+    package:
+        description: The package type to use.
+        required: false
+        type: str
+    vars:
+        description: Path to YAMl or JSON format file containing variables for template.
+        required: false
+        type: bool
+    vars_inline:
+        description: Variables for the template.
+        required: false
+        type: dict
 
 requirements:
     - goss >= 0.3.0
@@ -42,10 +54,17 @@ EXAMPLES = r'''
   mschuchard.general.goss_render:
     gossfile: /path/to/my_gossfile.yaml
 
-# render a default location gossfile and its corresponding golang template
-- name: Render a default location gossfile and its corresponding golang template
+# render a default location gossfile and its corresponding golang template with debug enabled
+- name: Render a default location gossfile and its corresponding golang template with debug enabled
   mschuchard.general.goss_render:
     debug: true
+
+# render a default location gossfile and its corresponding golang template with inline variables
+- name: Render a default location gossfile and its corresponding golang template with inline variables
+  mschuchard.general.goss_render:
+    vars_inline:
+      my_service: httpd
+      my_package: apache
 '''
 
 RETURN = r'''
@@ -59,13 +78,19 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'debug': {'type': 'bool', 'required': False, 'default': False},
-            'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()}
+            'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'package': {'type': 'str', 'required': False, 'default': ''},
+            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
         },
         supports_check_mode=True
     )
 
     # initialize
     changed: bool = False
+    the_vars: Path = Path(module.params.get('vars'))
+    vars_inline: dict = module.params.get('vars_inline')
+    package: str = module.params.get('package')
     gossfile: Path = Path(module.params.get('gossfile'))
     cwd: str = str(Path.cwd())
     if gossfile != Path.cwd():
@@ -76,8 +101,17 @@ def main() -> None:
     if module.params.get('debug'):
         flags.append('debug')
 
+    # check args
+    args: dict = {}
+    if len(package) > 0:
+        args.update({'package': package})
+    if the_vars != Path.cwd():
+        args.update({'vars': str(the_vars)})
+    elif len(vars_inline) > 0:
+        args.update({'vars_inline': vars_inline})
+
     # determine goss command
-    command: str = goss.cmd(action='render', flags=flags, gossfile=gossfile)
+    command: str = goss.cmd(action='render', flags=flags, args=args, gossfile=gossfile)
 
     # exit early for check mode
     if module.check_mode:

@@ -17,7 +17,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({
     'package': '--package',
     'vars': '--vars',
-    'vars-inline': '--vars-inline'
+    'vars_inline': '--vars-inline'
 })
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'serve': {
@@ -89,15 +89,13 @@ def global_args_to_cmd(args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -
             raise FileNotFoundError(f"Vars file does not exist: {args['vars']}")
     # check if vars_inline is specified (exclusive with vars)
     elif 'vars_inline' in args:
-        # validate the content of the vars inline param value as a valid json string
-        vars_inline_values: str = args['vars_inline']
+        # validate the conversion of the vars inline param value to a json string and extend command
+        vars_inline_values: dict = args['vars_inline']
         try:
-            json.loads(vars_inline_values)
+            command.extend([GLOBAL_ARGS_MAP['vars_inline'], json.dumps(vars_inline_values)])
         except ValueError as exc:
-            warnings.warn(f"The vars_inline parameter value {vars_inline_values} is not valid JSON", SyntaxWarning)
+            warnings.warn(f"The vars_inline parameter values {vars_inline_values} could not be converted to a JSON format string", SyntaxWarning)
             raise ValueError(exc) from exc
-        # extend command
-        command.extend([GLOBAL_ARGS_MAP['vars-inline'], vars_inline_values])
         # remove vars_inline from args to avoid doublecheck with action args
         del args['vars_inline']
 

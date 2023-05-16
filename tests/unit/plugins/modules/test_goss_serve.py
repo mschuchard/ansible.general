@@ -63,3 +63,22 @@ def test_goss_serve_endpoint_port(capfd):
     assert '-l' in info['cmd']
     assert ':8765' in info['cmd']
     assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
+
+
+def test_goss_serve_package_vars_inline(capfd):
+    """test goss serve with package and inline vars"""
+    utils.set_module_args({'package': 'rpm', 'vars_inline': {'my_service': 'httpd', 'my_package': 'apache'}})
+    with pytest.raises(SystemExit, match='1'):
+        goss_serve.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert info['return_code'] == 1
+    assert 'serve' in info['cmd']
+    assert '--package' in info['cmd']
+    assert 'rpm' in info['cmd']
+    assert '--vars-inline' in info['cmd']
+    assert '{"my_service": "httpd", "my_package": "apache"}' in info['cmd']
+    assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
