@@ -2,6 +2,7 @@
 __metaclass__ = type
 
 import json
+import warnings
 from typing import Final
 from pathlib import Path
 from mschuchard.general.plugins.module_utils import universal
@@ -34,46 +35,9 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     if action not in {**FLAGS_MAP, **ARGS_MAP}:
         raise RuntimeError(f"Unsupported GoSS action attempted: {action}")
 
-    # initialize goss command
-    command: list[str] = ['goss']
-
-    # check universal args
-    # check if vars is specified
-    if 'vars' in args:
-        vars_file: str = args['vars']
-        # verify vars file exists
-        if Path(vars_file).is_file() and universal.validate_json_yaml_file(Path(vars_file)):
-            command.extend(['--vars', vars_file])
-            # remove vars from args to avoid doublecheck with action args
-            del args['vars']
-        else:
-            raise FileNotFoundError(f"Vars file does not exist: {args['vars']}")
-    # check if vars_inline is specified (exclusive with vars)
-    elif 'vars_inline' in args:
-        # simultaneously validate the content of the vars inline param value as a valid json string
-        try:
-            command.extend(['--vars-inline', json.loads(args['vars_inline'])])
-        except ValueError as exc:
-            print(f"The vars_inline parameter value {args['vars_inline']} is not valid JSON")
-            raise ValueError(exc) from exc
-        # remove vars_inline from args to avoid doublecheck with action args
-        del args['vars_inline']
-    # check if package is specified
-    if 'package' in args:
-        command.extend(['--package', args['package']])
-        # remove package from args to avoid doublecheck with action args
-        del args['package']
-    # check if gossfile is default so we use implicit cwd within goss cli instead of module logic
-    if gossfile == Path.cwd():
-        command.append(action)
-    else:
-        # verify gossfile is a file, and a valid json or yaml file
-        if Path(gossfile).is_file() and universal.validate_json_yaml_file(Path(gossfile)):
-            # the gossfile argument is universal and must be immediately specified before action
-            command.extend(['-g', str(gossfile), action])
-        else:
-            # error if gossfile does not exist
-            raise FileNotFoundError(f"GoSSfile does not exist: {gossfile}")
+    # initialize goss command with executable, global args, and action
+    # IMPORTANT: global_args_to_cmd mutates the args reference by removing global argument entries
+    command: list[str] = ['goss'] + global_args_to_cmd(args=args, gossfile=gossfile) + [action]
 
     # disable color if validate action
     if action == 'validate':
@@ -104,5 +68,58 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
         else:
             # unsupported arg specified
             raise RuntimeError(f"Unsupported GoSS arg specified: {arg}")
+
+    return command
+
+
+def global_args_to_cmd(args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -> list[str]:
+    """converts goss global arguments into a list of strings suitable for extending to a command"""
+    # initialize command to return
+    command: list[str] = []
+
+    # check if vars is specified
+    if 'vars' in args:
+        vars_file: str = args['vars']
+        # verify vars file exists
+        if Path(vars_file).is_file() and universal.validate_json_yaml_file(Path(vars_file)):
+            command.extend([GLOBAL_ARGS_MAP['vars'], vars_file])
+            # remove vars from args to avoid doublecheck with action args
+            del args['vars']
+        else:
+            raise FileNotFoundError(f"Vars file does not exist: {args['vars']}")
+    # check if vars_inline is specified (exclusive with vars)
+    elif 'vars_inline' in args:
+        # validate the content of the vars inline param value as a valid json string
+        vars_inline_values: str = args['vars_inline']
+        try:
+            json.loads(vars_inline_values)
+        except ValueError as exc:
+            warnings.warn(f"The vars_inline parameter value {vars_inline_values} is not valid JSON", SyntaxWarning)
+            raise ValueError(exc) from exc
+        # extend command
+        command.extend([GLOBAL_ARGS_MAP['vars-inline'], vars_inline_values])
+        # remove vars_inline from args to avoid doublecheck with action args
+        del args['vars_inline']
+
+    # check if package is specified
+    if 'package' in args:
+        # validate package argument
+        package_type: str = args['package']
+        if package_type not in ['apk', 'dpkg', 'pacman', 'rpm']:
+            raise ValueError(f"The specified parameter value for package {package_type} is not acceptable for GoSS")
+        # extend command
+        command.extend([GLOBAL_ARGS_MAP['package'], package_type])
+        # remove package from args to avoid doublecheck with action args
+        del args['package']
+
+    # check if gossfile is default so we use implicit cwd within goss cli instead of module logic
+    if gossfile != Path.cwd():
+        # verify gossfile is a file, and a valid json or yaml file
+        if Path(gossfile).is_file() and universal.validate_json_yaml_file(Path(gossfile)):
+            # the gossfile argument is universal and must be immediately specified before action
+            command.extend(['-g', str(gossfile)])
+        else:
+            # error if gossfile does not exist
+            raise FileNotFoundError(f"GoSSfile does not exist: {gossfile}")
 
     return command

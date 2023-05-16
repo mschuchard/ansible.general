@@ -2,8 +2,9 @@
 __metaclass__ = type
 
 import json
-import yaml
+import warnings
 from pathlib import Path
+import yaml
 
 
 def validate_json_yaml_file(file: Path) -> bool:
@@ -28,4 +29,5 @@ def validate_json_yaml_file(file: Path) -> bool:
 
         # raise error for file with invalid yaml/json contents
         except yaml.YAMLError as exc:
-            raise RuntimeError(f"Specified YAML or JSON file does not contain valid YAML or JSON: {file}") from exc
+            warnings.warn(f"Specified YAML or JSON file does not contain valid YAML or JSON: {file}", SyntaxWarning)
+            raise ValueError(exc) from exc

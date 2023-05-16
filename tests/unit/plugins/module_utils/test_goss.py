@@ -28,12 +28,20 @@ def test_goss_cmd_errors():
     with pytest.raises(FileNotFoundError, match='Vars file does not exist: /foo'):
         goss.cmd(action='render', args={'vars': '/foo'})
 
+    # test warns and fails on inline vars that are not valid json
+    with pytest.warns(SyntaxWarning, match='The vars_inline parameter value --- is not valid JSON'), pytest.raises(ValueError):
+        goss.cmd(action='render', args={'vars_inline': '---'})
+
     # test fails on nonexistent gossfile
     with pytest.raises(FileNotFoundError, match='GoSSfile does not exist: /gossfile.yaml'):
         goss.cmd(action='render', gossfile='/gossfile.yaml')
 
+    # test fails on invalid package parameter value
+    with pytest.raises(ValueError, match='The specified parameter value for package chocolatey is not acceptable for GoSS'):
+        goss.cmd(action='render', args={'package': 'chocolatey'})
+
     # test fails on gossfile with invalid yaml content
-    with pytest.raises(RuntimeError, match='Specified YAML or JSON file does not contain valid YAML or JSON: .gitignore'):
+    with pytest.warns(SyntaxWarning, match='Specified YAML or JSON file does not contain valid YAML or JSON: .gitignore'), pytest.raises(ValueError):
         goss.cmd(action='render', gossfile='.gitignore')
 
 
@@ -45,8 +53,11 @@ def test_goss_cmd():
     # test render with debug flag and no args
     assert goss.cmd(action='render', flags=['debug'], gossfile='galaxy.yml') == ['goss', '-g', 'galaxy.yml', 'render', '--debug']
 
-    # test validate with default gossfile, no flags, format and vars args
-    assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'galaxy.yml'}) == ['goss', '--vars', 'galaxy.yml', 'validate', '--no-color', '-f', 'rspecish']
+    # test validate with default gossfile, no flags, format arg, and vars and package args
+    assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'galaxy.yml', 'package': 'apk'}) == ['goss', '--vars', 'galaxy.yml', '--package', 'apk', 'validate', '--no-color', '-f', 'rspecish']
+
+    # test serve with no flags, no global args, and action args
+    assert goss.cmd(action='serve', args={'format': 'json'}) == ['goss', 'serve', '-f', 'json']
 
     # test serve with default gossfile, no flags, endpoint and port args
     assert goss.cmd(action='serve', args={'endpoint': 'https://example.com/goss', 'port': 8765}) == ['goss', 'serve', '-e', 'https://example.com/goss', '-l', ':8765']
