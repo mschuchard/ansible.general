@@ -21,11 +21,20 @@ GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({
 })
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'serve': {
+        'cache': '-c',
         'endpoint': '-e',
         'format': '-f',
+        'format_opts': '-o',
+        'max_concur': '--max-concurrent',
         'port': '-l',
     },
-    'validate': {'format': '-f'}
+    'validate': {
+        'format': '-f',
+        'format_opts': '-o',
+        'max_concur': '--max-concurrent',
+        'retry_timeout': '-r',
+        'sleep': '-s',
+    }
 })
 
 
@@ -63,6 +72,9 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
             # port arg requires int-->str and : prefix
             if arg == 'port':
                 arg_value = f":{arg_value}"
+            elif arg == 'format_opts' and arg_value not in ['perfdata', 'pretty', 'verbose']:
+                raise ValueError('The "formatOpts" parameter value must be one of: perfdata, pretty, or verbose.')
+
             # append the value interpolated with the arg name from the dict to the command
             command.extend([action_args_map[arg], arg_value])
         else:
@@ -93,9 +105,9 @@ def global_args_to_cmd(args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -
         vars_inline_values: dict = args['vars_inline']
         try:
             command.extend([GLOBAL_ARGS_MAP['vars_inline'], json.dumps(vars_inline_values)])
-        except ValueError as exc:
-            warnings.warn(f"The vars_inline parameter values {vars_inline_values} could not be converted to a JSON format string", SyntaxWarning)
-            raise ValueError(exc) from exc
+        except TypeError as exc:
+            warnings.warn(f"The vars_inline parameter values {vars_inline_values} could not be encoded to a JSON format string", SyntaxWarning)
+            raise TypeError(exc) from exc
         # remove vars_inline from args to avoid doublecheck with action args
         del args['vars_inline']
 
