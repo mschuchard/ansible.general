@@ -72,8 +72,10 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
             # port arg requires int-->str and : prefix
             if arg == 'port':
                 arg_value = f":{arg_value}"
+            elif arg == 'format' and arg_value not in ['documentation', 'json', 'json_oneline', 'junit', 'nagios', 'prometheus', 'rspecish', 'silent', 'structured', 'tap']:
+                raise ValueError('The "format" parameter value must be a valid accepted format for GoSS')
             elif arg == 'format_opts' and arg_value not in ['perfdata', 'pretty', 'verbose']:
-                raise ValueError('The "formatOpts" parameter value must be one of: perfdata, pretty, or verbose.')
+                raise ValueError('The "format_opts" parameter value must be one of: perfdata, pretty, or verbose.')
 
             # append the value interpolated with the arg name from the dict to the command
             command.extend([action_args_map[arg], arg_value])

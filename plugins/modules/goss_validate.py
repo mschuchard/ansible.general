@@ -80,8 +80,12 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'format': {'type': 'str', 'required': False, 'default': ''},
+            'format_opts': {'type': 'str', 'required': False, 'default': ''},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'max_concur': {'type': 'int', 'required': False, 'default': 0},
             'package': {'type': 'str', 'required': False, 'default': ''},
+            'retry_timeout': {'type': 'str', 'required': False, 'default': ''},
+            'sleep': {'type': 'str', 'required': False, 'default': ''},
             'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
         },
@@ -92,9 +96,13 @@ def main() -> None:
     # initialize
     changed: bool = False
     the_format: str = module.params.get('format')
+    format_opts: str = module.params.get('format_opts')
     the_vars: Path = Path(module.params.get('vars'))
     vars_inline: dict = module.params.get('vars_inline')
+    max_concur: int = module.params.get('max_concur')
     package: str = module.params.get('package')
+    retry_timeout: str = module.params.get('retry_timeout')
+    sleep: str = module.params.get('sleep')
     gossfile: Path = Path(module.params.get('gossfile'))
     cwd: str = str(Path.cwd())
     if gossfile != Path.cwd():
@@ -104,8 +112,16 @@ def main() -> None:
     args: dict = {}
     if len(the_format) > 0:
         args.update({'format': the_format})
+    if len(format_opts) > 0:
+        args.update({'format_opts': format_opts})
+    if max_concur != 0:
+        args.update({'max_concur': max_concur})
     if len(package) > 0:
         args.update({'package': package})
+    if len(retry_timeout) > 0:
+        args.update({'retry_timeout': retry_timeout})
+    if len(sleep) > 0:
+        args.update({'sleep': sleep})
     if the_vars != Path.cwd():
         args.update({'vars': str(the_vars)})
     elif len(vars_inline) > 0:

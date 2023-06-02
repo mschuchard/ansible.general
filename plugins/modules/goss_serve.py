@@ -95,9 +95,12 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
+            'cache': {'type': 'str', 'required': False, 'default': ''},
             'endpoint': {'type': 'str', 'required': False, 'default': ''},
             'format': {'type': 'str', 'required': False, 'default': ''},
+            'format_opts': {'type': 'str', 'required': False, 'default': ''},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'max_concur': {'type': 'int', 'required': False, 'default': 0},
             'package': {'type': 'str', 'required': False, 'default': ''},
             'port': {'type': 'int', 'required': False, 'default': 0},
             'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
@@ -109,10 +112,13 @@ def main() -> None:
 
     # initialize
     changed: bool = False
+    cache: str = module.params.get('cache')
     endpoint: str = module.params.get('endpoint')
     the_format: str = module.params.get('format')
+    format_opts: str = module.params.get('format_opts')
     the_vars: Path = Path(module.params.get('vars'))
     vars_inline: dict = module.params.get('vars_inline')
+    max_concur: int = module.params.get('max_concur')
     package: str = module.params.get('package')
     port: int = module.params.get('port')
     gossfile: Path = Path(module.params.get('gossfile'))
@@ -122,10 +128,16 @@ def main() -> None:
 
     # check args
     args: dict = {}
+    if len(cache) > 0:
+        args.update({'cache': cache})
     if len(endpoint) > 0:
         args.update({'endpoint': endpoint})
     if len(the_format) > 0:
         args.update({'format': the_format})
+    if len(format_opts) > 0:
+        args.update({'format_opts': format_opts})
+    if max_concur != 0:
+        args.update({'max_concur': max_concur})
     if len(package) > 0:
         args.update({'package': package})
     if port > 0:
