@@ -19,6 +19,11 @@ version_added: "1.0.0"
 description: Serve a GoSS health endpoint for validating systems.
 
 options:
+    cache:
+        description: Time to cache the results
+        required: false
+        default: 5s
+        type: str
     endpoint:
         description: Endpoint to expose.
         required: false
@@ -29,11 +34,20 @@ options:
         required: false
         default: rspecish
         type: str
+    format_opts:
+        description: Extra options passed to the formatter. Valid options are perfdata, pretty, or verbose.
+        required: false
+        type: str
     gossfile:
         description: The specific gossfile used for serveing the output.
         required: false
         default: `cwd`/goss.yaml
         type: str
+    max_concur:
+        description: Max number of tests to run concurrently
+        required: false
+        default: 50
+        type: int
     package:
         description: The package type to use.
         required: false
@@ -65,14 +79,16 @@ EXAMPLES = r'''
     gossfile: /path/to/my_gossfile.yaml
 
 # serve a health endpoint with a default location gossfile, a var file at /path/to/vars.yaml, and a json format output
-- name: Serve a health endpoint with a default location gossfile, a var file at /path/to/vars.yaml, and a json format output
+- name: Serve a health endpoint with a default location gossfile, a var file at /path/to/vars.yaml, and a pretty json format output
   mschuchard.general.goss_serve:
     format: json
+    format_opts: pretty
     vars: /path/to/vars.yaml
 
-# serve a health endpoint with a default location gossfile at localhost:8765/check
-- name: Serve a health endpoint with a default location gossfile at localhost:8765/check
+# serve a health endpoint with a default location gossfile at localhost:8765/check and cache the results for one minute
+- name: Serve a health endpoint with a default location gossfile at localhost:8765/check and cache the results for one minute
   mschuchard.general.goss_serve:
+    cache: 1m
     endpoint: /check
     port: 8765
 

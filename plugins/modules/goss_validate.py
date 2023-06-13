@@ -24,14 +24,33 @@ options:
         required: false
         default: rspecish
         type: str
+    format_opts:
+        description: Extra options passed to the formatter. Valid options are perfdata, pretty, or verbose.
+        required: false
+        type: str
     gossfile:
         description: The specific gossfile used for validateing the output.
         required: false
         default: `cwd`/goss.yaml
         type: str
+    max_concur:
+        description: Max number of tests to run concurrently
+        required: false
+        default: 50
+        type: int
     package:
         description: The package type to use.
         required: false
+        type: str
+    retry_timeout:
+        description: Retry on failure so long as elapsed plus sleep time is less than this.
+        required: false
+        default: 0s
+        type: str
+    sleep:
+        description: Time to sleep between retries, only active when -r is set.
+        required: false
+        default: 1s
         type: str
     vars:
         description: Path to YAMl or JSON format file containing variables for template.
@@ -55,10 +74,17 @@ EXAMPLES = r'''
     gossfile: /path/to/my_gossfile.yaml
 
 # validate a system with a default location gossfile, a var file at /path/to/vars.yaml, and a json format output
-- name: Validate a system with a default location gossfile, a var file at /path/to/vars.yaml, and a json format output
+- name: Validate a system with a default location gossfile, a var file at /path/to/vars.yaml, and a pretty json format output
   mschuchard.general.goss_validate:
     format: json
+    format_opts: pretty
     vars: /path/to/vars.yaml
+
+# validate a system with retry timeout at fifteen seconds, and a delay between retries at thirty seconds
+- name: Validate a system with retry timeout at fifteen seconds, and a delay between retries at thirty seconds
+  mschuchard.general.goss_validate:
+    retry_timeout: 15s
+    sleep: 30s
 
 # validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
 - name: Validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
