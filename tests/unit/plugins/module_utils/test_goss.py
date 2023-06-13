@@ -56,8 +56,14 @@ def test_goss_cmd():
     # test validate with default gossfile, no flags, format arg, and vars and package args
     assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'galaxy.yml', 'package': 'apk'}) == ['goss', '--vars', 'galaxy.yml', '--package', 'apk', 'validate', '--no-color', '-f', 'rspecish']
 
+    # test validate with default gossfile, no flags, sleep arg, and vars_inline and max_concur action args
+    assert goss.cmd(action='validate', args={'sleep': '5m', 'vars_inline': {'foo': 'bar'}, 'max_concur': 100}) == ['goss', '--vars-inline', '{"foo": "bar"}', 'validate', '--no-color', '-s', '5m', '--max-concurrent', 100]
+
     # test serve with no flags, no global args, and action args
     assert goss.cmd(action='serve', args={'format': 'json'}) == ['goss', 'serve', '-f', 'json']
+
+    # test serve with no flags, no global args, and cache and format_opts action args
+    assert goss.cmd(action='serve', args={'format_opts': 'perfdata', 'cache': '1h'}) == ['goss', 'serve', '-o', 'perfdata', '-c', '1h']
 
     # test serve with default gossfile, no flags, endpoint and port args
     assert goss.cmd(action='serve', args={'endpoint': 'https://example.com/goss', 'port': 8765}) == ['goss', 'serve', '-e', 'https://example.com/goss', '-l', ':8765']

@@ -81,10 +81,10 @@ EXAMPLES = r'''
     vars: /path/to/vars.yaml
 
 # validate a system with retry timeout at fifteen seconds, and a delay between retries at thirty seconds
-- name: Validate a system with retry timeout at fifteen seconds, and a delay between retries at thirty seconds
+- name: Validate a system with retry timeout at thirty seconds, and a delay between retries at fifteen seconds
   mschuchard.general.goss_validate:
-    retry_timeout: 15s
-    sleep: 30s
+    retry_timeout: 30s
+    sleep: 15s
 
 # validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
 - name: Validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package

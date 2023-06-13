@@ -27,7 +27,7 @@ def test_goss_validate_gossfile(capfd):
 
 def test_goss_validate_format_vars(capfd):
     """test goss validate with format and vars"""
-    utils.set_module_args({'format': 'json', 'vars': 'galaxy.yml'})
+    utils.set_module_args({'format': 'json', 'format_opts': 'pretty', 'vars': 'galaxy.yml'})
     with pytest.raises(SystemExit, match='1'):
         goss_validate.main()
 
@@ -40,8 +40,29 @@ def test_goss_validate_format_vars(capfd):
     assert '-g' not in info['cmd']
     assert '-f' in info['cmd']
     assert 'json' in info['cmd']
+    assert '-o' in info['cmd']
+    assert 'pretty' in info['cmd']
     assert '--vars' in info['cmd']
     assert 'galaxy.yml' in info['cmd']
+    assert 'Error: file error: open ./goss.yaml: no such file or directory\n' == info['stdout']
+
+
+def test_goss_validate_retry_sleep(capfd):
+    """test goss validate with retry_timeout and sleep"""
+    utils.set_module_args({'retry_timeout': '30s', 'sleep': '15s'})
+    with pytest.raises(SystemExit, match='1'):
+        goss_validate.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert info['return_code'] == 1
+    assert 'validate' in info['cmd']
+    assert '-r' in info['cmd']
+    assert '30s' in info['cmd']
+    assert '-s' in info['cmd']
+    assert '15s' in info['cmd']
     assert 'Error: file error: open ./goss.yaml: no such file or directory\n' == info['stdout']
 
 

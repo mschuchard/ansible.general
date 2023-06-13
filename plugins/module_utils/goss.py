@@ -38,7 +38,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 })
 
 
-def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = [], args: dict = {}, gossfile: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the goss command to execute"""
     # verify command
     if action not in {**FLAGS_MAP, **ARGS_MAP}:
@@ -54,7 +54,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
 
     # construct list of goss flags
     # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
-    action_flags_map: dict[str, str] = FLAGS_MAP.get(action, {})
+    action_flags_map: dict = FLAGS_MAP.get(action, {})
     for flag in flags:
         if flag in action_flags_map:
             # add goss flag from corresponding module flag in FLAGS
@@ -65,7 +65,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
 
     # construct list of goss args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
-    action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
+    action_args_map: dict = ARGS_MAP.get(action, {})
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
@@ -86,7 +86,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
     return command
 
 
-def global_args_to_cmd(args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -> list[str]:
+def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str]:
     """converts goss global arguments into a list of strings suitable for extending to a command"""
     # initialize command to return
     command: list[str] = []
