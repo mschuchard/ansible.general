@@ -56,7 +56,7 @@ EXAMPLES = r'''
 
 RETURN = r'''
 command:
-    description: The literal Packer command executed.
+    description: The raw Packer command executed by Ansible.
     type: str
     returned: always
     sample: 'packer init -machine-readable /home/packer'

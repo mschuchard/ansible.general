@@ -96,7 +96,10 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-TODO
+command:
+    description: The raw GoSS command executed by Ansible.
+    type: str
+    returned: always
 '''
 
 

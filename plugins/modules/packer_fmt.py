@@ -60,7 +60,10 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-TODO
+command:
+    description: The raw Packer command executed by Ansible.
+    type: str
+    returned: always
 '''
 
 
