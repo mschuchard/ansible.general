@@ -5,16 +5,14 @@ version: 1.0.0
 readme: README.md
 authors:
 - Matthew Schuchard <example@domain.com>
-description: General collection of Ansible plugins
+description: General collection of Ansible plugins for common tools associated with "DevOps"
 license_file: LICENSE
-tags: []
+tags:
+- packer
+- goss
 dependencies: {}
 repository: https://github.com/mschuchard/ansible.general
-
-# The URL to any online docs
 documentation: http://docs.example.com
-
-# The URL to the homepage of the collection/project
-homepage: http://example.com
-
+homepage: https://galaxy.ansible.com/mschuchard/general
 issues: https://github.com/mschuchard/ansible.general/issues
+build_ignore: []
