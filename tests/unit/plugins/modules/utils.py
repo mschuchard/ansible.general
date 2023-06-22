@@ -1,5 +1,6 @@
 """utils from ansible module unit test doc"""
 import json
+from pathlib import Path
 from ansible.module_utils import basic
 from ansible.module_utils.common.text.converters import to_bytes
 
@@ -29,3 +30,8 @@ def fail_json(_, **kwargs):
     """function to patch over fail_json; package return data into an exception"""
     kwargs['failed'] = True
     raise AnsibleFailJson(kwargs)
+
+
+def fixtures_dir() -> Path:
+    """function to return the fixtures directory as a path converted to str"""
+    return Path(__file__).resolve().parent / 'fixtures'
