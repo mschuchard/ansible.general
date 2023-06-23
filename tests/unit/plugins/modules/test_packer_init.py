@@ -25,29 +25,28 @@ def test_packer_init_defaults(capfd):
 
 def test_packer_init_config(capfd):
     """test packer init with config"""
-    utils.set_module_args({'config_dir': '/tmp'})
-    with pytest.raises(SystemExit, match='1'):
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir())})
+    with pytest.raises(SystemExit, match='0'):
         packer_init.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
-    assert '/tmp' in info['cmd']
-    assert 'ui,error,Error: Could not find any config file in /tmp' in info['stdout']
+    assert str(utils.fixtures_dir()) in info['command']
+    assert not info['stdout']
 
 
 def test_packer_init_upgrade(capfd):
     """test packer init with upgrade"""
-    utils.set_module_args({'upgrade': True})
-    with pytest.raises(SystemExit, match='1'):
+    utils.set_module_args({'upgrade': True, 'config_dir': str(utils.fixtures_dir())})
+    with pytest.raises(SystemExit, match='0'):
         packer_init.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
-    assert '-upgrade' in info['cmd']
-    assert 'ui,error,Error: Could not find any config file in' in info['stdout']
+    assert '-upgrade' in info['command']
+    assert str(utils.fixtures_dir()) in info['command']
+    assert not info['stdout']
