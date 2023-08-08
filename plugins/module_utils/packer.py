@@ -1,7 +1,7 @@
 """packer module utilities"""
 __metaclass__ = type
 
-from typing import Union, Final
+from typing import Final
 from pathlib import Path
 
 
@@ -91,18 +91,18 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, Union[str, list[str]]
     raise RuntimeError(f"Targeted directory or file does not exist: {target_dir}")
 
 
-def ansible_to_packer(args: dict) -> dict[str, Union[str, list[str]]]:
+def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
     """converts ansible types and syntax to packer types and formatting for arguments only"""
     # in this function args dict is mutatable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
         # list[str] to comma-delimited string
-        if arg in ['excepts', 'only']:
+        if arg in {'excepts', 'only'}:
             args[arg] = ','.join(arg_value)
         # list[dict[str, str]] to "key=value" string with args for n>1 values
         elif arg == 'var':
             # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
-            var_strings = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
+            var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
             # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
             # various language limitations force this non-ideal implementation
             args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
