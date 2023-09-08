@@ -43,7 +43,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 })
 
 
-def cmd(action: str, flags: set[str] = [], args: dict[str, Union[str, list[str]]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in FLAGS_MAP:
@@ -96,36 +96,37 @@ def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
     # in this function args dict is mutatable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
-        # list[str] to comma-delimited string
-        if arg in {'excepts', 'only'}:
-            args[arg] = ','.join(arg_value)
-        # list[dict[str, str]] to "key=value" string with args for n>1 values
-        elif arg == 'var':
-            # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
-            var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
-            # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
-            # various language limitations force this non-ideal implementation
-            args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
-        # list[str] to list[str] with "-var-file=" prefixed
-        elif arg == 'var_file':
-            # reset arg because file check does not allow generator pattern
-            args['var_file'] = []
+        match arg:
+            # list[str] to comma-delimited string
+            case 'excepts' | 'only':
+                args[arg] = ','.join(arg_value)
+            # list[dict[str, str]] to "key=value" string with args for n>1 values
+            case 'var':
+                # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
+                var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
+                # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
+                # various language limitations force this non-ideal implementation
+                args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+            # list[str] to list[str] with "-var-file=" prefixed
+            case 'var_file':
+                # reset arg because file check does not allow generator pattern
+                args['var_file'] = []
 
-            for var_file in arg_value:
-                # verify vars file exists before conversion
-                if Path(var_file).is_file():
-                    args['var_file'].append(f"-var-file={var_file}")
-                else:
-                    raise FileNotFoundError(f"Var file does not exist: {var_file}")
-        # int to str
-        elif arg == 'parallel_builds':
-            args['parallel_builds'] = str(arg_value)
-        # validate on_error arg value
-        elif arg == 'on_error':
-            if arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
-                raise RuntimeError(f"Unsupported on error argument value specified: {arg_value}")
-        # unsupported argument
-        else:
-            raise RuntimeError(f"Unsupported Packer arg specified: {arg}")
+                for var_file in arg_value:
+                    # verify vars file exists before conversion
+                    if Path(var_file).is_file():
+                        args['var_file'].append(f"-var-file={var_file}")
+                    else:
+                        raise FileNotFoundError(f"Var file does not exist: {var_file}")
+            # int to str
+            case 'parallel_builds':
+                args['parallel_builds'] = str(arg_value)
+            # validate on_error arg value
+            case 'on_error':
+                if arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
+                    raise RuntimeError(f"Unsupported on error argument value specified: {arg_value}")
+            # unsupported argument
+            case _:
+                raise RuntimeError(f"Unsupported Packer arg specified: {arg}")
 
     return args
