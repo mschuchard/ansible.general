@@ -28,3 +28,5 @@ jobs:
       run: pylint --recursive=y --rcfile=mschuchard/general/.pylintrc mschuchard/general || true
     - name: flake8
       run: flake8 --config mschuchard/general/.flake8 mschuchard/general
+    - name: ruff
+      run: ruff check .

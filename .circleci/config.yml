@@ -11,19 +11,15 @@ jobs:
     resource_class: small
     steps:
     - checkout
-    - restore_cache:
-        keys:
-        - mschuchard-ansible-general
     - run:
         name: pylint
         command: pylint --recursive=y . || true
     - run:
         name: flake8
         command: flake8 .
-    - save_cache:
-        paths:
-        - /usr/lib/python3/dist-packages
-        key: mschuchard-ansible-general
+    - run:
+        name: ruff
+        command: ruff check .
 
 workflows:
   execute_tests:
