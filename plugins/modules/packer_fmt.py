@@ -92,7 +92,7 @@ def main() -> None:
         flags.append('recursive')
 
     # determine packer command
-    command: str = packer.cmd(action='fmt', flags=flags, target_dir=config_dir)
+    command: list[str] = packer.cmd(action='fmt', flags=flags, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

@@ -156,7 +156,7 @@ def main() -> None:
     args = packer.ansible_to_packer(args)
 
     # determine packer command
-    command: str = packer.cmd(action='validate', flags=flags, args=args, target_dir=config_dir)
+    command: list[str] = packer.cmd(action='validate', flags=flags, args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

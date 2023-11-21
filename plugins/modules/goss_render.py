@@ -114,7 +114,7 @@ def main() -> None:
         args.update({'vars_inline': vars_inline})
 
     # determine goss command
-    command: str = goss.cmd(action='render', flags=flags, args=args, gossfile=gossfile)
+    command: list[str] = goss.cmd(action='render', flags=flags, args=args, gossfile=gossfile)
 
     # exit early for check mode
     if module.check_mode:
