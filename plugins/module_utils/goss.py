@@ -41,7 +41,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 def cmd(action: str, flags: set[str] = [], args: dict = {}, gossfile: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the goss command to execute"""
     # verify command
-    if action not in {**FLAGS_MAP, **ARGS_MAP}:
+    if action not in FLAGS_MAP | ARGS_MAP:
         raise RuntimeError(f"Unsupported GoSS action attempted: {action}")
 
     # initialize goss command with executable, global args, and action
