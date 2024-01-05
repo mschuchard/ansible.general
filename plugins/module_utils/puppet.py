@@ -2,6 +2,8 @@
 __metaclass__ = type
 
 from typing import Final
+from pathlib import Path
+
 
 # dictionary that maps input args to puppet flags
 FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
@@ -11,6 +13,12 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'test': '-t',
         'verbose': '-v',
     },
+    'apply': {
+        'debug': '--debug',
+        'no_op': '--noop',
+        'test': '-t',
+        'verbose': '-v',
+    }
 })
 
 # dictionary that maps input args to puppet args
@@ -22,7 +30,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 })
 
 
-def cmd(action: str, flags: set[str] = [], args: dict = {}) -> list[str]:
+def cmd(action: str, flags: set[str] = [], args: dict = {}, manifest: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the puppet command to execute"""
     # verify command
     if action not in FLAGS_MAP:
@@ -49,8 +57,19 @@ def cmd(action: str, flags: set[str] = [], args: dict = {}) -> list[str]:
             # server port arg requires int-->str
             if arg == 'server_port':
                 arg_value = f"{arg_value}"
+
+            # append the value interpolated with the arg name from the dict to the command
+            command.extend([action_args_map[arg], arg_value])
         else:
             # unsupported arg specified
             raise RuntimeError(f"Unsupported Puppet arg specified: {arg}")
+
+    # return the command with the manifest appended if the action is 'apply'
+    if action == 'apply':
+        if Path(manifest).is_file():
+            return command + [str(manifest)]
+
+        # otherwise error if it does not exist
+        raise RuntimeError(f"Puppet manifest is not a file or does not exist: {manifest}")
 
     return command

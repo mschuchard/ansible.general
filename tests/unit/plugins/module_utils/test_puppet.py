@@ -2,7 +2,6 @@
 __metaclass__ = type
 
 
-from pathlib import Path
 import pytest
 from mschuchard.general.plugins.module_utils import puppet
 
@@ -21,14 +20,22 @@ def test_puppet_cmd_errors():
     with pytest.raises(RuntimeError, match='Unsupported Puppet arg specified: foo'):
         puppet.cmd(action='agent', args={'foo': 'bar'})
 
+    # test fails on specifying args for action without corresponding args
+    with pytest.raises(RuntimeError, match='Unsupported Puppet arg specified: foo'):
+        puppet.cmd(action='apply', args={'foo': 'bar'})
+
+    # test fails on directory specified for manifest
+    with pytest.raises(RuntimeError, match='Puppet manifest is not a file or does not exist: /home'):
+        puppet.cmd(action='apply', manifest='/home')
+
 
 def test_puppet_cmd():
     """test various cmd returns"""
     # test agent with no flags and no args
     assert puppet.cmd(action='agent') == ['puppet', 'agent']
 
-    # test agent with test and noop
-    assert puppet.cmd(action='agent', flags=['test', 'no_op']) == ['puppet', 'agent', '-t', '--noop']
+    # test apply with test and noop
+    assert puppet.cmd(action='apply', flags=['test', 'no_op'], manifest='/etc/group') == ['puppet', 'apply', '-t', '--noop', '/etc/group']
 
     # test agent with certname and serverport
     assert puppet.cmd(action='agent', args={'certname': 'example.domain', 'server_port': 1234}) == ['puppet', 'agent', '--certname', 'example.domain', '--serverport', '1234']
