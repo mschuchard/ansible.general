@@ -73,3 +73,64 @@ command:
     type: str
     returned: always
 '''
+
+
+def main() -> None:
+    """primary function for puppet apply module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec={
+            'debug': {'type': 'bool', 'required': False, 'default': False},
+            'manifest': {'type': 'path', 'required': True},
+            'no_op': {'type': 'bool', 'required': False, 'default': False},
+            'test': {'type': 'bool', 'required': False, 'default': False},
+            'verbose': {'type': 'bool', 'required': False, 'default': False},
+        },
+        supports_check_mode=True
+    )
+
+    # initialize
+    changed: bool = False
+    manifest: Path = Path(module.params.get('manifest'))
+    test: bool = module.params.get('test')
+
+    # check on optional flag params
+    flags: list[str] = []
+    if module.params.get('debug'):
+        flags.append('debug')
+    if module.params.get('no_op'):
+        flags.append('no_op')
+    if test:
+        flags.append('test')
+    if module.params.get('verbose'):
+        flags.append('verbose')
+
+    # determine puppet command
+    command: list[str] = puppet.cmd(action='apply', flags=flags, manifest=manifest)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute goss
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
+
+    # check idempotence
+    if test and return_code in [2, 4, 6]:
+        changed = True
+
+    # post-process
+    if return_code == 0 or (test and return_code in [2, 4, 6]):
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
+
+
+if __name__ == '__main__':
+    main()
