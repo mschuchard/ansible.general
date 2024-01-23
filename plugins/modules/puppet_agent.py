@@ -77,3 +77,74 @@ command:
     type: str
     returned: always
 '''
+
+
+def main() -> None:
+    """primary function for puppet agent module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec={
+            'certname': {'type': 'str', 'required': False},
+            'debug': {'type': 'bool', 'required': False, 'default': False},
+            'manifest': {'type': 'path', 'required': True},
+            'no_op': {'type': 'bool', 'required': False, 'default': False},
+            'server_port': {'type': 'int', 'required': False},
+            'test': {'type': 'bool', 'required': False, 'default': False},
+            'verbose': {'type': 'bool', 'required': False, 'default': False},
+        },
+        supports_check_mode=True
+    )
+
+    # initialize
+    changed: bool = False
+    certname: str = module.params.get('certname')
+    server_port: int = module.params.get('server_port')
+    test: bool = module.params.get('test')
+
+    # check args
+    args: dict = {}
+    if len(certname) > 0:
+        args.update({'certname': certname})
+    if len(server_port) > 0:
+        args.update({'server_port': server_port})
+
+    # check on optional flag params
+    flags: list[str] = []
+    if module.params.get('debug'):
+        flags.append('debug')
+    if module.params.get('no_op'):
+        flags.append('no_op')
+    if test:
+        flags.append('test')
+    if module.params.get('verbose'):
+        flags.append('verbose')
+
+    # determine puppet command
+    command: list[str] = puppet.cmd(action='apply', flags=flags, args=args)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute puppet
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
+
+    # check idempotence
+    if test and return_code in [2, 4, 6]:
+        changed = True
+
+    # post-process
+    if return_code == 0 or changed:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
+
+
+if __name__ == '__main__':
+    main()

@@ -112,7 +112,7 @@ def main() -> None:
     if module.check_mode:
         module.exit_json(changed=False, command=command)
 
-    # execute goss
+    # execute puppet
     return_code: int
     stdout: str
     stderr: str
@@ -123,7 +123,7 @@ def main() -> None:
         changed = True
 
     # post-process
-    if return_code == 0 or (test and return_code in [2, 4, 6]):
+    if return_code == 0 or changed:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
