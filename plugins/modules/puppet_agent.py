@@ -29,8 +29,18 @@ options:
         required: false
         default: false
         type: bool
+    no_daemonize:
+        description: Do not send the process into the background.
+        required: false
+        default: false
+        type: bool
     no_op:
         description: Use 'noop' mode where Puppet runs in a no-op or dry-run mode. This is useful for seeing what changes Puppet will make without actually executing the changes.
+        required: false
+        default: false
+        type: bool
+    onetime:
+        description: Run the configuration once. Runs a single (normally daemonized) Puppet run. Useful for interactively running puppet agent when used in conjunction with the no_daemonize option.
         required: false
         default: false
         type: bool
@@ -69,6 +79,12 @@ EXAMPLES = r'''
     debug: true
     no_op: true
     verbose: true
+
+# initiate the puppet agent once (in a push model)
+- name: Initiate the puppet agent once (in a push model)
+  mschuchard.general.puppet_agent:
+    no_daemonize: true
+    onetime: true
 '''
 
 RETURN = r'''
@@ -87,7 +103,9 @@ def main() -> None:
             'certname': {'type': 'str', 'required': False},
             'debug': {'type': 'bool', 'required': False, 'default': False},
             'manifest': {'type': 'path', 'required': True},
+            'no_daemonize': {'type': 'bool', 'required': False, 'default': False},
             'no_op': {'type': 'bool', 'required': False, 'default': False},
+            'onetime': {'type': 'bool', 'required': False, 'default': False},
             'server_port': {'type': 'int', 'required': False},
             'test': {'type': 'bool', 'required': False, 'default': False},
             'verbose': {'type': 'bool', 'required': False, 'default': False},
@@ -112,8 +130,12 @@ def main() -> None:
     flags: list[str] = []
     if module.params.get('debug'):
         flags.append('debug')
+    if module.params.get('no_daemonize'):
+        flags.append('no_daemonize')
     if module.params.get('no_op'):
         flags.append('no_op')
+    if module.params.get('onetime'):
+        flags.append('onetime')
     if test:
         flags.append('test')
     if module.params.get('verbose'):
@@ -133,7 +155,7 @@ def main() -> None:
     return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
 
     # check idempotence
-    if test and return_code in [2, 4, 6]:
+    if test and return_code in {2, 4, 6}:
         changed = True
 
     # post-process

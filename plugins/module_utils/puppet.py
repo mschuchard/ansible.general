@@ -9,7 +9,9 @@ from pathlib import Path
 FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'agent': {
         'debug': '-d',
+        'no_daemonize': '--no-daemonize',
         'no_op': '--noop',
+        'onetime': '--onetime',
         'test': '-t',
         'verbose': '-v',
     },
