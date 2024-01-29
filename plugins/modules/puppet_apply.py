@@ -119,7 +119,7 @@ def main() -> None:
     return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
 
     # check idempotence
-    if test and return_code in [2, 4, 6]:
+    if test and return_code in {2, 4, 6}:
         changed = True
 
     # post-process
