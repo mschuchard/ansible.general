@@ -1,4 +1,4 @@
-"""unit test for goss render module"""
+"""unit test for puppet apply module"""
 __metaclass__ = type
 
 
@@ -41,6 +41,6 @@ def test_puppet_apply(capfd):
     assert 'hello world' in info['stdout']
     assert not info['stderr']
     assert 'apply' in info['command']
-    assert '--debug' in info['command']
+    assert '-d' in info['command']
     assert '--noop' in info['command']
     assert '-v' in info['command']

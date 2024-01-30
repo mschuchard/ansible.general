@@ -102,7 +102,6 @@ def main() -> None:
         argument_spec={
             'certname': {'type': 'str', 'required': False},
             'debug': {'type': 'bool', 'required': False, 'default': False},
-            'manifest': {'type': 'path', 'required': True},
             'no_daemonize': {'type': 'bool', 'required': False, 'default': False},
             'no_op': {'type': 'bool', 'required': False, 'default': False},
             'onetime': {'type': 'bool', 'required': False, 'default': False},
@@ -121,9 +120,9 @@ def main() -> None:
 
     # check args
     args: dict = {}
-    if len(certname) > 0:
+    if certname:
         args.update({'certname': certname})
-    if len(server_port) > 0:
+    if server_port:
         args.update({'server_port': server_port})
 
     # check on optional flag params
@@ -142,7 +141,7 @@ def main() -> None:
         flags.append('verbose')
 
     # determine puppet command
-    command: list[str] = puppet.cmd(action='apply', flags=flags, args=args)
+    command: list[str] = puppet.cmd(action='agent', flags=flags, args=args)
 
     # exit early for check mode
     if module.check_mode:

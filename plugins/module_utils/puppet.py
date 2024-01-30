@@ -16,7 +16,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'verbose': '-v',
     },
     'apply': {
-        'debug': '--debug',
+        'debug': '-d',
         'no_op': '--noop',
         'test': '-t',
         'verbose': '-v',

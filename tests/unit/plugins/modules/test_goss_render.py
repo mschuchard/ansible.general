@@ -18,7 +18,6 @@ def test_goss_render_gossfile(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    print(info)
     assert info['changed']
     assert 'size: 4096' in info['stdout']
     assert not info['stderr']
