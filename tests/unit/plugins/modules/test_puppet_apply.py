@@ -8,9 +8,9 @@ from mschuchard.general.plugins.modules import puppet_apply
 from mschuchard.general.tests.unit.plugins.modules import utils
 
 
-def test_puppet_apply(capfd):
+def test_puppet_apply_test(capfd):
     """test puppet apply with test"""
-    utils.set_module_args({'manifest': str(utils.fixtures_dir() / 'manifest.pp')})
+    utils.set_module_args({'test': True, 'manifest': str(utils.fixtures_dir() / 'manifest.pp')})
     with pytest.raises(SystemExit, match='0'):
         puppet_apply.main()
 
@@ -27,7 +27,7 @@ def test_puppet_apply(capfd):
     assert str(utils.fixtures_dir() / 'manifest.pp') in info['command']
 
 
-def test_puppet_apply(capfd):
+def test_puppet_apply_debug_noop_verbose(capfd):
     """test puppet apply with debug noop verbose"""
     utils.set_module_args({'debug': True, 'manifest': str(utils.fixtures_dir() / 'manifest.pp'), 'no_op': True, 'verbose': True})
     with pytest.raises(SystemExit, match='0'):
