@@ -61,7 +61,7 @@ def cmd(action: str, flags: set[str] = [], args: dict = {}, gossfile: Path = Pat
             command.append(action_flags_map[flag])
         else:
             # unsupported flag specified
-            raise RuntimeError(f"Unsupported GoSS flag specified: {flag}")
+            warnings.warn(f"Unsupported GoSS flag specified: {flag}", RuntimeWarning)
 
     # construct list of goss args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
@@ -81,7 +81,7 @@ def cmd(action: str, flags: set[str] = [], args: dict = {}, gossfile: Path = Pat
             command.extend([action_args_map[arg], arg_value])
         else:
             # unsupported arg specified
-            raise RuntimeError(f"Unsupported GoSS arg specified: {arg}")
+            warnings.warn(f"Unsupported GoSS arg specified: {arg}", RuntimeWarning)
 
     return command
 

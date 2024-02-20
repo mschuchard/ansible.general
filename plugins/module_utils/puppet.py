@@ -1,6 +1,7 @@
 """puppet agent module utilities"""
 __metaclass__ = type
 
+import warnings
 from typing import Final
 from pathlib import Path
 
@@ -49,7 +50,7 @@ def cmd(action: str, flags: set[str] = [], args: dict = {}, manifest: Path = Pat
             command.append(action_flags_map[flag])
         else:
             # unsupported flag specified
-            raise RuntimeError(f"Unsupported Puppet flag specified: {flag}")
+            warnings.warn(f"Unsupported Puppet flag specified: {flag}", RuntimeWarning)
 
     # construct list of puppet args
     action_args_map: dict = ARGS_MAP.get(action, {})
@@ -64,7 +65,7 @@ def cmd(action: str, flags: set[str] = [], args: dict = {}, manifest: Path = Pat
             command.extend([action_args_map[arg], arg_value])
         else:
             # unsupported arg specified
-            raise RuntimeError(f"Unsupported Puppet arg specified: {arg}")
+            warnings.warn(f"Unsupported Puppet arg specified: {arg}", RuntimeWarning)
 
     # return the command with the manifest appended if the action is 'apply'
     if action == 'apply':

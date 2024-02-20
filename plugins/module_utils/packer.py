@@ -1,6 +1,7 @@
 """packer module utilities"""
 __metaclass__ = type
 
+import warnings
 from typing import Final
 from pathlib import Path
 
@@ -62,7 +63,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
             command.append(action_flags_map[flag])
         else:
             # unsupported flag specified
-            raise RuntimeError(f"Unsupported Packer flag specified: {flag}")
+            warnings.warn(f"Unsupported Packer flag specified: {flag}", RuntimeWarning)
 
     # construct list of packer args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
@@ -81,7 +82,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
                 raise RuntimeError(f"Unexpected issue with argument name '{arg}' and argument value '{arg_value}'")
         else:
             # unsupported arg specified
-            raise RuntimeError(f"Unsupported Packer arg specified: {arg}")
+            warnings.warn(f"Unsupported Packer arg specified: {arg}", RuntimeWarning)
 
     # return the command with the target dir appended
     if Path(target_dir).exists():
