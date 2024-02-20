@@ -13,17 +13,17 @@ def test_packer_cmd_errors():
     with pytest.raises(RuntimeError, match='Unsupported Packer action attempted: foo'):
         packer.cmd(action='foo')
 
-    # test fails on unknown flag
-    with pytest.raises(RuntimeError, match='Unsupported Packer flag specified: foo'):
-        packer.cmd(action='init', flags=['foo'])
+    # test warns on unknown flag, and discards unknown flag
+    with pytest.warns(RuntimeWarning, match='Unsupported Packer flag specified: foo'):
+        assert packer.cmd(action='init', flags=['foo']) == ['packer', 'init', '-machine-readable', str(Path.cwd())]
 
-    # test fails on unknown arg
-    with pytest.raises(RuntimeError, match='Unsupported Packer arg specified: foo'):
-        packer.cmd(action='validate', args={'foo': 'bar'})
+    # test warns on unknown arg, and discards unknown arg
+    with pytest.warns(RuntimeWarning, match='Unsupported Packer arg specified: foo'):
+        assert packer.cmd(action='validate', args={'foo': 'bar'}) == ['packer', 'validate', '-machine-readable', str(Path.cwd())]
 
-    # test fails on specifying args for action without corresponding args
-    with pytest.raises(RuntimeError, match='Unsupported Packer arg specified: foo'):
-        packer.cmd(action='init', args={'foo': 'bar'})
+    # test warns on specifying args for action without corresponding args, and discards offending arg
+    with pytest.warns(RuntimeWarning, match='Unsupported Packer arg specified: foo'):
+        assert packer.cmd(action='init', args={'foo': 'bar'}) == ['packer', 'init', '-machine-readable', str(Path.cwd())]
 
     # test fails on nonexistent target_dir
     with pytest.raises(RuntimeError, match='Targeted directory or file does not exist: /1234567890'):

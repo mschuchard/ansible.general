@@ -12,16 +12,16 @@ def test_puppet_cmd_errors():
     with pytest.raises(RuntimeError, match='Unsupported Puppet action attempted: foo'):
         puppet.cmd(action='foo')
 
-    # test fails on unknown flag
-    with pytest.raises(RuntimeError, match='Unsupported Puppet flag specified: foo'):
-        puppet.cmd(action='agent', flags=['foo'])
+    # test warns on unknown flag, and discards unknown flag
+    with pytest.warns(RuntimeWarning, match='Unsupported Puppet flag specified: foo'):
+        assert puppet.cmd(action='agent', flags=['foo']) == ['puppet', 'agent']
 
-    # test fails on unknown arg
-    with pytest.raises(RuntimeError, match='Unsupported Puppet arg specified: foo'):
-        puppet.cmd(action='agent', args={'foo': 'bar'})
+    # test warns on unknown arg, and discards unknown arg
+    with pytest.warns(RuntimeWarning, match='Unsupported Puppet arg specified: foo'):
+        assert puppet.cmd(action='agent', args={'foo': 'bar'}) == ['puppet', 'agent']
 
-    # test fails on specifying args for action without corresponding args
-    with pytest.raises(RuntimeError, match='Unsupported Puppet arg specified: foo'):
+    # test warns on specifying args for action without corresponding args, and discards offending arg
+    with pytest.warns(RuntimeWarning, match='Unsupported Puppet arg specified: foo'), pytest.raises(RuntimeError, match='Puppet manifest is not a file or does not exist: /home/matt/git_repos/mschuchard/general'):
         puppet.cmd(action='apply', args={'foo': 'bar'})
 
     # test fails on directory specified for manifest

@@ -12,17 +12,17 @@ def test_goss_cmd_errors():
     with pytest.raises(RuntimeError, match='Unsupported GoSS action attempted: foo'):
         goss.cmd(action='foo')
 
-    # test fails on unknown flag
-    with pytest.raises(RuntimeError, match='Unsupported GoSS flag specified: foo'):
-        goss.cmd(action='render', flags=['foo'])
+    # test warns on unknown flag, and discards unknown flag
+    with pytest.warns(RuntimeWarning, match='Unsupported GoSS flag specified: foo'):
+        assert goss.cmd(action='render', flags=['foo']) == ['goss', 'render']
 
-    # test fails on unknown arg
-    with pytest.raises(RuntimeError, match='Unsupported GoSS arg specified: foo'):
-        goss.cmd(action='validate', args={'foo': 'bar'})
+    # test warns on unknown arg, and discards unknown arg
+    with pytest.warns(RuntimeWarning, match='Unsupported GoSS arg specified: foo'):
+        assert goss.cmd(action='validate', args={'foo': 'bar'}) == ['goss', 'validate', '--no-color']
 
-    # test fails on specifying args for action without corresponding args
-    with pytest.raises(RuntimeError, match='Unsupported GoSS arg specified: foo'):
-        goss.cmd(action='render', args={'foo': 'bar'})
+    # test warns on specifying args for action without corresponding args, and discards offending arg
+    with pytest.warns(RuntimeWarning, match='Unsupported GoSS arg specified: foo'):
+        assert goss.cmd(action='render', args={'foo': 'bar'}) == ['goss', 'render']
 
     # test fails on nonexistent vars file
     with pytest.raises(FileNotFoundError, match='Vars file does not exist: /foo'):
