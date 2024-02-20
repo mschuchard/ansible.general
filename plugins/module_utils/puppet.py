@@ -73,6 +73,6 @@ def cmd(action: str, flags: set[str] = [], args: dict = {}, manifest: Path = Pat
             return command + [str(manifest)]
 
         # otherwise error if it does not exist
-        raise RuntimeError(f"Puppet manifest is not a file or does not exist: {manifest}")
+        raise FileNotFoundError(f"Puppet manifest is not a file or does not exist: {manifest}")
 
     return command
