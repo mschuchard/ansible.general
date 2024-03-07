@@ -1,12 +1,10 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) Matthew Schuchard
+# MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for goss serve"""
 __metaclass__ = type
-
-
-from pathlib import Path
-from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import goss
-
 
 DOCUMENTATION = r'''
 ---
@@ -107,6 +105,10 @@ command:
     type: str
     returned: always
 '''
+
+from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
+from mschuchard.general.plugins.module_utils import goss
 
 
 def main() -> None:

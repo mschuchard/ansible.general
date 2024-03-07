@@ -1,1 +1,4 @@
 line-length = 1000
+
+[lint]
+ignore = ["E402"]
