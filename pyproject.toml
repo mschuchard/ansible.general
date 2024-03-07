@@ -5,6 +5,6 @@ dependencies = ["ansible"]
 requires-python = ">= 3.10"
 authors = [{name = "Matthew Schuchard"}]
 maintainers = [{name = "Matthew Schuchard"}]
-description = "Contains custom Ansible plugin modules for (currently) Packer and GoSS."
+description = "General collection of Ansible plugins for common tools associated with \"DevOps\"."
 readme = "README.md"
 license = {file = "LICENSE"}

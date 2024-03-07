@@ -8,11 +8,25 @@ authors:
 description: General collection of Ansible plugins for common tools associated with "DevOps"
 license_file: LICENSE
 tags:
-- packer
 - goss
+- packer
+- puppet
 dependencies: {}
 repository: https://github.com/mschuchard/ansible.general
-documentation: http://docs.example.com
-homepage: https://galaxy.ansible.com/mschuchard/general
+documentation: https://galaxy.ansible.com/ui/repo/published/mschuchard/general/docs
+homepage: https://github.com/mschuchard/ansible.general
 issues: https://github.com/mschuchard/ansible.general/issues
-build_ignore: []
+build_ignore:
+- .git
+- .circleci
+- .github
+- '__pycache__'
+- .ruff_cache
+- .pytest_cache
+- .flake8
+- .gitignore
+- .pylintrc
+- galaxy.yml
+- pyproject.toml
+- ruff.toml
+- '*.tar.gz'
