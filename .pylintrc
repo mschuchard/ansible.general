@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=C0103,C0301,R0912,E402
+disable=C0103,C0301,R0912
 
 # Enable some checkers that are not activated by default:
 enable = bad-inline-option, deprecated-pragma, file-ignored, use-symbolic-message-instead, useless-suppression
