@@ -39,7 +39,7 @@ options:
     gossfile:
         description: The specific gossfile used for serveing the output.
         required: false
-        default: `cwd`/goss.yaml
+        default: goss.yaml
         type: str
     max_concur:
         description: Max number of tests to run concurrently

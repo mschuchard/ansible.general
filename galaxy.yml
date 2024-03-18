@@ -30,3 +30,4 @@ build_ignore:
 - pyproject.toml
 - ruff.toml
 - '*.tar.gz'
+- CHANGELOG.md

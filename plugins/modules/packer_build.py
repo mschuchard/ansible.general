@@ -38,7 +38,7 @@ options:
         default: false
         type: bool
     on_error:
-        description: If the build fails do: clean up (default), abort, ask, or run-cleanup-provisioner
+        description: If the build fails do clean up (default), abort, ask, or run-cleanup-provisioner
         required: false
         default: ''
         type: str

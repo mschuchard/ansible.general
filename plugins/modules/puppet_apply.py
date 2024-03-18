@@ -14,8 +14,7 @@ short_description: Module to execute a Puppet application of a manifest.
 
 version_added: "1.0.0"
 
-description: The standalone Puppet execution tool used to apply
-individual manifests.
+description: The standalone Puppet execution tool used to apply individual manifests.
 
 options:
     debug:
