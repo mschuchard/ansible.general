@@ -27,7 +27,7 @@ You can also include it in a `requirements.yml` file and install it via `ansible
 
 ```yaml
 collections:
-- name: community.general
+- name: mschuchard.general
 ```
 
 The above file would need to be located in `collections/requirements.yml` for automatic parsing by an [Ansible Automation Platform Controller Project](https://docs.ansible.com/automation-controller/latest/html/userguide/projects.html#collections-support).
