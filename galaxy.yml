@@ -23,9 +23,7 @@ build_ignore:
 - '__pycache__'
 - .ruff_cache
 - .pytest_cache
-- .flake8
 - .gitignore
-- .pylintrc
 - galaxy.yml
 - pyproject.toml
 - ruff.toml

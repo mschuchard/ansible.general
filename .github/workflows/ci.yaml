@@ -21,12 +21,10 @@ jobs:
     - name: setup ansible collection namespace dir structure
       run: mkdir mschuchard
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: mschuchard/general
-    - name: pylint
-      run: pylint --recursive=y --rcfile=mschuchard/general/.pylintrc mschuchard/general || true
-    - name: flake8
-      run: flake8 --config mschuchard/general/.flake8 mschuchard/general
     - name: ruff
       run: ruff check .
+    - name: pytest info level
+      run: pytest || true

@@ -12,14 +12,11 @@ jobs:
     steps:
     - checkout
     - run:
-        name: pylint
-        command: pylint --recursive=y . || true
-    - run:
-        name: flake8
-        command: flake8 .
-    - run:
         name: ruff
         command: ruff check .
+    - run:
+        name: pytest info level
+        command: pytest || true
 
 workflows:
   execute_tests:
