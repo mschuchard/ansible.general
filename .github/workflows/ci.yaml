@@ -12,7 +12,7 @@ on:
     - '**.py'
 
 jobs:
-  go-build:
+  ansible-module-ci:
     env:
       PYTHONPATH: ${{ github.workspace }}
     runs-on: ubuntu-22.04
@@ -26,5 +26,5 @@ jobs:
         path: mschuchard/general
     - name: ruff
       run: ruff check .
-    - name: pytest info level
-      run: pytest || true
+    - name: pytest module utils
+      run: pytest mschuchard/general/tests/unit/plugins/module_utils

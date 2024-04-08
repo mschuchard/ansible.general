@@ -15,8 +15,8 @@ jobs:
         name: ruff
         command: ruff check .
     - run:
-        name: pytest info level
-        command: pytest || true
+        name: pytest module utils
+        command: pytest tests/unit/plugins/module_utils
 
 workflows:
   execute_tests:
