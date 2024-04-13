@@ -21,7 +21,7 @@ Each module plugin also requires a functioning installation on the target system
 
 You can install the collection from [Ansible Galaxy](https://galaxy.ansible.com/ui/repo/published/mschuchard/general) manually with the `ansible-galaxy` command-line tool:
 
-`ansible-galaxy collection install community.general`
+`ansible-galaxy collection install mschuchard.general`
 
 You can also include it in a `requirements.yml` file and install it via `ansible-galaxy collection install -r requirements.yml` using the format:
 
