@@ -21,7 +21,7 @@ def test_puppet_cmd_errors():
         assert puppet.cmd(action='agent', args={'foo': 'bar'}) == ['puppet', 'agent']
 
     # test warns on specifying args for action without corresponding args, and discards offending arg
-    with pytest.warns(RuntimeWarning, match='Unsupported Puppet arg specified: foo'), pytest.raises(FileNotFoundError, match='Puppet manifest is not a file or does not exist: /home/matt/git_repos/mschuchard/general'):
+    with pytest.warns(RuntimeWarning, match='Unsupported Puppet arg specified: foo'), pytest.raises(FileNotFoundError, match='Puppet manifest is not a file or does not exist: .+/mschuchard/general'):
         puppet.cmd(action='apply', args={'foo': 'bar'})
 
     # test fails on directory specified for manifest

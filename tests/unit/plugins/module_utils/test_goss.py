@@ -29,7 +29,7 @@ def test_goss_cmd_errors():
         goss.cmd(action='render', args={'vars': '/foo'})
 
     # test warns and fails on inline vars that are not valid json
-    with pytest.warns(SyntaxWarning, match="The vars_inline parameter values <module 'mschuchard.general.plugins.module_utils.goss' from '/home/matt/git_repos/mschuchard/general/plugins/module_utils/goss.py'> could not be encoded to a JSON format string"), pytest.raises(TypeError):
+    with pytest.warns(SyntaxWarning, match="The vars_inline parameter values <module 'mschuchard.general.plugins.module_utils.goss' from '.+/mschuchard/general/plugins/module_utils/goss.py'> could not be encoded to a JSON format string"), pytest.raises(TypeError):
         goss.cmd(action='render', args={'vars_inline': goss})
 
     # test fails on nonexistent gossfile
