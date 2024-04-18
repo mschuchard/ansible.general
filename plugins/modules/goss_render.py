@@ -88,6 +88,7 @@ def main() -> None:
             'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
         },
+        mutually_exclusive=[('vars', 'vars_inline')],
         supports_check_mode=True
     )
 

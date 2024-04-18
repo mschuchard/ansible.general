@@ -140,6 +140,7 @@ def main() -> None:
             'var': {'type': 'list', 'required': False, 'default': []},
             'var_file': {'type': 'list', 'required': False, 'default': []}
         },
+        mutually_exclusive=[('excepts', 'only')],
         supports_check_mode=True
     )
 

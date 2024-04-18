@@ -46,7 +46,7 @@ options:
         default: 0s
         type: str
     sleep:
-        description: Time to sleep between retries, only active when -r is set.
+        description: Time to sleep between retries. This parameter only functions when retry_timeout is also set.
         required: false
         default: 1s
         type: str
@@ -121,6 +121,7 @@ def main() -> None:
             'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
         },
         mutually_exclusive=[('vars', 'vars_inline')],
+        required_by={'sleep': 'retry_timeout'},
         supports_check_mode=True
     )
 

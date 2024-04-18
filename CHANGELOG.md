@@ -1,3 +1,6 @@
+### 1.0.2 (Next)
+- Improve parameter validation.
+
 ### 1.0.1
 - Essentially 1.0.0 re-release with updated documentation.
 

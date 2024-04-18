@@ -124,6 +124,7 @@ def main() -> None:
             'var_file': {'type': 'list', 'required': False, 'default': []},
             'warn_undeclared_var': {'type': 'bool', 'required': False, 'default': True},
         },
+        mutually_exclusive=[('excepts', 'only')],
         supports_check_mode=True
     )
 
