@@ -26,5 +26,7 @@ jobs:
         path: mschuchard/general
     - name: ruff
       run: ruff check .
+      working-directory: ./mschuchard/general
     - name: pytest module utils
-      run: pytest mschuchard/general/tests/unit/plugins/module_utils
+      run: pytest tests/unit/plugins/module_utils
+      working-directory: ./mschuchard/general
