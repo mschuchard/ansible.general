@@ -1,4 +1,4 @@
-### 1.0.2 (Next)
+### 1.0.2
 - Improve parameter validation.
 
 ### 1.0.1
