@@ -71,6 +71,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
+            # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str, then append the value interpolated with the arg name from the dict to the command
             if isinstance(arg_value, str) and len(action_args_map[arg]) > 0:
                 command.append(f"{action_args_map[arg]}{arg_value}")
@@ -94,7 +95,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
 
 def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
     """converts ansible types and syntax to packer types and formatting for arguments only"""
-    # in this function args dict is mutatable pseudo-reference and also returned
+    # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
         match arg:
