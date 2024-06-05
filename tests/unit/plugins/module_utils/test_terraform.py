@@ -26,7 +26,7 @@ def test_terraform_cmd_errors():
     # TODO
 
     # test fails on nonexistent target_dir
-    with pytest.raises(RuntimeError, match='Targeted directory or file does not exist: /1234567890'):
+    with pytest.raises(RuntimeError, match='Targeted directory does not exist: /1234567890'):
         terraform.cmd(action='init', target_dir='/1234567890')
 
     # test fails on unsupported arg value type
@@ -51,3 +51,22 @@ def test_terraform_cmd():
 
     # test init with force_copy and migrate_state flags, and plugin_dir args
     assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': '/tmp'}, target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-chdir=/home']
+
+
+def test_ansible_to_terraform_errors():
+    """test various ansible_to_terraform errors"""
+    # test fails on nonexistent backend_config file argument value
+    with pytest.raises(FileNotFoundError, match='Backend config file does not exist: /'):
+        terraform.ansible_to_terraform(args={'backend_config': '/1234567890'})
+
+    # TODO after more errors
+
+
+def test_ansible_to_terraform():
+    """test various ansible_to_terraform returns"""
+    # test all possible args with multiple values
+    assert terraform.ansible_to_terraform(args={
+        'backend_config': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
+    }) == {
+        'backend_config': ['-backend-config=galaxy.yml', '-backend-config=galaxy.yml', '-backend-config=galaxy.yml']
+    }

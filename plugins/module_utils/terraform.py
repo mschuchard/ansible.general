@@ -10,7 +10,7 @@ from pathlib import Path
 # dictionary that maps input args to terraform flags
 FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'init': {
-        'force_copy': '-migrate-state',
+        'force_copy': '-force-copy',
         'migrate_state': '-migrate-state',
         'upgrade': '-upgrade',
     },
@@ -20,7 +20,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'init': {
         'backend': '-backend=',
-        'backend_config': '', # can be list of str like var_file
+        'backend_config': '',
         'plugin_dir': '-plugin-dir=',
     },
 })
@@ -30,7 +30,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     """constructs a list representing the terraform command to execute"""
     # verify command
     if action not in FLAGS_MAP:
-        raise RuntimeError(f"Unsupported Packer action attempted: {action}")
+        raise RuntimeError(f"Unsupported Terraform action attempted: {action}")
 
     # initialize terraform command
     command: list[str] = ['terraform', action, '-no-color']
@@ -68,12 +68,12 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
             warnings.warn(f"Unsupported Terraform arg specified: {arg}", RuntimeWarning)
 
     # return the command with an additional arg to change into the target dir
-    if Path(target_dir).exists():
+    if Path(target_dir).is_dir():
         command.append(f"-chdir={target_dir}")
         return command
 
-    # otherwise error if it does not exist (possible to target file or dir)
-    raise RuntimeError(f"Targeted directory or file does not exist: {target_dir}")
+    # otherwise error if it is not an existing directory
+    raise RuntimeError(f"Targeted directory does not exist: {target_dir}")
 
 
 def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
@@ -88,10 +88,11 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                 args['backend_config'] = []
 
                 for backend_config in arg_value:
-                    # verify backend_config is kv pair, or file exists, before conversion
+                    # verify backend_config is either kv pair or existing file before conversion
                     if re.search(r'\w+=\w+', backend_config) or Path(backend_config).is_file():
                         args['backend_config'].append(f"-backend-config={backend_config}")
                     else:
+                        # TODO f string bug is dropping all but first char
                         raise FileNotFoundError(f"Backend config file does not exist: {backend_config}")
 
     return args
