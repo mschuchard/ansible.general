@@ -34,8 +34,8 @@ def test_terraform_cmd_errors():
         terraform.cmd(action='init', args={'backend_config': 1})
 
     # test fails on arg expecting value of list type and str type is provided
-    with pytest.raises(RuntimeError, match='Unexpected issue with argument name \'backend_config\' and argument value \'foo\''):
-        terraform.cmd(action='init', args={'backend_config': 'foo'})
+    with pytest.raises(RuntimeError, match='Unexpected issue with argument name \'plugin_dir\' and argument value \'foo\''):
+        terraform.cmd(action='init', args={'plugin_dir': 'foo'})
 
 
 def test_terraform_cmd():
@@ -47,10 +47,10 @@ def test_terraform_cmd():
     assert terraform.cmd(action='init', flags=['upgrade'], target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-upgrade', '-chdir=/home']
 
     # test init with default target_dir, no flags, backend and backend_config args
-    assert terraform.cmd(action='init', args={'backend': 's3', 'backend_config': ['-backend-config=foo', '-backend-config=bar']}) == ['terraform', 'init', '-no-color', '-input=false', '-backend=s3', '-backend-config=foo', '-backend-config=bar', f"-chdir={str(Path.cwd())}"]
+    assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', '-backend-config=bar']}) == ['terraform', 'init', '-no-color', '-input=false', '-backend=false', '-backend-config=foo', '-backend-config=bar', f"-chdir={str(Path.cwd())}"]
 
     # test init with force_copy and migrate_state flags, and plugin_dir args
-    assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': '/tmp'}, target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-chdir=/home']
+    assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home', '-chdir=/home']
 
 
 def test_ansible_to_terraform_errors():
@@ -58,6 +58,10 @@ def test_ansible_to_terraform_errors():
     # test fails on nonexistent backend_config file argument value
     with pytest.raises(FileNotFoundError, match='Backend config file does not exist: /'):
         terraform.ansible_to_terraform(args={'backend_config': '/1234567890'})
+
+    # test fails on nonexistent backend_config file argument value
+    with pytest.raises(FileNotFoundError, match='Plugin directory does not exist: 1'):
+        terraform.ansible_to_terraform(args={'plugin_dir': '/1234567890'})
 
     # TODO after more errors
 
@@ -67,6 +71,8 @@ def test_ansible_to_terraform():
     # test all possible args with multiple values
     assert terraform.ansible_to_terraform(args={
         'backend_config': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
+        'plugin_dir': ['/tmp', '/home']
     }) == {
-        'backend_config': ['-backend-config=galaxy.yml', '-backend-config=galaxy.yml', '-backend-config=galaxy.yml']
+        'backend_config': ['-backend-config=galaxy.yml', '-backend-config=galaxy.yml', '-backend-config=galaxy.yml'],
+        'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']
     }

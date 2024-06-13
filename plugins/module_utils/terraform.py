@@ -19,9 +19,9 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 # dictionary that maps input args to terraform args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'init': {
-        'backend': '-backend=',
+        'backend': '-backend=', # tf cli treats as arg despite only accepting bool inputs
         'backend_config': '',
-        'plugin_dir': '-plugin-dir=',
+        'plugin_dir': '',
     },
 })
 
@@ -94,5 +94,17 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                     else:
                         # TODO f string bug is dropping all but first char
                         raise FileNotFoundError(f"Backend config file does not exist: {backend_config}")
+            # list[str] to list[str] with "-plugin-dir=" prefixed
+            case 'plugin_dir':
+                # reset arg because file check does not allow generator pattern
+                args['plugin_dir'] = []
+
+                for plugin_dir in arg_value:
+                    # verify plugin_dir is existing dir before conversion
+                    if Path(plugin_dir).is_dir():
+                        args['plugin_dir'].append(f"-plugin-dir={plugin_dir}")
+                    else:
+                        # TODO f string bug is dropping all but second char
+                        raise FileNotFoundError(f"Plugin directory does not exist: {plugin_dir}")
 
     return args
