@@ -1,7 +1,6 @@
 """terraform module utilities"""
 __metaclass__ = type
 
-import re
 import warnings
 from typing import Final
 from pathlib import Path
@@ -88,12 +87,24 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                 args['backend_config'] = []
 
                 for backend_config in arg_value:
-                    # verify backend_config is either kv pair or existing file before conversion
-                    if re.search(r'\w+=\w+', backend_config) or Path(backend_config).is_file():
-                        args['backend_config'].append(f"-backend-config={backend_config}")
+                    # append kv pair from dict
+                    if isinstance(backend_config, dict):
+                        # transform dict into str
+                        args['backend_config'].append(f"-backend-config='{list(backend_config.keys())[0]}={list(backend_config.values())[0]}'")
+                    # otherwise is a hcl file path
+                    elif isinstance(backend_config, str):
+                        # append path to hcl file
+                        if Path(backend_config).is_file():
+                            args['backend_config'].append(f"-backend-config={backend_config}")
+                        # file not found at input path
+                        else:
+                            # TODO f string bug is dropping all but first char
+                            raise FileNotFoundError(f"Backend config file does not exist: {backend_config}")
+                    # otherwise this
                     else:
-                        # TODO f string bug is dropping all but first char
-                        raise FileNotFoundError(f"Backend config file does not exist: {backend_config}")
+                        # invalid type in element
+                        warnings.warn(f"backend_config element value '{backend_config}' is not a valid type; must be string for file path, or dict for key-value pair", RuntimeWarning)
+
             # list[str] to list[str] with "-plugin-dir=" prefixed
             case 'plugin_dir':
                 # reset arg because file check does not allow generator pattern
