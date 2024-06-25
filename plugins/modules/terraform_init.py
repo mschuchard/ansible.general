@@ -100,7 +100,73 @@ from mschuchard.general.plugins.module_utils import terraform
 
 def main() -> None:
     """primary function for terraform init module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec={
+            'backend': {'type': 'bool', 'required': False, 'default': True},
+            'backend_config': {'type': 'list', 'required': False, 'default': []},
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'force_copy': {'type': 'bool', 'required': False, 'default': False},
+            'migrate_state': {'type': 'bool', 'required': False, 'default': False},
+            'plugin_dir': {'type': 'list', 'required': False, 'default': []},
+            'upgrade': {'type': 'bool', 'required': False, 'default': False}
+        },
+        supports_check_mode=True
+    )
 
+    # initialize
+    changed: bool = False
+    backend_config: list[str] = module.params.get('backend_config')
+    config_dir: Path = Path(module.params.get('config_dir'))
+    plugin_dir: list[str] = module.params.get('plugin_dir')
+
+    # check on optionl params
+    flags: list[str] = []
+    if module.params.get('force_copy'):
+        flags.append('force_copy')
+    if module.params.get('migrate_state'):
+        flags.append('migrate_state')
+    if module.params.get('upgrade'):
+        flags.append('upgrade')
+
+    args: dict = {}
+    # reminder: the flag that must be argued instead
+    # ruff complains so default should protect against falsey with None
+    if not module.params.get('backend'):
+        args.update({'backend': False})
+    if len(backend_config) > 0:
+        args.update({'backend_config': backend_config})
+    if len('plugin_dir') > 0:
+        args.update({'plugin_dir': plugin_dir})
+
+    # convert ansible params to terraform args
+    args = terraform.ansible_to_terraform(args)
+
+    # determine terraform command
+    command: list[str] = terraform.cmd(action='init', flags=flags, args=args, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute terraform
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
+
+    # check idempotence
+    if 'successfully initialized' in stdout:
+        changed = True
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
 
 
 if __name__ == '__main__':
