@@ -71,8 +71,13 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 
 def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the terraform command to execute"""
+
+    # alias destroy to apply with destroy flag
+    if action == 'destroy':
+        action = 'apply'
+        flags.append('destroy')
     # verify command
-    if action not in FLAGS_MAP:
+    if action not in ARGS_MAP:
         raise RuntimeError(f"Unsupported Terraform action attempted: {action}")
 
     # initialize terraform command
@@ -124,6 +129,7 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
+        # TODO: target, resources, replace, filter <-- generic lists
         match arg:
             # list[str] to list[str] with "-backend-config=" prefixed
             case 'backend_config':
@@ -142,7 +148,6 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                             args['backend_config'].append(f"-backend-config={backend_config}")
                         # file not found at input path
                         else:
-                            # TODO f string bug is dropping all but first char
                             raise FileNotFoundError(f"Backend config file does not exist: {backend_config}")
                     # otherwise this
                     else:
@@ -159,7 +164,24 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                     if Path(plugin_dir).is_dir():
                         args['plugin_dir'].append(f"-plugin-dir={plugin_dir}")
                     else:
-                        # TODO f string bug is dropping all but second char
                         raise FileNotFoundError(f"Plugin directory does not exist: {plugin_dir}")
+            # list[dict[str, str]] to "key=value" string with args for n>1 values
+            case 'var':
+                # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
+                var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
+                # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
+                # various language limitations force this non-ideal implementation
+                args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+            # list[str] to list[str] with "-var-file=" prefixed
+            case 'var_file':
+                # reset arg because file check does not allow generator pattern
+                args['var_file'] = []
+
+                for var_file in arg_value:
+                    # verify vars file exists before conversion
+                    if Path(var_file).is_file():
+                        args['var_file'].append(f"-var-file={var_file}")
+                    else:
+                        raise FileNotFoundError(f"Var file does not exist: {var_file}")
 
     return args
