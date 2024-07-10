@@ -8,19 +8,63 @@ from pathlib import Path
 
 # dictionary that maps input args to terraform flags
 FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
+    'apply': {
+        'destroy': '-destroy',
+    },
+    'fmt': {
+        'check': '-check',
+        'diff': '-diff',
+        'recursive': '-recursive',
+        'write': '-write',
+    },
     'init': {
         'force_copy': '-force-copy',
         'migrate_state': '-migrate-state',
         'upgrade': '-upgrade',
     },
+    'plan': {
+        'destroy': '-destroy',
+        'refresh_only': '-refresh-only'
+    },
+    'test': {
+        'json': '-json',
+    },
+    'validate': {
+        'json': '-json',
+    },
 })
 
 # dictionary that maps input args to terraform args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
+    'apply': {
+        'target': '',
+        'var': '',
+        'var_file': '',
+    },
     'init': {
         'backend': '-backend=', # tf cli treats as arg despite only accepting bool inputs
         'backend_config': '',
         'plugin_dir': '',
+    },
+    'imports': {
+        'resources': '',
+        'var': '',
+        'var_file': '',
+    },
+    'plan': {
+        'generate_config': '-generate-config-out=',
+        'out': '-out=',
+        'replace': '',
+        'target': '',
+        'var': '',
+        'var_file': '',
+    },
+    'test': {
+        'cloud_run': '-cloud-run=',
+        'filter': '',
+        'test_dir': '-test-directory=',
+        'var': '',
+        'var_file': '',
     },
 })
 
