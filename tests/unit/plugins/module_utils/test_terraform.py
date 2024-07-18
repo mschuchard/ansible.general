@@ -73,8 +73,14 @@ def test_ansible_to_terraform():
     # test all possible args with multiple values
     assert terraform.ansible_to_terraform(args={
         'backend_config': ['galaxy.yml', {'foo':'bar'}],
-        'plugin_dir': ['/tmp', '/home']
+        'filter': ['machine.tf', 'network.tf'],
+        'plugin_dir': ['/tmp', '/home'],
+        'replace': ['random.foo', 'local.bar'],
+        'target': ['random.foo', 'local.bar'],
     }) == {
         'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"],
-        'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']
+        'filter': ['-filter=machine.tf', '-filter=network.tf'],
+        'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home'],
+        'replace': ['-replace=random.foo', '-replace=local.bar'],
+        'target': ['-target=random.foo', '-target=local.bar'],
     }

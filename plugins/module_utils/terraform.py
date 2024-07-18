@@ -129,7 +129,6 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
-        # TODO: target, resources, replace, filter <-- generic lists
         match arg:
             # list[str] to list[str] with "-backend-config=" prefixed
             case 'backend_config':
@@ -165,6 +164,11 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                         args['plugin_dir'].append(f"-plugin-dir={plugin_dir}")
                     else:
                         raise FileNotFoundError(f"Plugin directory does not exist: {plugin_dir}")
+            # list[str] to list[str] with "-<arg>=" prefixed (relies on isomorphism between module and terraform args)
+            case 'filter' | 'replace' | 'target':
+                # generate list of argument strings
+                args[arg] = [f"-{arg}='{value}'" for value in arg_value]
+                print(args[arg])
             # list[dict[str, str]] to "key=value" string with args for n>1 values
             case 'var':
                 # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
