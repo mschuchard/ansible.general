@@ -167,8 +167,12 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
             # list[str] to list[str] with "-<arg>=" prefixed (relies on isomorphism between module and terraform args)
             case 'filter' | 'replace' | 'target':
                 # generate list of argument strings
-                args[arg] = [f"-{arg}='{value}'" for value in arg_value]
+                args[arg] = [f"-{arg}={value}" for value in arg_value]
                 print(args[arg])
+            # dict[str, str] to space delimited list[str]
+            case 'resources':
+                # generate list of address and id
+                args[arg] = [f"'{address}' {id}" for address, id in arg_value.items()]
             # list[dict[str, str]] to "key=value" string with args for n>1 values
             case 'var':
                 # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
