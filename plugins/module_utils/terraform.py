@@ -81,7 +81,19 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
         raise RuntimeError(f"Unsupported Terraform action attempted: {action}")
 
     # initialize terraform command
-    command: list[str] = ['terraform', action, '-no-color']
+    command: list[str] = ['terraform']
+
+    # validate the target config dir
+    if not Path(target_dir).is_dir():
+        # otherwise error if it is not an existing directory
+        raise RuntimeError(f"Targeted directory does not exist: {target_dir}")
+
+    # change directory if target_dir is not cwd (must be arg to base command)
+    if target_dir != Path.cwd():
+        command.append(f"-chdir={target_dir}")
+
+    # further initialize terraform command
+    command += [action, '-no-color']
     if action in ['init']:
         command.append('-input=false')
 
@@ -115,13 +127,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
             # unsupported arg specified
             warnings.warn(f"Unsupported Terraform arg specified: {arg}", RuntimeWarning)
 
-    # return the command with an additional arg to change into the target dir
-    if Path(target_dir).is_dir():
-        command.append(f"-chdir={target_dir}")
         return command
-
-    # otherwise error if it is not an existing directory
-    raise RuntimeError(f"Targeted directory does not exist: {target_dir}")
 
 
 def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
