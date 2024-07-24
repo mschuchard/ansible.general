@@ -1,14 +1,14 @@
 packer {
   required_plugins {
     docker = {
-      version = "~> 1.0.8"
+      version = "~> 1.0"
       source  = "github.com/hashicorp/docker"
     }
   }
 }
 
 source "docker" "example" {
-  image = "centos:7"
+  image = "hashicorp/packer"
 }
 
 build {
