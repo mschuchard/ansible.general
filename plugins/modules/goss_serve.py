@@ -56,7 +56,7 @@ options:
         default: 8080
         type: int
     vars:
-        description: Path to YAMl or JSON format file containing variables for template.
+        description: Path to YAML or JSON format file containing variables for template.
         required: false
         type: bool
     vars_inline:

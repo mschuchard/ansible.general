@@ -7,7 +7,7 @@ import pytest
 from mschuchard.general.plugins.module_utils import terraform
 
 
-# TODO more than init action
+# TODO more than init action; fix chdir location in elements
 def test_terraform_cmd_errors():
     """test various cmd errors"""
     # test fails on unsupported action
@@ -63,7 +63,7 @@ def test_ansible_to_terraform_errors():
     with pytest.warns(RuntimeWarning, match='backend_config element value \'7\' is not a valid type; must be string for file path, or dict for key-value pair'):
         assert terraform.ansible_to_terraform(args={'backend_config': [7, 'galaxy.yml', {'foo':'bar'}]}) == {'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"]}
 
-    # test fails on nonexistent backend_config file argument value
+    # test fails on nonexistent plugin_dir directory argument value
     with pytest.raises(FileNotFoundError, match='Plugin directory does not exist: /1234567890'):
         terraform.ansible_to_terraform(args={'plugin_dir': ['/1234567890']})
 

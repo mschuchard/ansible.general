@@ -51,7 +51,7 @@ options:
         default: 1s
         type: str
     vars:
-        description: Path to YAMl or JSON format file containing variables for template.
+        description: Path to YAML or JSON format file containing variables for template.
         required: false
         type: bool
     vars_inline:
