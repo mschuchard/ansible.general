@@ -2,12 +2,10 @@
 __metaclass__ = type
 
 
-from pathlib import Path
 import pytest
 from mschuchard.general.plugins.module_utils import terraform
 
 
-# TODO more than init action; fix chdir location in elements
 def test_terraform_cmd_errors():
     """test various cmd errors"""
     # test fails on unsupported action
@@ -16,11 +14,11 @@ def test_terraform_cmd_errors():
 
     # test warns on unknown flag, and discards unknown flag
     with pytest.warns(RuntimeWarning, match='Unsupported Terraform flag specified: foo'):
-        assert terraform.cmd(action='init', flags=['foo']) == ['terraform', 'init', '-no-color', '-input=false', f"-chdir={str(Path.cwd())}"]
+        assert terraform.cmd(action='init', flags=['foo']) == ['terraform', 'init', '-no-color', '-input=false']
 
     # test warns on unknown arg, and discards unknown arg
     with pytest.warns(RuntimeWarning, match='Unsupported Terraform arg specified: foo'):
-        assert terraform.cmd(action='init', args={'foo': 'bar'}) == ['terraform', 'init', '-no-color', '-input=false', f"-chdir={str(Path.cwd())}"]
+        assert terraform.cmd(action='init', args={'foo': 'bar'}) == ['terraform', 'init', '-no-color', '-input=false']
 
     # test warns on specifying args for action without corresponding args, and discards offending arg
     # TODO
@@ -40,17 +38,20 @@ def test_terraform_cmd_errors():
 
 def test_terraform_cmd():
     """test various cmd returns"""
+    # test destroy converts to apply with destroy flag
+    assert terraform.cmd(action='destroy') == ['terraform', 'apply', '-no-color', '-input=false', '-destroy']
+
     # test init with no flags and no args
-    assert terraform.cmd(action='init', target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-chdir=/home']
+    assert terraform.cmd(action='init', target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false']
 
     # test init with check flag and no args
-    assert terraform.cmd(action='init', flags=['upgrade'], target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-upgrade', '-chdir=/home']
+    assert terraform.cmd(action='init', flags=['upgrade'], target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-upgrade']
 
     # test init with default target_dir, no flags, backend and backend_config args
-    assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', "-backend-config='bar=baz'"]}) == ['terraform', 'init', '-no-color', '-input=false', '-backend=false', '-backend-config=foo', "-backend-config='bar=baz'", f"-chdir={str(Path.cwd())}"]
+    assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', "-backend-config='bar=baz'"]}) == ['terraform', 'init', '-no-color', '-input=false', '-backend=false', '-backend-config=foo', "-backend-config='bar=baz'"]
 
     # test init with force_copy and migrate_state flags, and plugin_dir args
-    assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home') == ['terraform', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home', '-chdir=/home']
+    assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home']
 
 
 def test_ansible_to_terraform_errors():
