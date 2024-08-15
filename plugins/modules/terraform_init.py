@@ -31,7 +31,7 @@ options:
         description: Location of the directory containing the Terraform root module config files.
         required: false
         default: cwd
-        type: str
+        type: path
     force_copy:
         description: Suppress prompts about copying state data when initializating a new state backend. This is equivalent to providing a "yes" to all confirmation prompts.
         required: false
@@ -90,7 +90,7 @@ command:
     description: The raw Terraform command executed by Ansible.
     type: str
     returned: always
-    sample: 'terraform init -machine-readable /home/terraform'
+    sample: 'terraform init /home/terraform'
 '''
 
 from pathlib import Path

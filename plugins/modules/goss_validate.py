@@ -30,7 +30,7 @@ options:
         description: The specific gossfile used for validating the output.
         required: false
         default: goss.yaml
-        type: str
+        type: path
     max_concur:
         description: Max number of tests to run concurrently
         required: false

@@ -26,7 +26,7 @@ options:
         description: The specific gossfile used for rendering the output.
         required: false
         default: goss.yaml
-        type: str
+        type: path
     package:
         description: The package type to use.
         required: false
