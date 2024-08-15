@@ -94,7 +94,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
 
     # further initialize terraform command
     command += [action, '-no-color']
-    if action in ['init']:
+    if action in ['apply', 'init', 'plan']:
         command.append('-input=false')
 
     # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
@@ -127,7 +127,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
             # unsupported arg specified
             warnings.warn(f"Unsupported Terraform arg specified: {arg}", RuntimeWarning)
 
-        return command
+    return command
 
 
 def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
