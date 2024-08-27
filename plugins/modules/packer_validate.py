@@ -136,7 +136,7 @@ def main() -> None:
     var: list[dict] = module.params.get('var')
     var_file: list[str] = module.params.get('var_file')
 
-    # check optionl params
+    # check flags
     flags: list[str] = []
     if module.params.get('evaluate_datasources'):
         flags.append('evaluate_datasources')
@@ -145,6 +145,7 @@ def main() -> None:
     if not module.params.get('warn_undeclared_var'):
         flags.append('no_warn_undeclared_var')
 
+    # check args
     args: dict = {}
     if len(excepts) > 0:
         args.update({'excepts': excepts})

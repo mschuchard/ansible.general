@@ -154,7 +154,7 @@ def main() -> None:
     var: list[dict] = module.params.get('var')
     var_file: list[str] = module.params.get('var_file')
 
-    # check optionl params
+    # check optional params
     flags: list[str] = []
     if module.params.get('debug'):
         flags.append('debug')

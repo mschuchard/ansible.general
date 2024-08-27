@@ -116,11 +116,11 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    backend_config: list[str] = module.params.get('backend_config')
+    backend_config: list[(str, dict[str, str])] = module.params.get('backend_config')
     config_dir: Path = Path(module.params.get('config_dir'))
     plugin_dir: list[str] = module.params.get('plugin_dir')
 
-    # check on optionl params
+    # check flags
     flags: list[str] = []
     if module.params.get('force_copy'):
         flags.append('force_copy')

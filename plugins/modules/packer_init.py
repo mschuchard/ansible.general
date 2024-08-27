@@ -80,7 +80,7 @@ def main() -> None:
     changed: bool = False
     config_dir: Path = Path(module.params.get('config_dir'))
 
-    # check on optionl upgrade param
+    # check on optional upgrade param
     flags: list[str] = []
     if module.params.get('upgrade'):
         flags.append('upgrade')

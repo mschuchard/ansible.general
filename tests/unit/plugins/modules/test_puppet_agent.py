@@ -37,7 +37,7 @@ def test_puppet_agent_debug_noop_verbose(capfd):
     info = json.loads(stdout)
     assert not info['changed']
     # sometimes stderr is empty on first execution for some reason
-    if info['stderr'].len() > 0:
+    if len(info['stderr']) > 0:
         assert 'PID' in info['stderr']
     assert 'agent' in info['command']
     assert '-d' in info['command']

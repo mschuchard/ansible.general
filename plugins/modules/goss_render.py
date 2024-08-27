@@ -102,7 +102,7 @@ def main() -> None:
     if gossfile != Path.cwd():
         cwd = str(gossfile.parent)
 
-    # check on optionl upgrade param
+    # check on optional debug param
     flags: list[str] = []
     if module.params.get('debug'):
         flags.append('debug')

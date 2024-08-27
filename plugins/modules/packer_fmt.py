@@ -86,7 +86,7 @@ def main() -> None:
     check: bool = module.params.get('check')
     config_dir: Path = Path(module.params.get('config_dir'))
 
-    # check optionl params
+    # check flags
     flags: list[str] = []
     if check:
         flags.append('check')
