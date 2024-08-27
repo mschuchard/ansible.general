@@ -29,12 +29,10 @@ options:
     filter:
         description: Terraform will only execute the test files specified by this parameter.
         required: false
-        default: []
         type: list
     json:
         description: Machine readable output will be output to stdout in JSON format.
         required: false
-        default: false
         type: bool
     test_dir:
         description: Set the Terraform test directory.
@@ -44,12 +42,10 @@ options:
     var:
         description: Set values for one or more of the input variables in the root module of the configuration.
         required: false
-        default: []
         type: list
     var_file:
         description: Load variable values from the given HCL2 files in addition to the default files terraform.tfvars and *.auto.tfvars.
         required: false
-        default: []
         type: list
 
 
@@ -85,3 +81,80 @@ command:
     returned: always
     sample: 'terraform test -json'
 '''
+
+from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
+from mschuchard.general.plugins.module_utils import terraform
+
+
+def main() -> None:
+    """primary function for terraform test module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec={
+            'cloud_run': {'type': 'str', 'required': False},
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'filter': {'type': 'list', 'required': False},
+            'json': {'type': 'bool', 'required': False},
+            'migrate_state': {'type': 'bool', 'required': False},
+            'test_dir': {'type': 'path', 'required': False},
+            'var': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'required': False}
+        },
+        supports_check_mode=True
+    )
+
+    # initialize
+    cloud_run: list[str] = module.params.get('cloud_run')
+    config_dir: Path = Path(module.params.get('config_dir'))
+    filter: list[str] = module.params.get('filter')
+    test_dir: list[str] = module.params.get('test_dir')
+    var: list[dict] = module.params.get('var')
+    var_file: list[str] = module.params.get('var_file')
+
+    # check flags
+    flags: list[str] = []
+    if module.params.get('json'):
+        flags.append('json')
+
+    # check args
+    args: dict = {}
+    if cloud_run:
+        args.update({'cloud_run': cloud_run})
+    if filter:
+        args.update({'filter': filter})
+    if test_dir:
+        args.update({'test_dir': test_dir})
+    if var:
+        args.update({'var': var})
+    if var_file:
+        args.update({'var_file': var_file})
+
+    # convert ansible params to terraform args
+    args = terraform.ansible_to_terraform(args)
+
+    # determine terraform command
+    command: list[str] = terraform.cmd(action='test', flags=flags, args=args, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute terraform
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=False, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
+
+
+if __name__ == '__main__':
+    main()
