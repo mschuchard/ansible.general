@@ -70,8 +70,8 @@ EXAMPLES = r'''
     - var_name: var_value
     - var_name_other: var_value_other
     var_file:
-    - one.pkrvars.hcl
-    - two.pkrvars.hcl
+    - one.tfvars
+    - two.tfvars
 '''
 
 RETURN = r'''

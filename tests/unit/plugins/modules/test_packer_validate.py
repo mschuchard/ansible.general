@@ -66,7 +66,7 @@ def test_packer_validate_var_varfile(capfd):
     """test packer validate with var and var_file"""
     utils.set_module_args({
         'var': [{'var_name': 'var_value'}, {'var_name_other': 'var_value_other'}],
-        'var_file': ['galaxy.yml', 'galaxy.yml'],
+        'var_file': [f"{str(utils.fixtures_dir())}/foo.pkrvars.hcl", f"{str(utils.fixtures_dir())}/foo.pkrvars.hcl"],
         'config_dir': str(utils.fixtures_dir())
     })
     with pytest.raises(SystemExit, match='1'):
@@ -81,6 +81,6 @@ def test_packer_validate_var_varfile(capfd):
     assert '-var' in info['cmd']
     assert 'var_name=var_value' in info['cmd']
     assert 'var_name_other=var_value_other' in info['cmd']
-    assert '-var-file=galaxy.yml' in info['cmd']
-    assert '-var-file=galaxy.yml' in info['cmd']
-    assert 'ui,error,Error: Could not guess format of galaxy.yml' in info['stdout']
+    assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
+    assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
+    assert 'ui,error,Warning: Undefined variable' in info['stdout']
