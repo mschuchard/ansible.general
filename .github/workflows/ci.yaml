@@ -15,7 +15,7 @@ jobs:
   ansible-module-ci:
     env:
       PYTHONPATH: ${{ github.workspace }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container: matthewschuchard/ansible-module
     steps:
     - name: setup ansible collection namespace dir structure

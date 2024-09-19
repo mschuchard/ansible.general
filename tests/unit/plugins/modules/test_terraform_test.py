@@ -23,7 +23,7 @@ def test_terraform_test_defaults(capfd):
 
 
 def test_terraform_test_config(capfd):
-    """test terraform test with config"""
+    """test terraform test with config and test dir"""
     utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'test_dir': 'my_tests'})
     with pytest.raises(SystemExit, match='0'):
         terraform_test.main()
