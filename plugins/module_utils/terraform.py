@@ -66,6 +66,9 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'var': '',
         'var_file': '',
     },
+    'validate': {
+        'test_dir': '-test-directory=',
+    }
 })
 
 
