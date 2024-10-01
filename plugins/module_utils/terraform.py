@@ -15,7 +15,6 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'check': '-check',
         'diff': '-diff',
         'recursive': '-recursive',
-        'write': '-write',
     },
     'init': {
         'force_copy': '-force-copy',
@@ -40,6 +39,9 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'target': '',
         'var': '',
         'var_file': '',
+    },
+    'fmt': {
+        'write': '-write=',
     },
     'init': {
         'backend': '-backend=', # tf cli treats as arg despite only accepting bool inputs
@@ -99,6 +101,8 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     command += [action, '-no-color']
     if action in ['apply', 'init', 'plan']:
         command.append('-input=false')
+    if action == 'fmt':
+        command.append('-list=false')
 
     # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
     action_flags_map: dict[str, str] = FLAGS_MAP.get(action, {})

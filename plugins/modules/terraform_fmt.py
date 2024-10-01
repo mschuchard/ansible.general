@@ -51,11 +51,12 @@ author: Matthew Schuchard (@mschuchard)
 '''
 
 EXAMPLES = r'''
-# format terraform config files in /path/to/terraform_config_dir and do not display diffs
-- name: Format terraform config files in /path/to/terraform_config_dir and do not display diffs
+# format terraform config files in /path/to/terraform_config_dir, display diffs, and do not write to source files
+- name: Format terraform config files in /path/to/terraform_config_dir, display diffs, and do not write to source files
   mschuchard.general.terraform_fmt:
     config_dir: /path/to/terraform_config_dir
-    diff: false
+    diff: true
+    write: false
 
 # check format of terraform config files in current directory and subdirectories
 - name: Check format of terraform config files in current directory and subdirectories
@@ -111,7 +112,7 @@ def main() -> None:
     # reminder: the flag that must be argued instead
     # ruff complains so default should protect against falsey with None
     if not module.params.get('write'):
-        args.update({'write': False})
+        args.update({'write': 'false'})
         changed = False
 
     # convert ansible params to terraform args

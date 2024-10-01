@@ -37,8 +37,8 @@ def test_terraform_validate_config(capfd):
     assert 'Success! The configuration is valid.' in info['stdout']
 
 
-def test_terraform_validate_upgrade_backend(capfd):
-    """test terraform test with json and test dir"""
+def test_terraform_validate_json_dir(capfd):
+    """test terraform validate with json and test dir"""
     utils.set_module_args({'json': True, 'test_dir': 'my_tests'})
     with pytest.raises(SystemExit, match='0'):
         terraform_validate.main()

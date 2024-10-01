@@ -129,11 +129,12 @@ def main() -> None:
     if module.params.get('upgrade'):
         flags.append('upgrade')
 
+    # check args
     args: dict = {}
     # reminder: the flag that must be argued instead
     # ruff complains so default should protect against falsey with None
     if not module.params.get('backend'):
-        args.update({'backend': False})
+        args.update({'backend': 'false'})
     if len(backend_config) > 0:
         args.update({'backend_config': backend_config})
     if len('plugin_dir') > 0:
