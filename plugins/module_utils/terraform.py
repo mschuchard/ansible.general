@@ -4,6 +4,7 @@ __metaclass__ = type
 import warnings
 from typing import Final
 from pathlib import Path
+import itertools
 
 
 # dictionary that maps input args to terraform flags
@@ -48,8 +49,8 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'backend_config': '',
         'plugin_dir': '',
     },
-    'imports': {
-        'resources': '',
+    'import': {
+        'resource': '',
         'var': '',
         'var_file': '',
     },
@@ -82,7 +83,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
         action = 'apply'
         flags.append('destroy')
     # verify command
-    if action not in ARGS_MAP:
+    elif action not in ARGS_MAP:
         raise RuntimeError(f"Unsupported Terraform action attempted: {action}")
 
     # initialize terraform command
@@ -99,9 +100,9 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
 
     # further initialize terraform command
     command += [action, '-no-color']
-    if action in ['apply', 'init', 'plan']:
+    if action in ['apply', 'init', 'plan', 'import']:
         command.append('-input=false')
-    if action == 'fmt':
+    elif action == 'fmt':
         command.append('-list=false')
 
     # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
@@ -121,7 +122,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
         # verify this is a valid action argument
         if arg in action_args_map:
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
-            # if the arg value is a str||bool, then append the value interpolated with the arg name from the dict to the command
+            # if the arg value is a str or bool, then append the value interpolated with the arg name from the dict to the command
             if (isinstance(arg_value, str) or isinstance(arg_value, bool)) and len(action_args_map[arg]) > 0:
                 command.append(f"{action_args_map[arg]}{arg_value}")
             # if the arg value is a list, then extend the command with the values because they are already formatted correctly
@@ -183,9 +184,13 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                 args[arg] = [f"-{arg}={value}" for value in arg_value]
                 print(args[arg])
             # dict[str, str] to space delimited list[str]
-            case 'resources':
+            # is extensible for possible future functionality whereby a "resources" module param is input with key-address value-id
+            case 'resource':
                 # generate list of address and id
-                args[arg] = [f"'{address}' {id}" for address, id in arg_value.items()]
+                # args[arg] = [f"'{address}' {id}" for address, id in arg_value.items()]
+                # below for single resource also requires flattening
+                # address should not require shell string cast since executed as ansible command and not in shell interpreter
+                args[arg] = list(itertools.chain.from_iterable([[address, id] for address, id in arg_value.items()]))
             # list[dict[str, str]] to "key=value" string with args for n>1 values
             case 'var':
                 # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]

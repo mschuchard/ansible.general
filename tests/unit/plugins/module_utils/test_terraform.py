@@ -77,13 +77,15 @@ def test_ansible_to_terraform():
         'filter': ['machine.tf', 'network.tf'],
         'plugin_dir': ['/tmp', '/home'],
         'replace': ['random.foo', 'local.bar'],
-        'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
+        # 'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
+        'resource': {'resource.name':'resource.id'},
         'target': ['random.foo', 'local.bar'],
     }) == {
         'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"],
         'filter': ['-filter=machine.tf', '-filter=network.tf'],
         'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home'],
         'replace': ['-replace=random.foo', '-replace=local.bar'],
-        'resources': ["'resource.name' resource.id", "'aws_instance.this' i-1234567890"],
+        # 'resources': ['resource.name resource.id', 'aws_instance.this i-1234567890'],
+        'resource': ['resource.name', 'resource.id'],
         'target': ['-target=random.foo', '-target=local.bar'],
     }
