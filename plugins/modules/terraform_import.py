@@ -102,11 +102,12 @@ def main() -> None:
 
     # check args
     args: dict = {}
-    args.update({'resource': {address: id}})
     if var:
         args.update({'var': var})
     if var_file:
         args.update({'var_file': var_file})
+    # needs to be last because it is positional argument to terraform import
+    args.update({'resource': {address: id}})
 
     # convert ansible params to terraform args
     args = terraform.ansible_to_terraform(args)

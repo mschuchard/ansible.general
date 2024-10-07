@@ -19,6 +19,7 @@ def test_terraform_init_defaults(capfd):
 
     info = json.loads(stdout)
     assert 'init' in info['command']
+    assert '-no-color' in info['command']
     assert '-input=false' in info['command']
     assert 'Terraform initialized in an empty directory!' in info['stdout']
 

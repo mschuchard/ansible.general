@@ -1,3 +1,6 @@
+### 1.1.0 (Next)
+- Add first set of Terraform modules.
+
 ### 1.0.2
 - Improve parameter validation.
 
