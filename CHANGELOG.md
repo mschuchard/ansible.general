@@ -1,4 +1,4 @@
-### 1.1.0 (Next)
+### 1.1.0
 - Add first set of Terraform modules.
 
 ### 1.0.2

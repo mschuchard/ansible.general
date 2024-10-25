@@ -1,7 +1,7 @@
 ---
 namespace: mschuchard
 name: general
-version: 1.0.2
+version: 1.1.0
 readme: README.md
 authors:
 - Matthew Schuchard <example@domain.com>
