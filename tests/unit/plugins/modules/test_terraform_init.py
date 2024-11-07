@@ -66,6 +66,6 @@ def test_terraform_init_multiple_args(capfd):
     assert f"-backend-config={str(utils.fixtures_dir())}/config.tf" in info['command']
     print(info['command'])
     assert "-backend-config='scheme=https'" in info['command']
-    #assert f"-plugin-dir={str(utils.fixtures_dir())}" in info['command']
-    #assert '-plugin-dir=/tmp' in info['command']
+    assert f"-plugin-dir={str(utils.fixtures_dir())}" in info['command']
+    assert '-plugin-dir=/tmp' in info['command']
     assert 'Terraform initialized in an empty directory!' in info['stdout']

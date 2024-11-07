@@ -20,8 +20,9 @@ def test_terraform_cmd_errors():
     with pytest.warns(RuntimeWarning, match='Unsupported Terraform arg specified: foo'):
         assert terraform.cmd(action='init', args={'foo': 'bar'}) == ['terraform', 'init', '-no-color', '-input=false']
 
-    # test warns on specifying args for action without corresponding args, and discards offending arg
-    # TODO
+    # test warns on specifying flags for action without corresponding flags, and discards offending flag
+    with pytest.warns(RuntimeWarning, match='Unsupported Terraform flag specified: foo'):
+        assert terraform.cmd(action='import', flags=['foo']) == ['terraform', 'import', '-no-color', '-input=false']
 
     # test fails on nonexistent target_dir
     with pytest.raises(RuntimeError, match='Targeted directory does not exist: /1234567890'):
