@@ -6,6 +6,7 @@ This repository contains the `mschuchard.general` collection. This collection pr
 - [GoSS](https://github.com/goss-org/goss)
 - [Packer](https://www.packer.io/)
 - [Puppet](https://www.puppet.com/)
+- [Terraform](https://www.terraform.io/)
 
 ## Documentation
 

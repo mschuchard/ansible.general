@@ -11,6 +11,7 @@ tags:
 - goss
 - packer
 - puppet
+- terraform
 dependencies: {}
 repository: https://github.com/mschuchard/ansible.general
 documentation: https://galaxy.ansible.com/ui/repo/published/mschuchard/general/docs

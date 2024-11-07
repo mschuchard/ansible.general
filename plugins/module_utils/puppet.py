@@ -33,7 +33,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 })
 
 
-def cmd(action: str, flags: set[str] = [], args: dict = {}, manifest: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, manifest: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the puppet command to execute"""
     # verify command
     if action not in FLAGS_MAP:
