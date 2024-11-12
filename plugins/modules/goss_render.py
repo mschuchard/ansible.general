@@ -82,11 +82,11 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
-            'debug': {'type': 'bool', 'required': False, 'default': False},
+            'debug': {'type': 'bool', 'required': False},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'package': {'type': 'str', 'required': False, 'default': ''},
+            'package': {'type': 'str', 'required': False},
             'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
+            'vars_inline': {'type': 'dict', 'required': False}
         },
         mutually_exclusive=[('vars', 'vars_inline')],
         supports_check_mode=True
@@ -109,11 +109,11 @@ def main() -> None:
 
     # check args
     args: dict = {}
-    if len(package) > 0:
+    if package:
         args.update({'package': package})
     if the_vars != Path.cwd():
         args.update({'vars': str(the_vars)})
-    elif len(vars_inline) > 0:
+    elif vars_inline:
         args.update({'vars_inline': vars_inline})
 
     # determine goss command

@@ -116,16 +116,16 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
-            'cache': {'type': 'str', 'required': False, 'default': ''},
-            'endpoint': {'type': 'str', 'required': False, 'default': ''},
-            'format': {'type': 'str', 'required': False, 'default': ''},
-            'format_opts': {'type': 'str', 'required': False, 'default': ''},
+            'cache': {'type': 'str', 'required': False},
+            'endpoint': {'type': 'str', 'required': False},
+            'format': {'type': 'str', 'required': False},
+            'format_opts': {'type': 'str', 'required': False},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'max_concur': {'type': 'int', 'required': False, 'default': 0},
-            'package': {'type': 'str', 'required': False, 'default': ''},
-            'port': {'type': 'int', 'required': False, 'default': 0},
+            'max_concur': {'type': 'int', 'required': False},
+            'package': {'type': 'str', 'required': False},
+            'port': {'type': 'int', 'required': False},
             'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'vars_inline': {'type': 'dict', 'required': False, 'default': {}}
+            'vars_inline': {'type': 'dict', 'required': False}
         },
         mutually_exclusive=[('vars', 'vars_inline')],
         supports_check_mode=True
@@ -149,23 +149,23 @@ def main() -> None:
 
     # check args
     args: dict = {}
-    if len(cache) > 0:
+    if cache:
         args.update({'cache': cache})
-    if len(endpoint) > 0:
+    if endpoint:
         args.update({'endpoint': endpoint})
-    if len(the_format) > 0:
+    if the_format:
         args.update({'format': the_format})
-    if len(format_opts) > 0:
+    if format_opts:
         args.update({'format_opts': format_opts})
-    if max_concur != 0:
+    if max_concur:
         args.update({'max_concur': max_concur})
-    if len(package) > 0:
+    if package:
         args.update({'package': package})
-    if port > 0:
+    if port:
         args.update({'port': port})
     if the_vars != Path.cwd():
         args.update({'vars': str(the_vars)})
-    elif len(vars_inline) > 0:
+    elif vars_inline:
         args.update({'vars_inline': vars_inline})
 
     # determine goss command

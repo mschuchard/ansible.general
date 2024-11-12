@@ -104,12 +104,12 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'backend': {'type': 'bool', 'required': False, 'default': True},
-            'backend_config': {'type': 'list', 'required': False, 'default': []},
+            'backend_config': {'type': 'list', 'required': False},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'force_copy': {'type': 'bool', 'required': False, 'default': False},
-            'migrate_state': {'type': 'bool', 'required': False, 'default': False},
-            'plugin_dir': {'type': 'list', 'required': False, 'default': []},
-            'upgrade': {'type': 'bool', 'required': False, 'default': False}
+            'force_copy': {'type': 'bool', 'required': False},
+            'migrate_state': {'type': 'bool', 'required': False},
+            'plugin_dir': {'type': 'list', 'required': False},
+            'upgrade': {'type': 'bool', 'required': False}
         },
         supports_check_mode=True
     )
@@ -135,9 +135,9 @@ def main() -> None:
     # ruff complains so default should protect against falsey with None
     if not module.params.get('backend'):
         args.update({'backend': 'false'})
-    if len(backend_config) > 0:
+    if backend_config:
         args.update({'backend_config': backend_config})
-    if len('plugin_dir') > 0:
+    if plugin_dir:
         args.update({'plugin_dir': plugin_dir})
 
     # convert ansible params to terraform args
