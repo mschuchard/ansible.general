@@ -74,9 +74,9 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
-            'check': {'type': 'bool', 'required': False, 'default': False},
+            'check': {'type': 'bool', 'required': False},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'recursive': {'type': 'bool', 'required': False, 'default': False}
+            'recursive': {'type': 'bool', 'required': False}
         },
         supports_check_mode=True
     )

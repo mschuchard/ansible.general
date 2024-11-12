@@ -81,11 +81,11 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
-            'debug': {'type': 'bool', 'required': False, 'default': False},
+            'debug': {'type': 'bool', 'required': False},
             'manifest': {'type': 'path', 'required': True},
-            'no_op': {'type': 'bool', 'required': False, 'default': False},
-            'test': {'type': 'bool', 'required': False, 'default': False},
-            'verbose': {'type': 'bool', 'required': False, 'default': False},
+            'no_op': {'type': 'bool', 'required': False},
+            'test': {'type': 'bool', 'required': False},
+            'verbose': {'type': 'bool', 'required': False},
         },
         supports_check_mode=True
     )

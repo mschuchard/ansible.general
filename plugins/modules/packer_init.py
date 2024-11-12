@@ -71,7 +71,7 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'upgrade': {'type': 'bool', 'required': False, 'default': False}
+            'upgrade': {'type': 'bool', 'required': False}
         },
         supports_check_mode=True
     )

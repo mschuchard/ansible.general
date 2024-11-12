@@ -103,13 +103,13 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'certname': {'type': 'str', 'required': False},
-            'debug': {'type': 'bool', 'required': False, 'default': False},
-            'no_daemonize': {'type': 'bool', 'required': False, 'default': False},
-            'no_op': {'type': 'bool', 'required': False, 'default': False},
-            'onetime': {'type': 'bool', 'required': False, 'default': False},
+            'debug': {'type': 'bool', 'required': False},
+            'no_daemonize': {'type': 'bool', 'required': False},
+            'no_op': {'type': 'bool', 'required': False},
+            'onetime': {'type': 'bool', 'required': False},
             'server_port': {'type': 'int', 'required': False},
-            'test': {'type': 'bool', 'required': False, 'default': False},
-            'verbose': {'type': 'bool', 'required': False, 'default': False},
+            'test': {'type': 'bool', 'required': False},
+            'verbose': {'type': 'bool', 'required': False},
         },
         supports_check_mode=True
     )

@@ -116,12 +116,12 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'evaluate_datasources': {'type': 'bool', 'required': False, 'default': False},
-            'excepts': {'type': 'list', 'required': False, 'default': []},
-            'only': {'type': 'list', 'required': False, 'default': []},
-            'syntax_only': {'type': 'bool', 'required': False, 'default': False},
-            'var': {'type': 'list', 'required': False, 'default': []},
-            'var_file': {'type': 'list', 'required': False, 'default': []},
+            'evaluate_datasources': {'type': 'bool', 'required': False},
+            'excepts': {'type': 'list', 'required': False},
+            'only': {'type': 'list', 'required': False},
+            'syntax_only': {'type': 'bool', 'required': False},
+            'var': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'required': False},
             'warn_undeclared_var': {'type': 'bool', 'required': False, 'default': True},
         },
         mutually_exclusive=[('excepts', 'only')],
@@ -147,13 +147,13 @@ def main() -> None:
 
     # check args
     args: dict = {}
-    if len(excepts) > 0:
+    if excepts:
         args.update({'excepts': excepts})
-    if len(only) > 0:
+    if only:
         args.update({'only': only})
-    if len(var) > 0:
+    if var:
         args.update({'var': var})
-    if len(var_file) > 0:
+    if var_file:
         args.update({'var_file': var_file})
 
     # convert ansible params to packer args

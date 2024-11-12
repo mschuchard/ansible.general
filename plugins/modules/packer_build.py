@@ -130,15 +130,15 @@ def main() -> None:
     module = AnsibleModule(
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'debug': {'type': 'bool', 'required': False, 'default': False},
-            'excepts': {'type': 'list', 'required': False, 'default': []},
-            'force': {'type': 'bool', 'required': False, 'default': False},
-            'on_error': {'type': 'str', 'required': False, 'default': ''},
-            'only': {'type': 'list', 'required': False, 'default': []},
-            'parallel_builds': {'type': 'int', 'required': False, 'default': 0},
-            'timestamp_ui': {'type': 'bool', 'required': False, 'default': False},
-            'var': {'type': 'list', 'required': False, 'default': []},
-            'var_file': {'type': 'list', 'required': False, 'default': []}
+            'debug': {'type': 'bool', 'required': False},
+            'excepts': {'type': 'list', 'required': False},
+            'force': {'type': 'bool', 'required': False},
+            'on_error': {'type': 'str', 'required': False},
+            'only': {'type': 'list', 'required': False},
+            'parallel_builds': {'type': 'int', 'required': False},
+            'timestamp_ui': {'type': 'bool', 'required': False},
+            'var': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'required': False}
         },
         mutually_exclusive=[('excepts', 'only')],
         supports_check_mode=True
@@ -164,17 +164,17 @@ def main() -> None:
         flags.append('timestamp_ui')
 
     args: dict = {}
-    if len(excepts) > 0:
+    if excepts:
         args.update({'excepts': excepts})
-    if len(on_error) > 0:
+    if on_error:
         args.update({'on_error': on_error})
-    if len(only) > 0:
+    if only:
         args.update({'only': only})
-    if parallel_builds > 0:
+    if parallel_builds:
         args.update({'parallel_builds': parallel_builds})
-    if len(var) > 0:
+    if var:
         args.update({'var': var})
-    if len(var_file) > 0:
+    if var_file:
         args.update({'var_file': var_file})
 
     # convert ansible params to packer args
