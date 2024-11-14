@@ -194,11 +194,8 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                 args[arg] = list(itertools.chain.from_iterable([[address, id] for address, id in arg_value.items()]))
             # list[dict[str, str]] to "key=value" string with args for n>1 values
             case 'var':
-                # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
-                var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in arg_value]
-                # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
-                # various language limitations force this non-ideal implementation
-                args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+                # assign converted value to var key
+                args['var'] = universal.vars_converter(arg_value)
             # list[str] to list[str] with "-var-file=" prefixed
             case 'var_file':
                 # assign converted value to var_file key

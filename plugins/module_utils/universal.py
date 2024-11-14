@@ -33,7 +33,18 @@ def validate_json_yaml_file(file: Path) -> bool:
             raise ValueError(exc) from exc
 
 
-def var_files_converter(var_files: list[str]):
+def vars_converter(var_pairs: list[dict[str, str]]) -> list[str]:
+    """convert an ansible param list of dict var name-value pairs to a hashi list of var name-value pairs"""
+
+    # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
+    var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in var_pairs]
+
+    # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
+    # various language limitations force this non-ideal implementation
+    return ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+
+
+def var_files_converter(var_files: list[str]) -> list[str]:
     """convert an ansible param list of var files to a hashi list of var files"""
 
     # initialize args
