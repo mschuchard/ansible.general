@@ -4,6 +4,7 @@ __metaclass__ = type
 import warnings
 from typing import Final
 from pathlib import Path
+from mschuchard.general.plugins.module_utils import universal
 
 
 # dictionary that maps input args to packer flags
@@ -111,15 +112,8 @@ def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
                 args['var'] = ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
             # list[str] to list[str] with "-var-file=" prefixed
             case 'var_file':
-                # reset arg because file check does not allow generator pattern
-                args['var_file'] = []
-
-                for var_file in arg_value:
-                    # verify vars file exists before conversion
-                    if Path(var_file).is_file():
-                        args['var_file'].append(f"-var-file={var_file}")
-                    else:
-                        raise FileNotFoundError(f"Var file does not exist: {var_file}")
+                # assign converted value to var_file key
+                args['var_file'] = universal.var_files_converter(arg_value)
             # int to str
             case 'parallel_builds':
                 args['parallel_builds'] = str(arg_value)

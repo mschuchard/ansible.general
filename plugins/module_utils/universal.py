@@ -31,3 +31,20 @@ def validate_json_yaml_file(file: Path) -> bool:
         except yaml.YAMLError as exc:
             warnings.warn(f"Specified YAML or JSON file does not contain valid YAML or JSON: {file}", SyntaxWarning)
             raise ValueError(exc) from exc
+
+
+def var_files_converter(var_files: list[str]):
+    """convert an ansible param list of var files to a hashi list of var files"""
+
+    # initialize args
+    args = []
+
+    # iterate through var_files and convert
+    for var_file in var_files:
+        # verify vars file exists before conversion
+        if Path(var_file).is_file():
+            args.append(f"-var-file={var_file}")
+        else:
+            raise FileNotFoundError(f"Var file does not exist: {var_file}")
+
+    return args
