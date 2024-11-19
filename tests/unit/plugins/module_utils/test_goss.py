@@ -1,5 +1,4 @@
 """unit test for goss module util"""
-__metaclass__ = type
 
 
 import pytest

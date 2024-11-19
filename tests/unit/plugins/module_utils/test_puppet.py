@@ -1,5 +1,4 @@
 """unit test for puppet module util"""
-__metaclass__ = type
 
 
 import pytest

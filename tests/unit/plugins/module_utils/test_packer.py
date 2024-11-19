@@ -1,5 +1,4 @@
 """unit test for packer module util"""
-__metaclass__ = type
 
 
 from pathlib import Path
