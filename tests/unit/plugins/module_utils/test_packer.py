@@ -13,7 +13,7 @@ def test_packer_cmd_errors():
         packer.cmd(action='foo')
 
     # test warns on unknown flag, and discards unknown flag
-    with pytest.warns(RuntimeWarning, match='Unsupported Packer flag specified: foo'):
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
         assert packer.cmd(action='init', flags=['foo']) == ['packer', 'init', '-machine-readable', str(Path.cwd())]
 
     # test warns on unknown arg, and discards unknown arg

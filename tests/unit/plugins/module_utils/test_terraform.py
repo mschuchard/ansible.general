@@ -12,7 +12,7 @@ def test_terraform_cmd_errors():
         terraform.cmd(action='foo')
 
     # test warns on unknown flag, and discards unknown flag
-    with pytest.warns(RuntimeWarning, match='Unsupported Terraform flag specified: foo'):
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
         assert terraform.cmd(action='init', flags=['foo']) == ['terraform', 'init', '-no-color', '-input=false']
 
     # test warns on unknown arg, and discards unknown arg
@@ -20,7 +20,7 @@ def test_terraform_cmd_errors():
         assert terraform.cmd(action='init', args={'foo': 'bar'}) == ['terraform', 'init', '-no-color', '-input=false']
 
     # test warns on specifying flags for action without corresponding flags, and discards offending flag
-    with pytest.warns(RuntimeWarning, match='Unsupported Terraform flag specified: foo'):
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
         assert terraform.cmd(action='import', flags=['foo']) == ['terraform', 'import', '-no-color', '-input=false']
 
     # test fails on nonexistent target_dir

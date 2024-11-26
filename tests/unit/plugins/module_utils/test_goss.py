@@ -12,7 +12,7 @@ def test_goss_cmd_errors():
         goss.cmd(action='foo')
 
     # test warns on unknown flag, and discards unknown flag
-    with pytest.warns(RuntimeWarning, match='Unsupported GoSS flag specified: foo'):
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
         assert goss.cmd(action='render', flags=['foo']) == ['goss', 'render']
 
     # test warns on unknown arg, and discards unknown arg

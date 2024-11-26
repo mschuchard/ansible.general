@@ -106,15 +106,8 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     elif action == 'fmt':
         command.append('-list=false')
 
-    # not all actions have flags, so return empty dict by default to shortcut to RuntimeError for unsupported flag if flag specified for action without flags
-    action_flags_map: dict[str, str] = FLAGS_MAP.get(action, {})
-    for flag in flags:
-        if flag in action_flags_map:
-            # add packer flag from corresponding module flag in FLAGS
-            command.append(action_flags_map[flag])
-        else:
-            # unsupported flag specified
-            warnings.warn(f"Unsupported Terraform flag specified: {flag}", RuntimeWarning)
+    # append list of flag commands
+    universal.action_flags_command(command, flags, FLAGS_MAP.get(action, {}))
 
     # construct list of terraform args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args

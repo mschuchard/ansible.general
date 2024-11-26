@@ -7,6 +7,22 @@ from pathlib import Path
 import yaml
 
 
+def action_flags_command(command: list[str], flags: set[str] = {}, action_flags_map: dict[str, str] = {}) -> list[str]:
+    """convert action flags dict into list of command strings"""
+    # in this function command list is mutable pseudo-reference and also returned
+
+    # not all actions have flags, so input empty dict by default for the map to shortcut to RuntimeWarning for unsupported flag if flag specified for action without flags
+    # iterate through input parameter flags
+    for flag in flags:
+        if flag in action_flags_map:
+            # add packer flag from corresponding module flag in FLAGS
+            command.append(action_flags_map[flag])
+        else:
+            # unsupported flag specified
+            warnings.warn(f"Unsupported flag specified: {flag}", RuntimeWarning)
+
+    return command
+
 def validate_json_yaml_file(file: Path) -> bool:
     """validate a file contains valid json and therefore also valid yaml"""
     # load the file

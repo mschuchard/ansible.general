@@ -4,6 +4,7 @@ __metaclass__ = type
 import warnings
 from typing import Final
 from pathlib import Path
+from mschuchard.general.plugins.module_utils import universal
 
 
 # dictionary that maps input args to puppet flags
@@ -42,15 +43,8 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, manifest: 
     # initialize puppet command
     command: list[str] = ['puppet', action]
 
-    # construct list of puppet flags
-    action_flags_map: dict = FLAGS_MAP.get(action, {})
-    for flag in flags:
-        if flag in action_flags_map:
-            # add puppet flag from corresponding module flag in FLAGS
-            command.append(action_flags_map[flag])
-        else:
-            # unsupported flag specified
-            warnings.warn(f"Unsupported Puppet flag specified: {flag}", RuntimeWarning)
+    # append list of flag commands
+    universal.action_flags_command(command, flags, FLAGS_MAP.get(action, {}))
 
     # construct list of puppet args
     action_args_map: dict = ARGS_MAP.get(action, {})

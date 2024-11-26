@@ -12,7 +12,7 @@ def test_puppet_cmd_errors():
         puppet.cmd(action='foo')
 
     # test warns on unknown flag, and discards unknown flag
-    with pytest.warns(RuntimeWarning, match='Unsupported Puppet flag specified: foo'):
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
         assert puppet.cmd(action='agent', flags=['foo']) == ['puppet', 'agent']
 
     # test warns on unknown arg, and discards unknown arg
