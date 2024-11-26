@@ -15,6 +15,20 @@ def test_validate_json_yaml_file():
         assert not universal.validate_json_yaml_file('.gitignore')
 
 
+def test_action_flags_command():
+    """test action flags dict to list of command strings converter"""
+    # test accurate flags conversion
+    assert universal.action_flags_command(['hello'], ['foo', 'bar'], {'foo': '--foo', 'bar': '--bar'}) == ['hello', '--foo', '--bar']
+
+    # test unsupported flag input
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: baz'):
+        assert universal.action_flags_command(['hello'], ['foo', 'baz'], {'foo': '--foo', 'bar': '--bar'}) == ['hello', '--foo']
+
+    # test action with no action flags input
+    with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
+        assert universal.action_flags_command(['hello'], ['foo'], {}) == ['hello']
+
+
 def test_vars_converter():
     """test ansible vars param to hashi cli converter"""
     # test accurate vars conversion

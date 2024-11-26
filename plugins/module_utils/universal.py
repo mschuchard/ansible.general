@@ -7,7 +7,7 @@ from pathlib import Path
 import yaml
 
 
-def action_flags_command(command: list[str], flags: set[str] = {}, action_flags_map: dict[str, str] = {}) -> list[str]:
+def action_flags_command(command: list[str], flags: set[str] = [], action_flags_map: dict[str, str] = {}) -> list[str]:
     """convert action flags dict into list of command strings"""
     # in this function command list is mutable pseudo-reference and also returned
 
