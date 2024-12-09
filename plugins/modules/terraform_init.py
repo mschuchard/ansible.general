@@ -154,7 +154,7 @@ def main() -> None:
     return_code: int
     stdout: str
     stderr: str
-    return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
 
     # check idempotence
     if 'successfully initialized' in stdout:
