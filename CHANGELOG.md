@@ -1,4 +1,4 @@
-### 1.1.1 (Next)
+### 1.1.1
 - Various plugin module code stability improvements and fixes.
 
 ### 1.1.0
