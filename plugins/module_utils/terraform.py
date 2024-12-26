@@ -46,7 +46,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
         'write': '-write=',
     },
     'init': {
-        'backend': '-backend=', # tf cli treats as arg despite only accepting bool inputs
+        'backend': '-backend=',
         'backend_config': '',
         'plugin_dir': '',
     },
@@ -79,12 +79,8 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the terraform command to execute"""
 
-    # alias destroy to apply with destroy flag
-    if action == 'destroy':
-        action = 'apply'
-        flags.append('destroy')
     # verify command
-    elif action not in ARGS_MAP:
+    if action not in ARGS_MAP:
         raise RuntimeError(f"Unsupported Terraform action attempted: {action}")
 
     # initialize terraform command

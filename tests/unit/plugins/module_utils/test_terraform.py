@@ -38,9 +38,6 @@ def test_terraform_cmd_errors():
 
 def test_terraform_cmd():
     """test various cmd returns"""
-    # test destroy converts to apply with destroy flag
-    assert terraform.cmd(action='destroy') == ['terraform', 'apply', '-no-color', '-input=false', '-destroy']
-
     # test init with no flags and no args
     assert terraform.cmd(action='init', target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false']
 
