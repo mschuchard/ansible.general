@@ -109,7 +109,7 @@ def main() -> None:
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'destroy': {'type': 'bool', 'required': False},
-            'generate_config': {'path': 'str', 'required': False},
+            'generate_config': {'path': 'path', 'required': False},
             'out': {'type': 'path', 'required': False},
             'refresh_only': {'type': 'bool', 'required': False},
             'replace': {'type': 'list', 'required': False},
@@ -122,8 +122,8 @@ def main() -> None:
 
     # initialize
     config_dir: Path = Path(module.params.get('config_dir'))
-    generate_config: Path = Path(module.params.get('generate_config'))
-    out: Path = Path(module.params.get('out'))
+    generate_config: str = module.params.get('generate_config')
+    out: str = module.params.get('out')
     replace: list[str] = module.params.get('replace')
     target: list[str] = module.params.get('target')
     var: list[dict] = module.params.get('var')
@@ -140,9 +140,9 @@ def main() -> None:
     args: dict = {}
     # ruff complains so default should protect against falsey with None
     if generate_config:
-        args.update({'generate_config': generate_config})
+        args.update({'generate_config': Path(generate_config)})
     if out:
-        args.update({'out': out})
+        args.update({'out': Path(out)})
     if replace:
         args.update({'replace': replace})
     if target:

@@ -113,7 +113,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
         if arg in action_args_map:
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str or bool, then append the value interpolated with the arg name from the dict to the command
-            if (isinstance(arg_value, str) or isinstance(arg_value, bool)) and len(action_args_map[arg]) > 0:
+            if (isinstance(arg_value, str) or isinstance(arg_value, bool) or isinstance(arg_value, Path)) and len(action_args_map[arg]) > 0:
                 command.append(f"{action_args_map[arg]}{arg_value}")
             # if the arg value is a list, then extend the command with the values because they are already formatted correctly
             elif isinstance(arg_value, list) and len(action_args_map[arg]) == 0:
