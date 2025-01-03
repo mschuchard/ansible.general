@@ -29,11 +29,11 @@ options:
     generate_config:
         description: If import blocks are present in configuration, then instructs Terraform to generate HCL for any imported resources not already present. The configuration is written to a new file at the parameter value which must not already exist. Terraform may still attempt to write configuration if the plan errors.
         required: false
-        type: str
+        type: path
     out:
         description: Write a plan file to the given parameter value. This can be used as input to the apply module.
         required: false
-        type: str
+        type: path
     refresh_only:
         description: Select the refresh only planning mode which checks whether remote objects still match the outcome of the most recent Terraform apply, but does not propose any actions to undo any changes made outside of Terraform.
         required: false
@@ -96,3 +96,87 @@ command:
     returned: always
     sample: 'terraform plan -out plan.tfplan'
 '''
+
+from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
+from mschuchard.general.plugins.module_utils import terraform
+
+
+def main() -> None:
+    """primary function for terraform plan module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec={
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'destroy': {'type': 'bool', 'required': False},
+            'generate_config': {'path': 'str', 'required': False},
+            'out': {'type': 'path', 'required': False},
+            'refresh_only': {'type': 'bool', 'required': False},
+            'replace': {'type': 'list', 'required': False},
+            'target': {'type': 'list', 'required': False},
+            'var': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'required': False}
+        },
+        supports_check_mode=True
+    )
+
+    # initialize
+    config_dir: Path = Path(module.params.get('config_dir'))
+    generate_config: Path = Path(module.params.get('generate_config'))
+    out: Path = Path(module.params.get('out'))
+    replace: list[str] = module.params.get('replace')
+    target: list[str] = module.params.get('target')
+    var: list[dict] = module.params.get('var')
+    var_file: list[str] = module.params.get('var_file')
+
+    # check flags
+    flags: list[str] = []
+    if module.params.get('destroy'):
+        flags.append('destroy')
+    if module.params.get('refresh_only'):
+        flags.append('refresh_only')
+
+    # check args
+    args: dict = {}
+    # ruff complains so default should protect against falsey with None
+    if generate_config:
+        args.update({'generate_config': generate_config})
+    if out:
+        args.update({'out': out})
+    if replace:
+        args.update({'replace': replace})
+    if target:
+        args.update({'target': target})
+    if var:
+        args.update({'var': var})
+    if var_file:
+        args.update({'var_file': var_file})
+
+    # convert ansible params to terraform args
+    args = terraform.ansible_to_terraform(args)
+
+    # determine terraform command
+    command: list[str] = terraform.cmd(action='plan', flags=flags, args=args, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute terraform
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=False, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
+
+
+if __name__ == '__main__':
+    main()
