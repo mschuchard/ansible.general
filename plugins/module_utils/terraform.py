@@ -99,6 +99,9 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     command += [action, '-no-color']
     if action in ['apply', 'init', 'plan', 'import']:
         command.append('-input=false')
+
+        if action == 'apply':
+            command.append('-auto-approve')
     elif action == 'fmt':
         command.append('-list=false')
 

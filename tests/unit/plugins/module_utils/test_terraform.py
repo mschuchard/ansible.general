@@ -17,7 +17,7 @@ def test_terraform_cmd_errors():
 
     # test warns on unknown arg, and discards unknown arg
     with pytest.warns(RuntimeWarning, match='Unsupported Terraform arg specified: foo'):
-        assert terraform.cmd(action='init', args={'foo': 'bar'}) == ['terraform', 'init', '-no-color', '-input=false']
+        assert terraform.cmd(action='apply', args={'foo': 'bar'}) == ['terraform', 'apply', '-no-color', '-input=false', '-auto-approve']
 
     # test warns on specifying flags for action without corresponding flags, and discards offending flag
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
@@ -41,8 +41,8 @@ def test_terraform_cmd():
     # test init with no flags and no args
     assert terraform.cmd(action='init', target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false']
 
-    # test init with check flag and no args
-    assert terraform.cmd(action='init', flags=['upgrade'], target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-upgrade']
+    # test fmt with check flag and no args
+    assert terraform.cmd(action='fmt', flags=['check'], target_dir='/home') == ['terraform', '-chdir=/home', 'fmt', '-no-color', '-list=false', '-check']
 
     # test init with default target_dir, no flags, backend and backend_config args
     assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', "-backend-config='bar=baz'"]}) == ['terraform', 'init', '-no-color', '-input=false', '-backend=false', '-backend-config=foo', "-backend-config='bar=baz'"]

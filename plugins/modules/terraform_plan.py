@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: terraform_test
+module: terraform_plan
 
 short_description: Module to manage Terraform speculative execution plans, and show what actions Terraform would take to apply the current configuration.
 
