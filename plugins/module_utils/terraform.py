@@ -86,14 +86,22 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     # initialize terraform command
     command: list[str] = ['terraform']
 
-    # validate the target config dir
-    if not Path(target_dir).is_dir():
-        # otherwise error if it is not an existing directory
-        raise RuntimeError(f"Targeted directory does not exist: {target_dir}")
-
     # change directory if target_dir is not cwd (must be arg to base command)
     if target_dir != Path.cwd():
-        command.append(f"-chdir={target_dir}")
+        # first check if this is an apply action
+        if action == 'apply':
+            # check if existing target directory
+            if Path(target_dir).is_dir():
+                command.append(f"-chdir={target_dir}")
+            # check if instead existing plan file and error if neither
+            elif not Path(target_dir).is_file():
+                raise RuntimeError(f"Targeted plan file or root module directory does not exist: {target_dir}")
+        # else check if existing target directory
+        elif Path(target_dir).is_dir():
+            command.append(f"-chdir={target_dir}")
+        # this is a nonexistent target directory
+        else:
+            raise RuntimeError(f"Targeted root module directory does not exist: {target_dir}")
 
     # further initialize terraform command
     command += [action, '-no-color']
@@ -127,6 +135,10 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
         else:
             # unsupported arg specified
             warnings.warn(f"Unsupported Terraform arg specified: {arg}", RuntimeWarning)
+
+    # append plan file if applicable
+    if action == 'apply' and Path(target_dir).is_file():
+        command.append(target_dir)
 
     return command
 
