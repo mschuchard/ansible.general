@@ -3,6 +3,7 @@
 
 import pytest
 from mschuchard.general.plugins.module_utils import terraform
+from mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_terraform_cmd_errors():
@@ -23,8 +24,12 @@ def test_terraform_cmd_errors():
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
         assert terraform.cmd(action='import', flags=['foo']) == ['terraform', 'import', '-no-color', '-input=false']
 
+    # test fails on nonexistent plan file
+    with pytest.raises(RuntimeError, match='Targeted plan file or root module directory does not exist: /1234567890'):
+        terraform.cmd(action='apply', target_dir='/1234567890')
+
     # test fails on nonexistent target_dir
-    with pytest.raises(RuntimeError, match='Targeted directory does not exist: /1234567890'):
+    with pytest.raises(RuntimeError, match='Targeted root module directory does not exist: /1234567890'):
         terraform.cmd(action='init', target_dir='/1234567890')
 
     # test fails on unsupported arg value type
@@ -49,6 +54,9 @@ def test_terraform_cmd():
 
     # test init with force_copy and migrate_state flags, and plugin_dir args
     assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home']
+
+    # test bare apply with plan file
+    assert terraform.cmd(action='apply', target_dir=f"{str(utils.fixtures_dir())}/config.tf") == ['terraform', 'apply', '-no-color', '-input=false', '-auto-approve', f"{str(utils.fixtures_dir())}/config.tf"]
 
 
 def test_ansible_to_terraform_errors():
