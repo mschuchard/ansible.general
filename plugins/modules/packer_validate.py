@@ -129,7 +129,6 @@ def main() -> None:
     )
 
     # initialize
-    changed: bool = False
     config_dir: Path = Path(module.params.get('config_dir'))
     excepts: list[str] = module.params.get('excepts')
     only: list[str] = module.params.get('only')
@@ -174,7 +173,7 @@ def main() -> None:
 
     # post-process
     if return_code == 0:
-        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+        module.exit_json(changed=False, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
             msg=stderr.rstrip(), return_code=return_code, cmd=command,

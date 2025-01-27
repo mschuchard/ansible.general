@@ -52,12 +52,12 @@ def test_terraform_plan_replace_out(capfd):
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
-    #info = json.loads(stdout)
-    #assert '-replace=aws_instance.this' in info['command']
-    #assert '-replace=local_file.that' in info['command']
-    #assert '-out=plan.tfplan' in info['command']
-    #assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
-    #assert 'No changes.' in info['stdout']
+    info = json.loads(stdout)
+    assert '-replace=aws_instance.this' in info['command']
+    assert '-replace=local_file.that' in info['command']
+    assert '-out=plan.tfplan' in info['command']
+    assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
+    assert 'No changes.' in info['stdout']
 
 def test_terraform_plan_multiple_args(capfd):
     """test terraform plan with multiple arguments and a flag"""

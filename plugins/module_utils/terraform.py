@@ -187,7 +187,6 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
             case 'filter' | 'replace' | 'target':
                 # generate list of argument strings
                 args[arg] = [f"-{arg}={value}" for value in arg_value]
-                print(args[arg])
             # dict[str, str] to space delimited list[str]
             # is extensible for possible future functionality whereby a "resources" module param is input with key-address value-id
             case 'resource':

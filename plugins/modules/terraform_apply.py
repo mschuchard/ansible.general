@@ -109,16 +109,15 @@ def main() -> None:
     changed: bool = True
     config_dir: Path = Path(module.params.get('config_dir'))
     target: list[str] = module.params.get('target')
-    plan_file: Path = Path(module.params.get('plan_file'))
     var: list[dict] = module.params.get('var')
     var_file: list[str] = module.params.get('var_file')
 
     command: list[str] = []
 
     # check plan arg first since all others ignored if specified
-    if plan_file:
+    if module.params.get('plan_file'):
         # define a command that applies the plan file
-        command = terraform.cmd(action='apply', target_dir=plan_file)
+        command = terraform.cmd(action='apply', target_dir=module.params.get('plan_file'))
     # else check flags and other args
     else:
         # check flags

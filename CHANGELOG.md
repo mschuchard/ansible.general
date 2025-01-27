@@ -1,3 +1,6 @@
+### 1.2.0 (Next)
+- Finish adding Terraform modules.
+
 ### 1.1.1
 - Various plugin module code stability improvements and fixes.
 
