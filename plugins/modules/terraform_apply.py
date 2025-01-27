@@ -83,3 +83,88 @@ command:
     returned: always
     sample: 'terraform apply plan.tfplan'
 '''
+
+from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
+from mschuchard.general.plugins.module_utils import terraform
+
+
+def main() -> None:
+    """primary function for terraform apply module"""
+    # instanstiate ansible module
+    module = AnsibleModule(
+        argument_spec={
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'destroy': {'type': 'bool', 'required': False},
+            'plan_file': {'type': 'path', 'required': False},
+            'target': {'type': 'list', 'required': False},
+            'var': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'required': False}
+        },
+        mutually_exclusive=[('plan_file', 'config_dir')],
+        supports_check_mode=True
+    )
+
+    # initialize
+    changed: bool = True
+    config_dir: Path = Path(module.params.get('config_dir'))
+    target: list[str] = module.params.get('target')
+    plan_file: Path = Path(module.params.get('plan_file'))
+    var: list[dict] = module.params.get('var')
+    var_file: list[str] = module.params.get('var_file')
+
+    command: list[str] = []
+
+    # check plan arg first since all others ignored if specified
+    if plan_file:
+        # define a command that applies the plan file
+        command = terraform.cmd(action='apply', target_dir=plan_file)
+    # else check flags and other args
+    else:
+        # check flags
+        flags: list[str] = []
+        if module.params.get('destroy'):
+            flags.append('destroy')
+
+        # check args
+        args: dict = {}
+        # ruff complains so default should protect against falsey with None
+        if target:
+            args.update({'target': target})
+        if var:
+            args.update({'var': var})
+        if var_file:
+            args.update({'var_file': var_file})
+
+        # convert ansible params to terraform args
+        args = terraform.ansible_to_terraform(args)
+
+        # determine terraform command
+        command: list[str] = terraform.cmd(action='apply', flags=flags, args=args, target_dir=config_dir)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute terraform
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
+
+    # check idempotence
+    if '0 added, 0 changed, 0 destroyed' in stdout:
+        changed = False
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(), return_code=return_code, cmd=command,
+            stdout=stdout, stdout_lines=stdout.splitlines(),
+            stderr=stderr, stderr_lines=stderr.splitlines())
+
+
+if __name__ == '__main__':
+    main()
