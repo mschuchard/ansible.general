@@ -98,7 +98,7 @@ def main() -> None:
     address: str = module.params.get('address')
     id: str = module.params.get('id')
     var: list[dict] = module.params.get('var')
-    var_file: list[str] = module.params.get('var_file')
+    var_file: list[Path] = module.params.get('var_file')
 
     # check args
     args: dict = {}

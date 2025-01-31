@@ -122,12 +122,12 @@ def main() -> None:
 
     # initialize
     config_dir: Path = Path(module.params.get('config_dir'))
-    generate_config: str = module.params.get('generate_config')
+    generate_config: Path = module.params.get('generate_config')
     out: str = module.params.get('out')
     replace: list[str] = module.params.get('replace')
     target: list[str] = module.params.get('target')
     var: list[dict] = module.params.get('var')
-    var_file: list[str] = module.params.get('var_file')
+    var_file: list[Path] = module.params.get('var_file')
 
     # check flags
     flags: list[str] = []

@@ -116,9 +116,9 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    backend_config: list[(str, dict[str, str])] = module.params.get('backend_config')
+    backend_config: list[(Path, dict[str, str])] = module.params.get('backend_config')
     config_dir: Path = Path(module.params.get('config_dir'))
-    plugin_dir: list[str] = module.params.get('plugin_dir')
+    plugin_dir: list[Path] = module.params.get('plugin_dir')
 
     # check flags
     flags: list[str] = []

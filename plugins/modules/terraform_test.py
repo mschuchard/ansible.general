@@ -108,9 +108,9 @@ def main() -> None:
     cloud_run: list[str] = module.params.get('cloud_run')
     config_dir: Path = Path(module.params.get('config_dir'))
     filter: list[str] = module.params.get('filter')
-    test_dir: list[str] = module.params.get('test_dir')
+    test_dir: list[Path] = module.params.get('test_dir')
     var: list[dict] = module.params.get('var')
-    var_file: list[str] = module.params.get('var_file')
+    var_file: list[Path] = module.params.get('var_file')
 
     # check flags
     flags: list[str] = []
