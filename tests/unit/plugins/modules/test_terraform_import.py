@@ -21,7 +21,9 @@ def test_terraform_import_defaults(capfd):
     assert '-no-color' in info['cmd']
     assert '-input=false' in info['cmd']
     assert 'aws_instance.this' in info['cmd']
+    assert 'aws_instance.this' == info['cmd'][-2]
     assert 'i-1234567890' in info['cmd']
+    assert 'i-1234567890' == info['cmd'][-1]
     assert 'No Terraform configuration files' in info['stderr']
 
 
@@ -36,7 +38,9 @@ def test_terraform_import_config(capfd):
     info = json.loads(stdout)
     assert f"-chdir={str(utils.fixtures_dir())}" in info['cmd']
     assert 'aws_instance.this' in info['cmd']
+    assert 'aws_instance.this' == info['cmd'][-2]
     assert 'i-1234567890' in info['cmd']
+    assert 'i-1234567890' == info['cmd'][-1]
     assert 'does not exist in the configuration.' in info['stderr']
 
 
@@ -55,7 +59,9 @@ def test_terraform_import_vars(capfd):
 
     info = json.loads(stdout)
     assert 'local_file.this' in info['cmd']
+    assert 'local_file.this' == info['cmd'][-2]
     assert '/path/to/local_file' in info['cmd']
+    assert '/path/to/local_file' == info['cmd'][-1]
     assert '-var' in info['cmd']
     assert 'var_name=var_value' in info['cmd']
     assert 'var_name_other=var_value_other' in info['cmd']
