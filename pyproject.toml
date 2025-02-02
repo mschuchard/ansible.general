@@ -1,6 +1,6 @@
 [project]
 name = ["mschuchard.general"]
-version = "1.1.1"
+version = "1.2.0"
 dependencies = ["ansible"]
 requires-python = ">= 3.10"
 authors = [{name = "Matthew Schuchard"}]

@@ -1,11 +1,11 @@
 ---
 namespace: mschuchard
 name: general
-version: 1.1.1
+version: 1.2.0
 readme: README.md
 authors:
 - Matthew Schuchard <example@domain.com>
-description: General collection of Ansible plugins for common tools associated with "DevOps"
+description: General collection of Ansible module plugins for common tools associated with "DevOps"
 license_file: LICENSE
 tags:
 - goss
