@@ -152,7 +152,7 @@ def main() -> None:
     only: list[str] = module.params.get('only')
     parallel_builds: int = module.params.get('parallel_builds')
     var: list[dict] = module.params.get('var')
-    var_file: list[str] = module.params.get('var_file')
+    var_file: list[Path] = module.params.get('var_file')
 
     # check optional params
     flags: list[str] = []

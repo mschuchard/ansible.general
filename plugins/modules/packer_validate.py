@@ -133,7 +133,7 @@ def main() -> None:
     excepts: list[str] = module.params.get('excepts')
     only: list[str] = module.params.get('only')
     var: list[dict] = module.params.get('var')
-    var_file: list[str] = module.params.get('var_file')
+    var_file: list[Path] = module.params.get('var_file')
 
     # check flags
     flags: list[str] = []

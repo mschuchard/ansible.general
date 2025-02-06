@@ -131,6 +131,10 @@ def main() -> None:
     stderr: str
     return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
 
+    # check idempotence
+    if len(stdout) == 0:
+        changed = False
+
     # post-process
     if return_code == 0:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)

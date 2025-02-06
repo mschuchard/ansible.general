@@ -82,7 +82,7 @@ def main() -> None:
     )
 
     # initialize
-    changed: bool = False
+    changed: bool = True
     check: bool = module.params.get('check')
     config_dir: Path = Path(module.params.get('config_dir'))
 
@@ -90,6 +90,7 @@ def main() -> None:
     flags: list[str] = []
     if check:
         flags.append('check')
+        changed = False
     if module.params.get('recursive'):
         flags.append('recursive')
 
@@ -107,8 +108,8 @@ def main() -> None:
     return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
 
     # check idempotence
-    if len(stdout) > 0 and not check:
-        changed = True
+    if len(stdout) == 0:
+        changed = False
 
     # post-process
     if return_code == 0:
