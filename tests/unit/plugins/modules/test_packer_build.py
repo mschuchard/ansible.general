@@ -38,7 +38,7 @@ def test_packer_build_except_onerror_force(capfd):
 
     info = json.loads(stdout)
     assert info['return_code'] == 1
-    assert '/tmp' in info['cmd']
+    assert '/tmp' == info['cmd'][-1]
     assert '-force' in info['cmd']
     assert '-on-error=abort' in info['cmd']
     assert '-only=null.this,null.that' in info['cmd']
@@ -61,7 +61,7 @@ def test_packer_build_except_parallel_timestamp(capfd):
 
     info = json.loads(stdout)
     assert info['return_code'] == 1
-    assert '/tmp' in info['cmd']
+    assert '/tmp' == info['cmd'][-1]
     assert '-except=null.this,null.that' in info['cmd']
     assert '-parallel-builds=1' in info['cmd']
     assert '-timestamp-ui' in info['cmd']

@@ -34,7 +34,7 @@ def test_packer_fmt_config(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert str(utils.fixtures_dir()) in info['command']
+    assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']
 
 

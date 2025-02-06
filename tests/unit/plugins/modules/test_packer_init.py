@@ -33,7 +33,7 @@ def test_packer_init_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert str(utils.fixtures_dir()) in info['command']
+    assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']
 
 
@@ -48,5 +48,5 @@ def test_packer_init_upgrade(capfd):
 
     info = json.loads(stdout)
     assert '-upgrade' in info['command']
-    assert str(utils.fixtures_dir()) in info['command']
+    assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']

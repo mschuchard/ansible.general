@@ -50,7 +50,7 @@ def test_terraform_apply_plan_file(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert f"{str(utils.fixtures_dir())}/plan.tfplan" in info['cmd']
+    assert f"{str(utils.fixtures_dir())}/plan.tfplan" == info['cmd'][-1]
     assert 'Error: Saved plan does not match the given state' in info['stderr']
 
 def test_terraform_apply_multiple_args(capfd):

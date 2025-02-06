@@ -24,7 +24,7 @@ def test_puppet_apply_test(capfd):
     assert not info['stderr']
     assert 'apply' in info['command']
     assert '-t' in info['command']
-    assert str(utils.fixtures_dir() / 'manifest.pp') in info['command']
+    assert f"{str(utils.fixtures_dir())}/manifest.pp" == info['command'][-1]
 
 
 def test_puppet_apply_debug_noop_verbose(capfd):
@@ -44,3 +44,4 @@ def test_puppet_apply_debug_noop_verbose(capfd):
     assert '-d' in info['command']
     assert '--noop' in info['command']
     assert '-v' in info['command']
+    assert f"{str(utils.fixtures_dir())}/manifest.pp" == info['command'][-1]

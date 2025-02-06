@@ -39,6 +39,7 @@ def test_packer_validate_eval_datasource_warn_undeclared(capfd):
     assert info['return_code'] == 1
     assert '-evaluate-datasources' in info['cmd']
     assert '-no-warn-undeclared-var' in info['cmd']
+    assert str(utils.fixtures_dir()) == info['cmd'][-1]
     assert 'No instructions given for handling the artifact' in info['stdout']
 
 
@@ -56,7 +57,7 @@ def test_packer_validate_syntax_except(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert str(utils.fixtures_dir()) in info['command']
+    assert str(utils.fixtures_dir()) == info['command'][-1]
     assert '-syntax-only' in info['command']
     assert '-except=null.this,null.that' in info['command']
     assert 'ui,say,Syntax-only check passed. Everything looks okay.' in info['stdout']
@@ -76,7 +77,6 @@ def test_packer_validate_var_varfile(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    print(info)
     assert info['return_code'] == 1
     assert '-var' in info['cmd']
     assert 'var_name=var_value' in info['cmd']
@@ -84,3 +84,4 @@ def test_packer_validate_var_varfile(capfd):
     assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
     assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
     assert 'ui,error,Warning: Undefined variable' in info['stdout']
+    assert str(utils.fixtures_dir()) == info['cmd'][-1]
