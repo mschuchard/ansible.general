@@ -69,6 +69,10 @@ command:
     description: The raw Puppet command executed by Ansible.
     type: str
     returned: always
+return_code:
+    description: The return code from the Puppet apply execution.
+    type: int
+    returned: always
 '''
 
 from pathlib import Path
@@ -125,7 +129,7 @@ def main() -> None:
 
     # post-process
     if return_code == 0 or changed:
-        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
+        module.exit_json(changed=changed, stdout=stdout, stderr=stderr, return_code=return_code, command=command)
     else:
         module.fail_json(
             msg=stderr.rstrip(), return_code=return_code, cmd=command,

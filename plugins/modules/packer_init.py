@@ -99,7 +99,7 @@ def main() -> None:
     return_code, stdout, stderr = module.run_command(command, cwd=config_dir)
 
     # check idempotence
-    if 'Installed plugin' in stdout:
+    if len(stdout) > 0:
         changed = True
 
     # post-process
