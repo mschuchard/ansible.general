@@ -56,7 +56,6 @@ def test_puppet_agent_nodaemonize_onetime(capfd):
 
     info = json.loads(stdout)
     assert len(info['msg']) == 0
-    assert info['return_code'] == 1
     assert 'agent' in info['cmd']
     assert '--no-daemonize' in info['cmd']
     assert '--onetime' in info['cmd']

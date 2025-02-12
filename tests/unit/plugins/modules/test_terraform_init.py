@@ -18,6 +18,7 @@ def test_terraform_init_defaults(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert 'init' in info['command']
     assert '-no-color' in info['command']
     assert '-input=false' in info['command']
@@ -34,6 +35,7 @@ def test_terraform_init_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert info['changed']
     assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
     assert 'Terraform has been successfully initialized!' in info['stdout']
 
@@ -52,6 +54,7 @@ def test_terraform_init_upgrade_backend(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert info['changed']
     assert '-upgrade' in info['command']
     assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
     assert 'Terraform has been successfully initialized!' in info['stdout']
@@ -70,6 +73,7 @@ def test_terraform_init_multiple_args(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-migrate-state' in info['command']
     assert f"-backend-config={str(utils.fixtures_dir())}/config.tf" in info['command']
     print(info['command'])

@@ -34,6 +34,7 @@ def test_terraform_plan_config_destroy(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
     assert '-destroy' in info['command']
     assert 'No changes.' in info['stdout']
@@ -53,6 +54,7 @@ def test_terraform_plan_replace_out(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-replace=aws_instance.this' in info['command']
     assert '-replace=local_file.that' in info['command']
     assert '-out=plan.tfplan' in info['command']
@@ -74,6 +76,7 @@ def test_terraform_plan_multiple_args(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-refresh-only' in info['command']
     assert '-var' in info['command']
     assert 'var_name=var_value' in info['command']

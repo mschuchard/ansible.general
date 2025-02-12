@@ -35,6 +35,7 @@ def test_terraform_apply_config_destroy(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
     assert '-destroy' in info['command']
     assert 'No changes.' in info['stdout']
@@ -69,6 +70,7 @@ def test_terraform_apply_multiple_args(capfd):
 
     print(stdout)
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-target=aws_instance.this' in info['command']
     assert '-target=local_file.that' in info['command']
     assert '-var' in info['command']

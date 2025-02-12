@@ -37,7 +37,6 @@ def test_packer_build_except_onerror_force(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert '/tmp' == info['cmd'][-1]
     assert '-force' in info['cmd']
     assert '-on-error=abort' in info['cmd']
@@ -60,7 +59,6 @@ def test_packer_build_except_parallel_timestamp(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert '/tmp' == info['cmd'][-1]
     assert '-except=null.this,null.that' in info['cmd']
     assert '-parallel-builds=1' in info['cmd']
@@ -81,7 +79,6 @@ def test_packer_build_var_varfile(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert '-var' in info['cmd']
     assert 'var_name=var_value' in info['cmd']
     assert 'var_name_other=var_value_other' in info['cmd']

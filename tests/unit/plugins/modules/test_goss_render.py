@@ -36,6 +36,7 @@ def test_goss_render_debug(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert info['changed']
     assert 'render' in info['command']
     assert '--debug' in info['command']
     assert 'size: 4096' in info['stdout']
@@ -52,6 +53,7 @@ def test_goss_render_vars_inline(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert info['changed']
     assert 'render' in info['command']
     assert '--vars-inline' in info['command']
     assert '{"my_service": "httpd", "my_package": "apache"}' in info['command']

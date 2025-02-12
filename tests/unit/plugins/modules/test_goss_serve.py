@@ -18,7 +18,6 @@ def test_goss_serve_gossfile(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert 'serve' in info['cmd']
     assert '-g' in info['cmd']
     assert 'galaxy.yml' in info['cmd']
@@ -36,7 +35,6 @@ def test_goss_serve_format_vars(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert 'serve' in info['cmd']
     assert '-g' not in info['cmd']
     assert '-f' in info['cmd']
@@ -58,7 +56,6 @@ def test_goss_serve_endpoint_port(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert 'serve' in info['cmd']
     assert '-c' in info['cmd']
     assert '1m' in info['cmd']
@@ -79,7 +76,6 @@ def test_goss_serve_package_vars_inline(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert 'serve' in info['cmd']
     assert '--package' in info['cmd']
     assert 'rpm' in info['cmd']

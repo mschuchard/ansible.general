@@ -18,6 +18,7 @@ def test_terraform_test_defaults(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert 'test' in info['command']
     assert 'Success! 0 passed, 0 failed.' in info['stdout']
 
@@ -32,6 +33,7 @@ def test_terraform_test_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-test-directory=my_tests' in info['command']
     assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
     assert 'Success! 0 passed, 0 failed.' in info['stdout']
@@ -51,6 +53,7 @@ def test_terraform_test_upgrade_backend(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-json' in info['command']
     assert '-var' in info['command']
     assert 'var_name=var_value' in info['command']

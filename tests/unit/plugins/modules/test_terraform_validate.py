@@ -18,6 +18,7 @@ def test_terraform_validate_defaults(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert 'validate' in info['command']
     assert '-no-color' in info['command']
     assert 'Success! The configuration is valid.' in info['stdout']
@@ -33,6 +34,7 @@ def test_terraform_validate_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
     assert 'Success! The configuration is valid.' in info['stdout']
 
@@ -47,6 +49,7 @@ def test_terraform_validate_json_dir(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-json' in info['command']
     assert '-test-directory=my_tests' in info['command']
     assert 'Test directory does not exist' in info['stdout']

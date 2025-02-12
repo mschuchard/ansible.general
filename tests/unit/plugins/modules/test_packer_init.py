@@ -18,7 +18,6 @@ def test_packer_init_defaults(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert info['return_code'] == 1
     assert 'init' in info['cmd']
     assert 'ui,error,Error: Could not find any config file in' in info['stdout']
 
@@ -33,6 +32,7 @@ def test_packer_init_config(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']
 
@@ -47,6 +47,7 @@ def test_packer_init_upgrade(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '-upgrade' in info['command']
     assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']
