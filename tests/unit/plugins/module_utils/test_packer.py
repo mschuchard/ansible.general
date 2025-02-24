@@ -58,10 +58,6 @@ def test_ansible_to_packer_errors():
     with pytest.raises(RuntimeError, match='Unsupported on error argument value specified: foo'):
         packer.ansible_to_packer(args={'on_error': 'foo'})
 
-    # test fails on unsupported on error argument value
-    with pytest.raises(RuntimeError, match='Unsupported Packer arg specified: foo'):
-        packer.ansible_to_packer(args={'foo': 'bar'})
-
     # test fails on nonexistent var file
     with pytest.raises(FileNotFoundError, match='Var file does not exist: one.pkrvars.hcl'):
         packer.ansible_to_packer(args={'var_file': ['galaxy.yml', 'one.pkrvars.hcl']})

@@ -16,6 +16,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     },
     'fmt': {
         'check': '-check',
+        'diff': '-diff',
         'recursive': '-recursive',
     },
     'init': {'upgrade': '-upgrade'},
@@ -28,6 +29,9 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 
 # dictionary that maps input args to packer args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
+    'fmt': {
+        'write': '-write=',
+    },
     'build': {
         'excepts': '-except=',
         'only': '-only=',
@@ -67,7 +71,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
         if arg in action_args_map:
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str, then append the value interpolated with the arg name from the dict to the command
-            if isinstance(arg_value, str) and len(action_args_map[arg]) > 0:
+            if (isinstance(arg_value, str) or isinstance(arg_value, bool)) and len(action_args_map[arg]) > 0:
                 command.append(f"{action_args_map[arg]}{arg_value}")
             # if the arg value is a list, then extend the command with the values because they are already formatted correctly
             elif isinstance(arg_value, list) and len(action_args_map[arg]) == 0:
@@ -111,8 +115,5 @@ def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
             case 'on_error':
                 if arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
                     raise RuntimeError(f"Unsupported on error argument value specified: {arg_value}")
-            # unsupported argument
-            case _:
-                raise RuntimeError(f"Unsupported Packer arg specified: {arg}")
 
     return args
