@@ -23,9 +23,9 @@ def test_packer_fmt_defaults(capfd):
     assert not info['stdout']
 
 
-def test_packer_fmt_config(capfd):
-    """test packer fmt with config"""
-    utils.set_module_args({'config_dir': str(utils.fixtures_dir())})
+def test_packer_fmt_config_diff_write(capfd):
+    """test packer fmt with config diff write"""
+    utils.set_module_args({'diff': True, 'write': False, 'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         packer_fmt.main()
 
@@ -35,7 +35,9 @@ def test_packer_fmt_config(capfd):
     info = json.loads(stdout)
     assert not info['changed']
     assert str(utils.fixtures_dir()) == info['command'][-1]
-    assert not info['stdout']
+    assert '-diff' in info['command']
+    assert '-write=false' in info['command']
+    assert '' == info['stdout']
 
 
 def test_packer_fmt_recursive_check(capfd):

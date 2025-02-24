@@ -1,6 +1,7 @@
 ### 1.2.1 (Next)
 - General code improvements.
 - Improve `changed` detection for `terraform_fmt` module.
+- Add `diff` and `write` parameters to `packer_fmt` module.
 
 ### 1.2.0
 - Finish adding Terraform modules.

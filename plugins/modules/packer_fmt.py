@@ -27,10 +27,20 @@ options:
         required: false
         default: false
         type: bool
+    diff:
+        description: Display diffs of formatting changes.
+        required: false
+        default: false
+        type: bool
     recursive:
         description: Also process files in subdirectories. By default only the given directory (or current directory) is processed.
         required: false
         default: false
+        type: bool
+    write:
+        description: Write to source files.
+        required: false
+        default: true
         type: bool
 
 requirements:
@@ -40,10 +50,12 @@ author: Matthew Schuchard (@mschuchard)
 '''
 
 EXAMPLES = r'''
-# rewrite Packer files in /path/to/packer_dir to canonical format
-- name: Rewrite packer files in /path/to/packer_dir to canonical format
+# rewrite Packer files in /path/to/packer_dir to canonical format, display diffs, and do not write to source files
+- name: Rewrite packer files in /path/to/packer_dir to canonical format, display diffs, and do not write to source files
   mschuchard.general.packer_fmt:
     config_dir: /path/to/packer_dir
+    diff: true
+    write: false
 
 # verify canonical formatting of Packer files in /path/to/packer_dir
 - name: Verify canonical formatting of packer files in /path/to/packer_dir
@@ -76,8 +88,11 @@ def main() -> None:
         argument_spec={
             'check': {'type': 'bool', 'required': False},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'recursive': {'type': 'bool', 'required': False}
+            'diff': {'type': 'bool', 'required': False},
+            'recursive': {'type': 'bool', 'required': False},
+            'write': {'type': 'bool', 'required': False, 'default': True},
         },
+        mutually_exclusive=[('check', 'write')],
         supports_check_mode=True
     )
 
@@ -91,11 +106,24 @@ def main() -> None:
     if check:
         flags.append('check')
         changed = False
+    if module.params.get('diff'):
+        flags.append('diff')
     if module.params.get('recursive'):
         flags.append('recursive')
 
+    # check args
+    args: dict = {}
+    # reminder: the flag that must be argued instead
+    # ruff complains so default should protect against falsey with None
+    if not module.params.get('write'):
+        args.update({'write': 'false'})
+        changed = False
+
+    # convert ansible params to terraform args
+    args = packer.ansible_to_packer(args)
+
     # determine packer command
-    command: list[str] = packer.cmd(action='fmt', flags=flags, target_dir=config_dir)
+    command: list[str] = packer.cmd(action='fmt', flags=flags, args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:
