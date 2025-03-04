@@ -38,6 +38,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
 # dictionary that maps input args to terraform args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
     'apply': {
+        'replace': '',
         'target': '',
         'var': '',
         'var_file': '',

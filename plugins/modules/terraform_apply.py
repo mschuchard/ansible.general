@@ -30,6 +30,10 @@ options:
         description: Location of the output file generated during a plan. Mutually exclusive with all other parameters since the parameters are all defined instead during the plan execution.
         required: false
         type: path
+    replace:
+        description: Force replacement of a particular resource instance using its resource address. If the plan would normally produce an update or no-op action for this instance, then Terraform will plan to replace it instead.
+        required: false
+        type: list
     target:
         description: Limit the applying operation to only the given module, resource, or resource instance, and all of its dependencies.
         required: false
@@ -97,6 +101,7 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'destroy': {'type': 'bool', 'required': False},
             'plan_file': {'type': 'path', 'required': False},
+            'replace': {'type': 'list', 'required': False},
             'target': {'type': 'list', 'required': False},
             'var': {'type': 'list', 'required': False},
             'var_file': {'type': 'list', 'required': False}
@@ -108,6 +113,7 @@ def main() -> None:
     # initialize
     changed: bool = True
     config_dir: Path = Path(module.params.get('config_dir'))
+    replace: list[str] = module.params.get('replace')
     target: list[str] = module.params.get('target')
     var: list[dict] = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
@@ -128,6 +134,8 @@ def main() -> None:
         # check args
         args: dict = {}
         # ruff complains so default should protect against falsey with None
+        if replace:
+            args.update({'replace': replace})
         if target:
             args.update({'target': target})
         if var:
