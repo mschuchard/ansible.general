@@ -75,3 +75,24 @@ def var_files_converter(var_files: list[Path]) -> list[str]:
             raise FileNotFoundError(f"Var file does not exist: {var_file}")
 
     return args
+
+
+def params_to_flags_args(params: dict, spec: dict[str, dict]) -> (list[str], dict):
+    """theoretical function to convert ansible module params to module utility action flags and args
+    subtleties in specific module params prevent this from widespread use
+    params dictionary argument should be populated from AnsibleModule.params{}, and spec from AnsibleModule.argument_spec{}"""
+
+    # initialize
+    flags: list[str] = []
+    args: dict = {}
+
+    # iterate through populated params
+    for param, attribute in params.items():
+        # check if bool type and value input
+        if spec[param]['type'] == 'bool' and attribute:
+            flags.append(param)
+        # otherwise argument if value input
+        elif attribute:
+            args.update({param: attribute})
+
+    return flags, args
