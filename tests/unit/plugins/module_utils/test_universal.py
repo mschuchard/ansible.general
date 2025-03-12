@@ -43,3 +43,18 @@ def test_var_files_converter():
 
     # test accurate var files conversion
     assert universal.var_files_converter(['galaxy.yml', 'galaxy.yml', 'galaxy.yml']) == ['-var-file=galaxy.yml', '-var-file=galaxy.yml', '-var-file=galaxy.yml']
+
+
+def test_params_to_flags_args():
+    """test ansible module params to utils flags and args converter"""
+
+    params: dict = {
+        'foo': 'bar',
+        'baz': True,
+    }
+    spec: dict[str, dict] = {
+        'baz': {'type': 'bool', 'required': False},
+        'foo': {'type': 'str', 'required': False, 'default': 'maybe'},
+    }
+
+    assert universal.params_to_flags_args(params, spec) == (['baz'], {'foo': 'bar'})
