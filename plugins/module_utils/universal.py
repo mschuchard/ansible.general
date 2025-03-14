@@ -88,11 +88,19 @@ def params_to_flags_args(params: dict, spec: dict[str, dict]) -> (list[str], dic
 
     # iterate through populated params
     for param, attribute in params.items():
-        # check if bool type and value input
-        if spec[param]['type'] == 'bool' and attribute:
-            flags.append(param)
-        # otherwise argument if value input
-        elif attribute:
-            args.update({param: attribute})
+        # check if parameter value is defined
+        if attribute:
+            # check module argument spec for parameter type
+            match spec[param]['type']:
+                # check if bool type --> probably flag
+                case 'bool':
+                    flags.append(param)
+                # check if path type --> probably need type conversion
+                case 'path':
+                    args.update({param: Path(attribute)})
+                # otherwise generic argument
+                case _:
+                    args.update({param: attribute})
+
 
     return flags, args

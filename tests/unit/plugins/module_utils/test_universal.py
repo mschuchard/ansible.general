@@ -2,6 +2,7 @@
 
 
 import pytest
+from pathlib import Path
 from mschuchard.general.plugins.module_utils import universal
 
 
@@ -51,10 +52,14 @@ def test_params_to_flags_args():
     params: dict = {
         'foo': 'bar',
         'baz': True,
+        'none': None,
+        'path': '/tmp',
     }
     spec: dict[str, dict] = {
         'baz': {'type': 'bool', 'required': False},
         'foo': {'type': 'str', 'required': False, 'default': 'maybe'},
+        'none': {'type': 'int', 'required': False},
+        'path': {'type': 'path', 'required': False, 'default': Path.cwd()},
     }
 
-    assert universal.params_to_flags_args(params, spec) == (['baz'], {'foo': 'bar'})
+    assert universal.params_to_flags_args(params, spec) == (['baz'], {'foo': 'bar', 'path': Path('/tmp')})
