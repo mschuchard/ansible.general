@@ -123,7 +123,7 @@ def main() -> None:
     # initialize
     config_dir: Path = Path(module.params.get('config_dir'))
     generate_config: Path = module.params.get('generate_config')
-    out: str = module.params.get('out')
+    out: Path = module.params.get('out')
     replace: list[str] = module.params.get('replace')
     target: list[str] = module.params.get('target')
     var: list[dict] = module.params.get('var')

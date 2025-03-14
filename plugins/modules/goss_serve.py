@@ -124,7 +124,7 @@ def main() -> None:
             'max_concur': {'type': 'int', 'required': False},
             'package': {'type': 'str', 'required': False},
             'port': {'type': 'int', 'required': False},
-            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'vars': {'type': 'path', 'required': False},
             'vars_inline': {'type': 'dict', 'required': False}
         },
         mutually_exclusive=[('vars', 'vars_inline')],
@@ -137,15 +137,15 @@ def main() -> None:
     endpoint: str = module.params.get('endpoint')
     the_format: str = module.params.get('format')
     format_opts: str = module.params.get('format_opts')
-    the_vars: Path = Path(module.params.get('vars'))
+    the_vars: Path = module.params.get('vars')
     vars_inline: dict = module.params.get('vars_inline')
     max_concur: int = module.params.get('max_concur')
     package: str = module.params.get('package')
     port: int = module.params.get('port')
     gossfile: Path = Path(module.params.get('gossfile'))
-    cwd: str = str(Path.cwd())
+    cwd: Path = Path.cwd()
     if gossfile != Path.cwd():
-        cwd = str(gossfile.parent)
+        cwd = gossfile.parent
 
     # check args
     args: dict = {}
@@ -163,8 +163,8 @@ def main() -> None:
         args.update({'package': package})
     if port:
         args.update({'port': port})
-    if the_vars != Path.cwd():
-        args.update({'vars': str(the_vars)})
+    if the_vars:
+        args.update({'vars': Path(the_vars)})
     elif vars_inline:
         args.update({'vars_inline': vars_inline})
 

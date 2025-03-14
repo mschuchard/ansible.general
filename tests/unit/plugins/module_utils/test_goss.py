@@ -24,7 +24,7 @@ def test_goss_cmd_errors():
         assert goss.cmd(action='render', args={'foo': 'bar'}) == ['goss', 'render']
 
     # test fails on nonexistent vars file
-    with pytest.raises(FileNotFoundError, match='Vars file does not exist: /foo'):
+    with pytest.raises(FileNotFoundError, match='Vars file does not exist or is invalid: /foo'):
         goss.cmd(action='render', args={'vars': '/foo'})
 
     # test warns and fails on inline vars that are not valid json

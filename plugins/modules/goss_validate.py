@@ -117,7 +117,7 @@ def main() -> None:
             'package': {'type': 'str', 'required': False},
             'retry_timeout': {'type': 'str', 'required': False},
             'sleep': {'type': 'str', 'required': False},
-            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'vars': {'type': 'path', 'required': False},
             'vars_inline': {'type': 'dict', 'required': False}
         },
         mutually_exclusive=[('vars', 'vars_inline')],
@@ -129,16 +129,16 @@ def main() -> None:
     changed: bool = False
     the_format: str = module.params.get('format')
     format_opts: str = module.params.get('format_opts')
-    the_vars: Path = Path(module.params.get('vars'))
+    the_vars: Path = module.params.get('vars')
     vars_inline: dict = module.params.get('vars_inline')
     max_concur: int = module.params.get('max_concur')
     package: str = module.params.get('package')
     retry_timeout: str = module.params.get('retry_timeout')
     sleep: str = module.params.get('sleep')
     gossfile: Path = Path(module.params.get('gossfile'))
-    cwd: str = str(Path.cwd())
+    cwd: Path = Path.cwd()
     if gossfile != Path.cwd():
-        cwd = str(gossfile.parent)
+        cwd = gossfile.parent
 
     # check args
     args: dict = {}
@@ -154,8 +154,8 @@ def main() -> None:
         args.update({'retry_timeout': retry_timeout})
     if sleep:
         args.update({'sleep': sleep})
-    if the_vars != Path.cwd():
-        args.update({'vars': str(the_vars)})
+    if the_vars:
+        args.update({'vars': Path(the_vars)})
     elif vars_inline:
         args.update({'vars_inline': vars_inline})
 

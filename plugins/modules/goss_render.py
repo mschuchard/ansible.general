@@ -85,7 +85,7 @@ def main() -> None:
             'debug': {'type': 'bool', 'required': False},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'package': {'type': 'str', 'required': False},
-            'vars': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'vars': {'type': 'path', 'required': False},
             'vars_inline': {'type': 'dict', 'required': False}
         },
         mutually_exclusive=[('vars', 'vars_inline')],
@@ -94,13 +94,13 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    the_vars: Path = Path(module.params.get('vars'))
+    the_vars: Path = module.params.get('vars')
     vars_inline: dict = module.params.get('vars_inline')
     package: str = module.params.get('package')
     gossfile: Path = Path(module.params.get('gossfile'))
-    cwd: str = str(Path.cwd())
+    cwd: Path = Path.cwd()
     if gossfile != Path.cwd():
-        cwd = str(gossfile.parent)
+        cwd = gossfile.parent
 
     # check on optional debug param
     flags: list[str] = []
@@ -111,8 +111,8 @@ def main() -> None:
     args: dict = {}
     if package:
         args.update({'package': package})
-    if the_vars != Path.cwd():
-        args.update({'vars': str(the_vars)})
+    if the_vars:
+        args.update({'vars': Path(the_vars)})
     elif vars_inline:
         args.update({'vars_inline': vars_inline})
 

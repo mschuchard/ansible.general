@@ -85,14 +85,14 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
 
     # check if vars is specified
     if 'vars' in args:
-        vars_file: str = args['vars']
+        vars_file: Path = args['vars']
         # verify vars file exists
         if Path(vars_file).is_file() and universal.validate_json_yaml_file(Path(vars_file)):
             command.extend([GLOBAL_ARGS_MAP['vars'], vars_file])
             # remove vars from args to avoid doublecheck with action args
             del args['vars']
         else:
-            raise FileNotFoundError(f"Vars file does not exist: {args['vars']}")
+            raise FileNotFoundError(f"Vars file does not exist or is invalid: {args['vars']}")
     # check if vars_inline is specified (exclusive with vars)
     elif 'vars_inline' in args:
         # validate the conversion of the vars inline param value to a json string and extend command

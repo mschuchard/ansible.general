@@ -27,7 +27,7 @@ def test_goss_serve_gossfile(capfd):
 
 def test_goss_serve_format_vars(capfd):
     """test goss serve with format and vars"""
-    utils.set_module_args({'format': 'json', 'format_opts': 'pretty', 'vars': 'galaxy.yml'})
+    utils.set_module_args({'format': 'json', 'format_opts': 'pretty', 'vars': f"{str(utils.fixtures_dir())}/goss.yaml"})
     with pytest.raises(SystemExit, match='1'):
         goss_serve.main()
 
@@ -42,7 +42,7 @@ def test_goss_serve_format_vars(capfd):
     assert '-o' in info['cmd']
     assert 'pretty' in info['cmd']
     assert '--vars' in info['cmd']
-    assert 'galaxy.yml' in info['cmd']
+    assert 'goss.yaml' in info['cmd']
     assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
 
 
