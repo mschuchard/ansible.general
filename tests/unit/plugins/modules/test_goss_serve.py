@@ -42,7 +42,7 @@ def test_goss_serve_format_vars(capfd):
     assert '-o' in info['cmd']
     assert 'pretty' in info['cmd']
     assert '--vars' in info['cmd']
-    assert 'goss.yaml' in info['cmd']
+    assert f"{str(utils.fixtures_dir())}/goss.yaml" in info['cmd']
     assert 'file error: open ./goss.yaml: no such file or directory' in info['stderr']
 
 

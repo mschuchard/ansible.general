@@ -88,7 +88,7 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
         vars_file: Path = args['vars']
         # verify vars file exists
         if Path(vars_file).is_file() and universal.validate_json_yaml_file(Path(vars_file)):
-            command.extend([GLOBAL_ARGS_MAP['vars'], vars_file])
+            command.extend([GLOBAL_ARGS_MAP['vars'], str(vars_file)])
             # remove vars from args to avoid doublecheck with action args
             del args['vars']
         else:
