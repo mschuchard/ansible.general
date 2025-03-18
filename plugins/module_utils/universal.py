@@ -57,7 +57,7 @@ def vars_converter(var_pairs: list[dict[str, str]]) -> list[str]:
 
     # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
     # various language limitations force this non-ideal implementation
-    return ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+    return ' '.join([f"-var '{var_value}'" for var_value in var_strings]).split()
 
 
 def var_files_converter(var_files: list[Path]) -> list[str]:

@@ -95,6 +95,6 @@ def test_ansible_to_terraform():
         # 'resources': ['resource.name resource.id', 'aws_instance.this i-1234567890'],
         'resource': ['resource.name', 'resource.id'],
         'target': ['-target=random.foo', '-target=local.bar'],
-        'var': ['-var', 'var1="value1"', '-var', 'var2="value2"', '-var', 'var3="value3"'],
+        'var': ['-var', '\'var1="value1"\'', '-var', '\'var2="value2"\'', '-var', '\'var3="value3"\''],
         'var_file': ['-var-file=galaxy.yml', '-var-file=galaxy.yml', '-var-file=galaxy.yml']
     }
