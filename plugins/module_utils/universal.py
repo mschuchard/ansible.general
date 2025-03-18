@@ -52,8 +52,8 @@ def validate_json_yaml_file(file: Path) -> bool:
 def vars_converter(var_pairs: list[dict[str, str]]) -> list[str]:
     """convert an ansible param list of dict var name-value pairs to a hashi list of var name-value pairs"""
 
-    # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"]
-    var_strings: list[str] = [f"{list(var_pair.keys())[0]}={list(var_pair.values())[0]}" for var_pair in var_pairs]
+    # transform list[dict[<var name>, <var value>]] into list["<var name>=<var value>"] where <var value> is JSON encoded
+    var_strings: list[str] = [f"{list(var_pair.keys())[0]}={json.dumps(list(var_pair.values())[0])}" for var_pair in var_pairs]
 
     # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
     # various language limitations force this non-ideal implementation

@@ -4,6 +4,7 @@
 - Add `replace` parameter to `terraform_apply` module.
 - Add `diff` and `write` parameters to `packer_fmt` module.
 - Fix `vars` parameter in `goss` modules.
+- Fix complex type variable inputs for `terraform` and `packer` modules.
 
 ### 1.2.0
 - Finish adding Terraform modules.

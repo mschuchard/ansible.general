@@ -124,6 +124,6 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
             command.extend(['-g', str(gossfile)])
         else:
             # error if gossfile does not exist
-            raise FileNotFoundError(f"GoSSfile does not exist: {gossfile}")
+            raise FileNotFoundError(f"GoSSfile does not exist or is invalid: {gossfile}")
 
     return command

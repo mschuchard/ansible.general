@@ -32,7 +32,7 @@ def test_goss_cmd_errors():
         goss.cmd(action='render', args={'vars_inline': goss})
 
     # test fails on nonexistent gossfile
-    with pytest.raises(FileNotFoundError, match='GoSSfile does not exist: /gossfile.yaml'):
+    with pytest.raises(FileNotFoundError, match='GoSSfile does not exist or is invalid: /gossfile.yaml'):
         goss.cmd(action='render', gossfile='/gossfile.yaml')
 
     # test fails on invalid package parameter value
