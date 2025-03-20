@@ -78,8 +78,8 @@ def test_packer_validate_var_varfile(capfd):
 
     info = json.loads(stdout)
     assert '-var' in info['cmd']
-    assert '\'var_name="var_value"\'' in info['cmd']
-    assert '\'var_name_other="var_value_other"\'' in info['cmd']
+    assert 'var_name=\'var_value\'' in info['cmd']
+    assert 'var_name_other=\'var_value_other\'' in info['cmd']
     assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
     assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
     assert 'ui,error,Warning: Undefined variable' in info['stdout']
