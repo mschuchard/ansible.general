@@ -1,4 +1,4 @@
-### 1.2.1 (Next)
+### 1.2.1
 - General code improvements.
 - Improve `changed` detection for `terraform_fmt` module.
 - Add `replace` parameter to `terraform_apply` module.
