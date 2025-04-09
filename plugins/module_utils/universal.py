@@ -49,21 +49,20 @@ def validate_json_yaml_file(file: Path) -> bool:
             raise ValueError(exc) from exc
 
 
-def vars_converter(var_pairs: list[dict[str, str]]) -> list[str]:
-    """convert an ansible param list of dict var name-value pairs to a hashi list of var name-value pairs"""
+def vars_converter(var_pairs: dict[str, str]) -> list[str]:
+    """convert an ansible param dict of var name-value pairs to a hashi list of var name-value pairs"""
 
-    # transform list[dict[<var name>, <var value>]] into list["<var name>='<var value>'"] where <var value> is JSON encoded if complex type
+    # transform dict[<var name>, <var value>] into list["<var name>='<var value>'"] where <var value> is JSON encoded if complex type
     var_strings: list[str] = []
-    # iterate through pairs of variables
-    for var_pair in var_pairs:
-        # iterate through var names and values within pairing
-        for var, values in var_pair.items():
-            # if the value is a complex type then encode to compact JSON for cli parsing
-            if isinstance(values, list) or isinstance(values, dict):
-                var_strings.append(f"{var}='{json.dumps(values, separators=(',', ':'))}'")
-            # if the value is a primitive type then handle normally
-            else:
-                var_strings.append(f"{var}='{values}'")
+    # iterate through var names and values within pairs
+    for var, values in var_pairs.items():
+        # if the value is a complex type then encode to compact JSON for cli parsing
+        if isinstance(values, list) or isinstance(values, dict):
+            var_strings.append(f"{var}='{json.dumps(values, separators=(',', ':'))}'")
+        # if the value is a primitive type then handle normally
+        else:
+            var_strings.append(f"{var}='{values}'")
+
 
     # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
     # various language limitations force this non-ideal implementation

@@ -85,7 +85,7 @@ def test_ansible_to_terraform():
         # 'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
         'resource': {'resource.name':'resource.id'},
         'target': ['random.foo', 'local.bar'],
-        'var': [{'var1': 'value1'}, {'var2': 'value2'}, {'var3': 'value3'}],
+        'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
         'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml']
     }) == {
         'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"],

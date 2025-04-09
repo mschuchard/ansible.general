@@ -71,7 +71,7 @@ def test_ansible_to_packer():
         'only': ['foo', 'bar', 'baz'],
         'on_error': 'cleanup',
         'parallel_builds': 2,
-        'var': [{'var1': 'value1'}, {'var2': 'value2'}, {'var3': 'value3'}],
+        'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
         'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml']
     }) == {
         'excepts': 'foo,bar,baz',
