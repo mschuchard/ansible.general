@@ -41,7 +41,7 @@ options:
     var:
         description: Set values for one or more of the input variables in the root module of the configuration.
         required: false
-        type: list
+        type: dict
     var_file:
         description: Load variable values from the given HCL2 files in addition to the default files terraform.tfvars and *.auto.tfvars.
         required: false
@@ -73,8 +73,8 @@ EXAMPLES = r'''
     - aws_instance.this
     - local_file.that
     var:
-    - var_name: var_value
-    - var_name_other: var_value_other
+      var_name: var_value
+      var_name_other: var_value_other
     var_file:
     - one.tfvars
     - two.tfvars
@@ -103,7 +103,7 @@ def main() -> None:
             'plan_file': {'type': 'path', 'required': False},
             'replace': {'type': 'list', 'required': False},
             'target': {'type': 'list', 'required': False},
-            'var': {'type': 'list', 'required': False},
+            'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'required': False}
         },
         mutually_exclusive=[('plan_file', 'config_dir')],
@@ -115,7 +115,7 @@ def main() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
     replace: list[str] = module.params.get('replace')
     target: list[str] = module.params.get('target')
-    var: list[dict] = module.params.get('var')
+    var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
 
     command: list[str] = []

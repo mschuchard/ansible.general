@@ -33,7 +33,7 @@ options:
     var:
         description: Set values for one or more of the input variables in the root module of the configuration.
         required: false
-        type: list
+        type: dict
     var_file:
         description: Load variable values from the given HCL2 files in addition to the default files terraform.tfvars and *.auto.tfvars.
         required: false
@@ -59,8 +59,8 @@ EXAMPLES = r'''
     address: local_file.this
     id: /path/to/local_file
     var:
-    - var_name: var_value
-    - var_name_other: var_value_other
+      var_name: var_value
+      var_name_other: var_value_other
     var_file:
     - one.tfvars
     - two.tfvars
@@ -87,7 +87,7 @@ def main() -> None:
             'address': {'type': 'str', 'required': True},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'id': {'type': 'str', 'required': True},
-            'var': {'type': 'list', 'required': False},
+            'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'required': False}
         },
         supports_check_mode=True
@@ -97,7 +97,7 @@ def main() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
     address: str = module.params.get('address')
     id: str = module.params.get('id')
-    var: list[dict] = module.params.get('var')
+    var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
 
     # check args

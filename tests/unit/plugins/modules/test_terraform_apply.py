@@ -58,7 +58,7 @@ def test_terraform_apply_multiple_args(capfd):
     """test terraform apply with multiple arguments and a flag"""
     utils.set_module_args({
         'target': ['aws_instance.this', 'local_file.that'],
-        'var': [{'var_name': 'var_value'}, {'var_name_other': 'var_value_other'}],
+        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
         'var_file': [f"{str(utils.fixtures_dir())}/foo.tfvars", f"{str(utils.fixtures_dir())}/foo.tfvars"],
         'config_dir': str(utils.fixtures_dir())
     })

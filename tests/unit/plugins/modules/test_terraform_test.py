@@ -43,7 +43,7 @@ def test_terraform_test_upgrade_backend(capfd):
     """test terraform test with json and vars"""
     utils.set_module_args({
         'json': True,
-        'var': [{'var_name': 'var_value'}, {'var_name_other': 'var_value_other'}],
+        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
         'var_file': [f"{str(utils.fixtures_dir())}/foo.tfvars", f"{str(utils.fixtures_dir())}/foo.tfvars"]
     })
     with pytest.raises(SystemExit, match='0'):

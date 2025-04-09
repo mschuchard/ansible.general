@@ -49,7 +49,7 @@ def test_terraform_import_vars(capfd):
     utils.set_module_args({
         'address': 'local_file.this',
         'id': '/path/to/local_file',
-        'var': [{'var_name': 'var_value'}, {'var_name_other': 'var_value_other'}],
+        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
         'var_file': [f"{str(utils.fixtures_dir())}/foo.tfvars", f"{str(utils.fixtures_dir())}/foo.tfvars"]
     })
     with pytest.raises(SystemExit, match='1'):
