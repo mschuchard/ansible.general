@@ -60,8 +60,8 @@ options:
     var:
         description: Variables for templates.
         required: false
-        default: []
-        type: list
+        default: {}
+        type: dict
     var_file:
         description: HCL2 files containing user variables.
         required: false
@@ -105,8 +105,8 @@ EXAMPLES = r'''
   mschuchard.general.packer_build:
     config_dir: /path/to/packer_dir
     var:
-    - var_name: var_value
-    - var_name_other: var_value_other
+      var_name: var_value
+      var_name_other: var_value_other
     var_file:
     - one.pkrvars.hcl
     - two.pkrvars.hcl
@@ -137,7 +137,7 @@ def main() -> None:
             'only': {'type': 'list', 'required': False},
             'parallel_builds': {'type': 'int', 'required': False},
             'timestamp_ui': {'type': 'bool', 'required': False},
-            'var': {'type': 'list', 'required': False},
+            'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'required': False}
         },
         mutually_exclusive=[('excepts', 'only')],
@@ -151,7 +151,7 @@ def main() -> None:
     on_error: str = module.params.get('on_error')
     only: list[str] = module.params.get('only')
     parallel_builds: int = module.params.get('parallel_builds')
-    var: list[dict] = module.params.get('var')
+    var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
 
     # check optional params

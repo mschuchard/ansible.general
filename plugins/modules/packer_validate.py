@@ -45,8 +45,8 @@ options:
     var:
         description: Variables for templates.
         required: false
-        default: []
-        type: list
+        default: {}
+        type: dict
     var_file:
         description: HCL2 files containing user variables.
         required: false
@@ -91,8 +91,8 @@ EXAMPLES = r'''
   mschuchard.general.packer_validate:
     config_dir: /path/to/packer_dir
     var:
-    - var_name: var_value
-    - var_name_other: var_value_other
+      var_name: var_value
+      var_name_other: var_value_other
     var_file:
     - one.pkrvars.hcl
     - two.pkrvars.hcl
@@ -120,7 +120,7 @@ def main() -> None:
             'excepts': {'type': 'list', 'required': False},
             'only': {'type': 'list', 'required': False},
             'syntax_only': {'type': 'bool', 'required': False},
-            'var': {'type': 'list', 'required': False},
+            'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'required': False},
             'warn_undeclared_var': {'type': 'bool', 'required': False, 'default': True},
         },
@@ -132,7 +132,7 @@ def main() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
     excepts: list[str] = module.params.get('excepts')
     only: list[str] = module.params.get('only')
-    var: list[dict] = module.params.get('var')
+    var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
 
     # check flags

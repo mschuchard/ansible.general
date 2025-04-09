@@ -66,7 +66,7 @@ def test_packer_validate_syntax_except(capfd):
 def test_packer_validate_var_varfile(capfd):
     """test packer validate with var and var_file"""
     utils.set_module_args({
-        'var': [{'var_name': 'var_value'}, {'var_name_other': 'var_value_other'}],
+        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
         'var_file': [f"{str(utils.fixtures_dir())}/foo.pkrvars.hcl", f"{str(utils.fixtures_dir())}/foo.pkrvars.hcl"],
         'config_dir': str(utils.fixtures_dir())
     })

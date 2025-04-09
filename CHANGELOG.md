@@ -1,3 +1,6 @@
+### 1.3.0 (Next)
+- Simplify `var` parameter in Hashi modules to dictionary type.
+
 ### 1.2.1
 - General code improvements.
 - Improve `changed` detection for `terraform_fmt` module.
