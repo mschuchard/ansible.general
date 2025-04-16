@@ -1,4 +1,5 @@
 """unit test for packer validate module"""
+
 __metaclass__ = type
 
 
@@ -24,11 +25,7 @@ def test_packer_validate_defaults(capfd):
 
 def test_packer_validate_eval_datasource_warn_undeclared(capfd):
     """test packer validate with evaluate datasources and do not warn undeclared vars"""
-    utils.set_module_args({
-        'evaluate_datasources': True,
-        'warn_undeclared_var': False,
-        'config_dir': str(utils.fixtures_dir())
-    })
+    utils.set_module_args({'evaluate_datasources': True, 'warn_undeclared_var': False, 'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='1'):
         packer_validate.main()
 
@@ -44,11 +41,7 @@ def test_packer_validate_eval_datasource_warn_undeclared(capfd):
 
 def test_packer_validate_syntax_except(capfd):
     """test packer validate with syntax_only and except"""
-    utils.set_module_args({
-        'config_dir': str(utils.fixtures_dir()),
-        'excepts': ['null.this', 'null.that'],
-        'syntax_only': True
-    })
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'excepts': ['null.this', 'null.that'], 'syntax_only': True})
     with pytest.raises(SystemExit, match='0'):
         packer_validate.main()
 
@@ -65,11 +58,13 @@ def test_packer_validate_syntax_except(capfd):
 
 def test_packer_validate_var_varfile(capfd):
     """test packer validate with var and var_file"""
-    utils.set_module_args({
-        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
-        'var_file': [f"{str(utils.fixtures_dir())}/foo.pkrvars.hcl", f"{str(utils.fixtures_dir())}/foo.pkrvars.hcl"],
-        'config_dir': str(utils.fixtures_dir())
-    })
+    utils.set_module_args(
+        {
+            'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
+            'var_file': [f'{str(utils.fixtures_dir())}/foo.pkrvars.hcl', f'{str(utils.fixtures_dir())}/foo.pkrvars.hcl'],
+            'config_dir': str(utils.fixtures_dir()),
+        }
+    )
     with pytest.raises(SystemExit, match='1'):
         packer_validate.main()
 
@@ -78,9 +73,9 @@ def test_packer_validate_var_varfile(capfd):
 
     info = json.loads(stdout)
     assert '-var' in info['cmd']
-    assert 'var_name=\'var_value\'' in info['cmd']
-    assert 'var_name_other=\'var_value_other\'' in info['cmd']
-    assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
-    assert f"-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl" in info['cmd']
+    assert "var_name='var_value'" in info['cmd']
+    assert "var_name_other='var_value_other'" in info['cmd']
+    assert f'-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl' in info['cmd']
+    assert f'-var-file={str(utils.fixtures_dir())}/foo.pkrvars.hcl' in info['cmd']
     assert 'ui,error,Warning: Undefined variable' in info['stdout']
     assert str(utils.fixtures_dir()) == info['cmd'][-1]

@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for terraform init"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: terraform_init
 
@@ -58,9 +59,9 @@ requirements:
     - terraform >= 1.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # initialize directory in /path/to/terraform_config_dir
 - name: Initialize terraform directory in /path/to/terraform_config_dir
   mschuchard.general.terraform_init:
@@ -83,15 +84,15 @@ EXAMPLES = r'''
     plugin_dir:
     - /path/to/plugin_dir
     - /path/to/other_plugin_dir
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Terraform command executed by Ansible.
     type: str
     returned: always
     sample: 'terraform init /home/terraform'
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -109,9 +110,9 @@ def main() -> None:
             'force_copy': {'type': 'bool', 'required': False},
             'migrate_state': {'type': 'bool', 'required': False},
             'plugin_dir': {'type': 'list', 'required': False},
-            'upgrade': {'type': 'bool', 'required': False}
+            'upgrade': {'type': 'bool', 'required': False},
         },
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -154,7 +155,7 @@ def main() -> None:
     return_code: int
     stdout: str
     stderr: str
-    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION': 'true'})
 
     # check idempotence
     if 'successfully initialized' in stdout:
@@ -165,9 +166,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

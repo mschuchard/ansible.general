@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for puppet agent"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: puppet agent
 
@@ -62,9 +63,9 @@ requirements:
     - puppet >= 5.5.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # initiate the puppet agent with test options and server port 8234
 - name: Initiate the puppet agent with test options and server port 8234
   mschuchard.general.puppet_agent:
@@ -83,9 +84,9 @@ EXAMPLES = r'''
   mschuchard.general.puppet_agent:
     no_daemonize: true
     onetime: true
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Puppet command executed by Ansible.
     type: str
@@ -94,7 +95,7 @@ return_code:
     description: The return code from the Puppet agent execution.
     type: int
     returned: always
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -115,7 +116,7 @@ def main() -> None:
             'test': {'type': 'bool', 'required': False},
             'verbose': {'type': 'bool', 'required': False},
         },
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -168,9 +169,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, return_code=return_code, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

@@ -1,6 +1,5 @@
 """unit test for goss module util"""
 
-
 import pytest
 from mschuchard.general.plugins.module_utils import goss
 
@@ -28,7 +27,13 @@ def test_goss_cmd_errors():
         goss.cmd(action='render', args={'vars': '/foo'})
 
     # test warns and fails on inline vars that are not valid json
-    with pytest.warns(SyntaxWarning, match="The vars_inline parameter values <module 'mschuchard.general.plugins.module_utils.goss' from '.+/mschuchard/general/plugins/module_utils/goss.py'> could not be encoded to a JSON format string"), pytest.raises(TypeError):
+    with (
+        pytest.warns(
+            SyntaxWarning,
+            match="The vars_inline parameter values <module 'mschuchard.general.plugins.module_utils.goss' from '.+/mschuchard/general/plugins/module_utils/goss.py'> could not be encoded to a JSON format string",
+        ),
+        pytest.raises(TypeError),
+    ):
         goss.cmd(action='render', args={'vars_inline': goss})
 
     # test fails on nonexistent gossfile
@@ -53,10 +58,30 @@ def test_goss_cmd():
     assert goss.cmd(action='render', flags=['debug'], gossfile='galaxy.yml') == ['goss', '-g', 'galaxy.yml', 'render', '--debug']
 
     # test validate with default gossfile, no flags, format arg, and vars and package args
-    assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'galaxy.yml', 'package': 'apk'}) == ['goss', '--vars', 'galaxy.yml', '--package', 'apk', 'validate', '--no-color', '-f', 'rspecish']
+    assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'galaxy.yml', 'package': 'apk'}) == [
+        'goss',
+        '--vars',
+        'galaxy.yml',
+        '--package',
+        'apk',
+        'validate',
+        '--no-color',
+        '-f',
+        'rspecish',
+    ]
 
     # test validate with default gossfile, no flags, sleep arg, and vars_inline and max_concur action args
-    assert goss.cmd(action='validate', args={'sleep': '5m', 'vars_inline': {'foo': 'bar'}, 'max_concur': 100}) == ['goss', '--vars-inline', '{"foo": "bar"}', 'validate', '--no-color', '-s', '5m', '--max-concurrent', 100]
+    assert goss.cmd(action='validate', args={'sleep': '5m', 'vars_inline': {'foo': 'bar'}, 'max_concur': 100}) == [
+        'goss',
+        '--vars-inline',
+        '{"foo": "bar"}',
+        'validate',
+        '--no-color',
+        '-s',
+        '5m',
+        '--max-concurrent',
+        100,
+    ]
 
     # test serve with no flags, no global args, and action args
     assert goss.cmd(action='serve', args={'format': 'json'}) == ['goss', 'serve', '-f', 'json']
@@ -65,4 +90,11 @@ def test_goss_cmd():
     assert goss.cmd(action='serve', args={'format_opts': 'perfdata', 'cache': '1h'}) == ['goss', 'serve', '-o', 'perfdata', '-c', '1h']
 
     # test serve with default gossfile, no flags, endpoint and port args
-    assert goss.cmd(action='serve', args={'endpoint': 'https://example.com/goss', 'port': 8765}) == ['goss', 'serve', '-e', 'https://example.com/goss', '-l', ':8765']
+    assert goss.cmd(action='serve', args={'endpoint': 'https://example.com/goss', 'port': 8765}) == [
+        'goss',
+        'serve',
+        '-e',
+        'https://example.com/goss',
+        '-l',
+        ':8765',
+    ]

@@ -1,4 +1,5 @@
 """unit test for terraform test module"""
+
 __metaclass__ = type
 
 
@@ -35,17 +36,19 @@ def test_terraform_test_config(capfd):
     info = json.loads(stdout)
     assert not info['changed']
     assert '-test-directory=my_tests' in info['command']
-    assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
+    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
     assert 'Success! 0 passed, 0 failed.' in info['stdout']
 
 
 def test_terraform_test_upgrade_backend(capfd):
     """test terraform test with json and vars"""
-    utils.set_module_args({
-        'json': True,
-        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
-        'var_file': [f"{str(utils.fixtures_dir())}/foo.tfvars", f"{str(utils.fixtures_dir())}/foo.tfvars"]
-    })
+    utils.set_module_args(
+        {
+            'json': True,
+            'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
+            'var_file': [f'{str(utils.fixtures_dir())}/foo.tfvars', f'{str(utils.fixtures_dir())}/foo.tfvars'],
+        }
+    )
     with pytest.raises(SystemExit, match='0'):
         terraform_test.main()
 
@@ -56,8 +59,8 @@ def test_terraform_test_upgrade_backend(capfd):
     assert not info['changed']
     assert '-json' in info['command']
     assert '-var' in info['command']
-    assert 'var_name=\'var_value\'' in info['command']
-    assert 'var_name_other=\'var_value_other\'' in info['command']
-    assert f"-var-file={str(utils.fixtures_dir())}/foo.tfvars" in info['command']
-    assert f"-var-file={str(utils.fixtures_dir())}/foo.tfvars" in info['command']
+    assert "var_name='var_value'" in info['command']
+    assert "var_name_other='var_value_other'" in info['command']
+    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['command']
+    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['command']
     assert 'Success! 0 passed, 0 failed.' in info['stdout']

@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for packer build"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: packer_build
 
@@ -72,9 +73,9 @@ requirements:
     - packer >= 1.7.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # build packer templates in /path/to/packer_dir
 - name: Build packer templates and configs in /path/to/packer_dir
   mschuchard.general.packer_build:
@@ -110,14 +111,14 @@ EXAMPLES = r'''
     var_file:
     - one.pkrvars.hcl
     - two.pkrvars.hcl
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Packer command executed by Ansible.
     type: str
     returned: always
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -138,10 +139,10 @@ def main() -> None:
             'parallel_builds': {'type': 'int', 'required': False},
             'timestamp_ui': {'type': 'bool', 'required': False},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False}
+            'var_file': {'type': 'list', 'required': False},
         },
         mutually_exclusive=[('excepts', 'only')],
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -202,9 +203,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

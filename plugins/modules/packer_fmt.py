@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for packer fmt"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: packer_fmt
 
@@ -47,9 +48,9 @@ requirements:
     - packer >= 1.7.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # rewrite Packer files in /path/to/packer_dir to canonical format, display diffs, and do not write to source files
 - name: Rewrite packer files in /path/to/packer_dir to canonical format, display diffs, and do not write to source files
   mschuchard.general.packer_fmt:
@@ -67,14 +68,14 @@ EXAMPLES = r'''
 - name: Recursively rewrite packer files in current directory to canonical format
   mschuchard.general.packer_fmt:
     recursive: true
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Packer command executed by Ansible.
     type: str
     returned: always
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -93,7 +94,7 @@ def main() -> None:
             'write': {'type': 'bool', 'required': False, 'default': True},
         },
         mutually_exclusive=[('check', 'write')],
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -144,9 +145,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

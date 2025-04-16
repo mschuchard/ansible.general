@@ -1,4 +1,5 @@
 """unit test for goss validate module"""
+
 __metaclass__ = type
 
 
@@ -10,7 +11,7 @@ from mschuchard.general.tests.unit.plugins.modules import utils
 
 def test_goss_validate_gossfile(capfd):
     """test goss validate with gossfile"""
-    utils.set_module_args({'gossfile': f"{str(utils.fixtures_dir())}/goss.yaml"})
+    utils.set_module_args({'gossfile': f'{str(utils.fixtures_dir())}/goss.yaml'})
     with pytest.raises(SystemExit, match='1'):
         goss_validate.main()
 
@@ -27,7 +28,9 @@ def test_goss_validate_gossfile(capfd):
 
 def test_goss_validate_format_vars(capfd):
     """test goss validate with format and vars"""
-    utils.set_module_args({'format': 'json', 'format_opts': 'pretty', 'vars': f"{str(utils.fixtures_dir())}/goss.yaml", 'gossfile': f"{str(utils.fixtures_dir())}/goss.yaml"})
+    utils.set_module_args(
+        {'format': 'json', 'format_opts': 'pretty', 'vars': f'{str(utils.fixtures_dir())}/goss.yaml', 'gossfile': f'{str(utils.fixtures_dir())}/goss.yaml'}
+    )
     with pytest.raises(SystemExit, match='1'):
         goss_validate.main()
 
@@ -47,7 +50,7 @@ def test_goss_validate_format_vars(capfd):
 
 def test_goss_validate_retry_sleep(capfd):
     """test goss validate with retry_timeout and sleep"""
-    utils.set_module_args({'retry_timeout': '6s', 'sleep': '3s', 'gossfile': f"{str(utils.fixtures_dir())}/goss.yaml"})
+    utils.set_module_args({'retry_timeout': '6s', 'sleep': '3s', 'gossfile': f'{str(utils.fixtures_dir())}/goss.yaml'})
     with pytest.raises(SystemExit, match='1'):
         goss_validate.main()
 
@@ -66,7 +69,9 @@ def test_goss_validate_retry_sleep(capfd):
 
 def test_goss_validate_package_vars_inline(capfd):
     """test goss validate with package and inline vars"""
-    utils.set_module_args({'package': 'dpkg', 'vars_inline': {'my_service': 'httpd', 'my_package': 'apache'}, 'gossfile': f"{str(utils.fixtures_dir())}/goss.yaml"})
+    utils.set_module_args(
+        {'package': 'dpkg', 'vars_inline': {'my_service': 'httpd', 'my_package': 'apache'}, 'gossfile': f'{str(utils.fixtures_dir())}/goss.yaml'}
+    )
     with pytest.raises(SystemExit, match='1'):
         goss_validate.main()
 

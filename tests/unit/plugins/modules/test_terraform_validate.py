@@ -1,4 +1,5 @@
 """unit test for terraform validate module"""
+
 __metaclass__ = type
 
 
@@ -35,7 +36,7 @@ def test_terraform_validate_config(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
+    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
     assert 'Success! The configuration is valid.' in info['stdout']
 
 

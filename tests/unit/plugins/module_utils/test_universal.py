@@ -1,6 +1,5 @@
 """unit test for universal module util"""
 
-
 import pytest
 from pathlib import Path
 from mschuchard.general.plugins.module_utils import universal
@@ -33,10 +32,22 @@ def test_action_flags_command():
 def test_vars_converter():
     """test ansible vars param to hashi cli converter"""
     # test accurate vars conversion
-    assert universal.vars_converter({'var1': 'value1', 'var2': 'value2', 'var3': 'value3'}) == ['-var', 'var1=\'value1\'', '-var', 'var2=\'value2\'', '-var', 'var3=\'value3\'']
+    assert universal.vars_converter({'var1': 'value1', 'var2': 'value2', 'var3': 'value3'}) == [
+        '-var',
+        "var1='value1'",
+        '-var',
+        "var2='value2'",
+        '-var',
+        "var3='value3'",
+    ]
 
     # test with complex types
-    assert universal.vars_converter({'var1': ['value1', 'value2'], 'var2': {'foo': 'bar', 'baz': 'bot'}}) == ['-var', 'var1=\'["value1","value2"]\'', '-var', 'var2=\'{"foo":"bar","baz":"bot"}\'']
+    assert universal.vars_converter({'var1': ['value1', 'value2'], 'var2': {'foo': 'bar', 'baz': 'bot'}}) == [
+        '-var',
+        'var1=\'["value1","value2"]\'',
+        '-var',
+        'var2=\'{"foo":"bar","baz":"bot"}\'',
+    ]
 
 
 def test_var_files_converter():

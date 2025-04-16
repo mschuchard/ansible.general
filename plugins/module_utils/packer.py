@@ -1,4 +1,5 @@
 """packer module utilities"""
+
 __metaclass__ = type
 
 import warnings
@@ -8,52 +9,44 @@ from mschuchard.general.plugins.module_utils import universal
 
 
 # dictionary that maps input args to packer flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
-    'build': {
-        'debug': '-debug',
-        'force': '-force',
-        'timestamp_ui': '-timestamp-ui',
-    },
-    'fmt': {
-        'check': '-check',
-        'diff': '-diff',
-        'recursive': '-recursive',
-    },
-    'init': {'upgrade': '-upgrade'},
-    'validate': {
-        'evaluate_datasources': '-evaluate-datasources',
-        'syntax_only': '-syntax-only',
-        'no_warn_undeclared_var': '-no-warn-undeclared-var',
-    },
-})
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
+    {
+        'build': {
+            'debug': '-debug',
+            'force': '-force',
+            'timestamp_ui': '-timestamp-ui',
+        },
+        'fmt': {
+            'check': '-check',
+            'diff': '-diff',
+            'recursive': '-recursive',
+        },
+        'init': {'upgrade': '-upgrade'},
+        'validate': {
+            'evaluate_datasources': '-evaluate-datasources',
+            'syntax_only': '-syntax-only',
+            'no_warn_undeclared_var': '-no-warn-undeclared-var',
+        },
+    }
+)
 
 # dictionary that maps input args to packer args
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
-    'fmt': {
-        'write': '-write=',
-    },
-    'build': {
-        'excepts': '-except=',
-        'only': '-only=',
-        'on_error': '-on-error=',
-        'parallel_builds': '-parallel-builds=',
-        'var': '',
-        'var_file': ''
-    },
-    'validate': {
-        'excepts': '-except=',
-        'only': '-only=',
-        'var': '',
-        'var_file': ''
-    },
-})
+ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
+    {
+        'fmt': {
+            'write': '-write=',
+        },
+        'build': {'excepts': '-except=', 'only': '-only=', 'on_error': '-on-error=', 'parallel_builds': '-parallel-builds=', 'var': '', 'var_file': ''},
+        'validate': {'excepts': '-except=', 'only': '-only=', 'var': '', 'var_file': ''},
+    }
+)
 
 
 def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in FLAGS_MAP:
-        raise RuntimeError(f"Unsupported Packer action attempted: {action}")
+        raise RuntimeError(f'Unsupported Packer action attempted: {action}')
 
     # initialize packer command
     command: list[str] = ['packer', action, '-machine-readable']
@@ -72,7 +65,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str, then append the value interpolated with the arg name from the dict to the command
             if (isinstance(arg_value, str) or isinstance(arg_value, bool)) and len(action_args_map[arg]) > 0:
-                command.append(f"{action_args_map[arg]}{arg_value}")
+                command.append(f'{action_args_map[arg]}{arg_value}')
             # if the arg value is a list, then extend the command with the values because they are already formatted correctly
             elif isinstance(arg_value, list) and len(action_args_map[arg]) == 0:
                 command.extend(arg_value)
@@ -81,14 +74,14 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
                 raise RuntimeError(f"Unexpected issue with argument name '{arg}' and argument value '{arg_value}'")
         else:
             # unsupported arg specified
-            warnings.warn(f"Unsupported Packer arg specified: {arg}", RuntimeWarning)
+            warnings.warn(f'Unsupported Packer arg specified: {arg}', RuntimeWarning)
 
     # return the command with the target dir appended
     if Path(target_dir).exists():
         return command + [str(target_dir)]
 
     # otherwise error if it does not exist (possible to target file or dir)
-    raise RuntimeError(f"Targeted directory or file does not exist: {target_dir}")
+    raise RuntimeError(f'Targeted directory or file does not exist: {target_dir}')
 
 
 def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
@@ -114,6 +107,6 @@ def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
             # validate on_error arg value
             case 'on_error':
                 if arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
-                    raise RuntimeError(f"Unsupported on error argument value specified: {arg_value}")
+                    raise RuntimeError(f'Unsupported on error argument value specified: {arg_value}')
 
     return args

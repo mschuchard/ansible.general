@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for terraform import"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: terraform_import
 
@@ -43,9 +44,9 @@ requirements:
     - terraform >= 1.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # import resource using provider configuration in /path/to/terraform_config_dir
 - name: Import resource using provider configuration in /path/to/terraform_config_dir
   mschuchard.general.terraform_import:
@@ -64,15 +65,15 @@ EXAMPLES = r'''
     var_file:
     - one.tfvars
     - two.tfvars
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Terraform command executed by Ansible.
     type: str
     returned: always
     sample: 'terraform import aws_instance.this i-1234567890'
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -88,9 +89,9 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'id': {'type': 'str', 'required': True},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False}
+            'var_file': {'type': 'list', 'required': False},
         },
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -123,7 +124,7 @@ def main() -> None:
     return_code: int
     stdout: str
     stderr: str
-    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION': 'true'})
 
     # check idempotence
     if 'Import successful!' in stdout:
@@ -134,9 +135,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 """universal module utilities"""
+
 __metaclass__ = type
 
 import json
@@ -19,9 +20,10 @@ def action_flags_command(command: list[str], flags: set[str] = [], action_flags_
             command.append(action_flags_map[flag])
         else:
             # unsupported flag specified
-            warnings.warn(f"Unsupported flag specified: {flag}", RuntimeWarning)
+            warnings.warn(f'Unsupported flag specified: {flag}', RuntimeWarning)
 
     return command
+
 
 def validate_json_yaml_file(file: Path) -> bool:
     """validate a file contains valid json and therefore also valid yaml"""
@@ -45,7 +47,7 @@ def validate_json_yaml_file(file: Path) -> bool:
 
         # raise error for file with invalid yaml/json contents
         except yaml.YAMLError as exc:
-            warnings.warn(f"Specified YAML or JSON file does not contain valid YAML or JSON: {file}", SyntaxWarning)
+            warnings.warn(f'Specified YAML or JSON file does not contain valid YAML or JSON: {file}', SyntaxWarning)
             raise ValueError(exc) from exc
 
 
@@ -63,10 +65,9 @@ def vars_converter(var_pairs: dict[str, str]) -> list[str]:
         else:
             var_strings.append(f"{var}='{values}'")
 
-
     # transform list["<var name>=<var value>"] into list with "-var" element followed by "<var name>=<var value>" element
     # various language limitations force this non-ideal implementation
-    return ' '.join([f"-var {var_value}" for var_value in var_strings]).split()
+    return ' '.join([f'-var {var_value}' for var_value in var_strings]).split()
 
 
 def var_files_converter(var_files: list[Path]) -> list[str]:
@@ -79,9 +80,9 @@ def var_files_converter(var_files: list[Path]) -> list[str]:
     for var_file in var_files:
         # verify vars file exists before conversion
         if Path(var_file).is_file():
-            args.append(f"-var-file={var_file}")
+            args.append(f'-var-file={var_file}')
         else:
-            raise FileNotFoundError(f"Var file does not exist: {var_file}")
+            raise FileNotFoundError(f'Var file does not exist: {var_file}')
 
     return args
 
@@ -110,6 +111,5 @@ def params_to_flags_args(params: dict, spec: dict[str, dict]) -> (list[str], dic
                 # otherwise generic argument
                 case _:
                     args.update({param: attribute})
-
 
     return flags, args

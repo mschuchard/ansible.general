@@ -1,4 +1,5 @@
 """unit test for terraform fmt module"""
+
 __metaclass__ = type
 
 
@@ -22,7 +23,7 @@ def test_terraform_fmt_defaults(capfd):
     assert 'fmt' in info['command']
     assert '-no-color' in info['command']
     assert '-list=false' in info['command']
-    assert '' ==  info['stdout']
+    assert '' == info['stdout']
 
 
 def test_terraform_fmt_config_diff_write(capfd):
@@ -36,7 +37,7 @@ def test_terraform_fmt_config_diff_write(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
+    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
     assert '-diff' in info['command']
     assert '-write=false' in info['command']
     assert '' == info['stdout']

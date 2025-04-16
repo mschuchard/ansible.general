@@ -1,4 +1,5 @@
 """goss module utilities"""
+
 __metaclass__ = type
 
 import json
@@ -9,40 +10,40 @@ from mschuchard.general.plugins.module_utils import universal
 
 
 # dictionary that maps input args to goss flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict({
-    'render': {'debug': '--debug'},
-})
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
+    {
+        'render': {'debug': '--debug'},
+    }
+)
 
 # dictionary that maps input args to goss args
-GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({
-    'package': '--package',
-    'vars': '--vars',
-    'vars_inline': '--vars-inline'
-})
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict({
-    'serve': {
-        'cache': '-c',
-        'endpoint': '-e',
-        'format': '-f',
-        'format_opts': '-o',
-        'max_concur': '--max-concurrent',
-        'port': '-l',
-    },
-    'validate': {
-        'format': '-f',
-        'format_opts': '-o',
-        'max_concur': '--max-concurrent',
-        'retry_timeout': '-r',
-        'sleep': '-s',
+GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({'package': '--package', 'vars': '--vars', 'vars_inline': '--vars-inline'})
+ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
+    {
+        'serve': {
+            'cache': '-c',
+            'endpoint': '-e',
+            'format': '-f',
+            'format_opts': '-o',
+            'max_concur': '--max-concurrent',
+            'port': '-l',
+        },
+        'validate': {
+            'format': '-f',
+            'format_opts': '-o',
+            'max_concur': '--max-concurrent',
+            'retry_timeout': '-r',
+            'sleep': '-s',
+        },
     }
-})
+)
 
 
 def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the goss command to execute"""
     # verify command
     if action not in FLAGS_MAP | ARGS_MAP:
-        raise RuntimeError(f"Unsupported GoSS action attempted: {action}")
+        raise RuntimeError(f'Unsupported GoSS action attempted: {action}')
 
     # initialize goss command with executable, global args, and action
     # IMPORTANT: global_args_to_cmd mutates the args reference by removing global argument entries
@@ -63,8 +64,19 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
         if arg in action_args_map:
             # port arg requires int-->str and : prefix
             if arg == 'port':
-                arg_value = f":{arg_value}"
-            elif arg == 'format' and arg_value not in ['documentation', 'json', 'json_oneline', 'junit', 'nagios', 'prometheus', 'rspecish', 'silent', 'structured', 'tap']:
+                arg_value = f':{arg_value}'
+            elif arg == 'format' and arg_value not in [
+                'documentation',
+                'json',
+                'json_oneline',
+                'junit',
+                'nagios',
+                'prometheus',
+                'rspecish',
+                'silent',
+                'structured',
+                'tap',
+            ]:
                 raise ValueError('The "format" parameter value must be a valid accepted format for GoSS')
             elif arg == 'format_opts' and arg_value not in ['perfdata', 'pretty', 'verbose']:
                 raise ValueError('The "format_opts" parameter value must be one of: perfdata, pretty, or verbose.')
@@ -73,7 +85,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, gossfile: 
             command.extend([action_args_map[arg], arg_value])
         else:
             # unsupported arg specified
-            warnings.warn(f"Unsupported GoSS arg specified: {arg}", RuntimeWarning)
+            warnings.warn(f'Unsupported GoSS arg specified: {arg}', RuntimeWarning)
 
     return command
 
@@ -92,7 +104,7 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
             # remove vars from args to avoid doublecheck with action args
             del args['vars']
         else:
-            raise FileNotFoundError(f"Vars file does not exist or is invalid: {args['vars']}")
+            raise FileNotFoundError(f'Vars file does not exist or is invalid: {args["vars"]}')
     # check if vars_inline is specified (exclusive with vars)
     elif 'vars_inline' in args:
         # validate the conversion of the vars inline param value to a json string and extend command
@@ -100,7 +112,7 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
         try:
             command.extend([GLOBAL_ARGS_MAP['vars_inline'], json.dumps(vars_inline_values)])
         except TypeError as exc:
-            warnings.warn(f"The vars_inline parameter values {vars_inline_values} could not be encoded to a JSON format string", SyntaxWarning)
+            warnings.warn(f'The vars_inline parameter values {vars_inline_values} could not be encoded to a JSON format string', SyntaxWarning)
             raise TypeError(exc) from exc
         # remove vars_inline from args to avoid doublecheck with action args
         del args['vars_inline']
@@ -110,7 +122,7 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
         # validate package argument
         package_type: str = args['package']
         if package_type not in ['apk', 'dpkg', 'pacman', 'rpm']:
-            raise ValueError(f"The specified parameter value for package {package_type} is not acceptable for GoSS")
+            raise ValueError(f'The specified parameter value for package {package_type} is not acceptable for GoSS')
         # extend command
         command.extend([GLOBAL_ARGS_MAP['package'], package_type])
         # remove package from args to avoid doublecheck with action args
@@ -124,6 +136,6 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
             command.extend(['-g', str(gossfile)])
         else:
             # error if gossfile does not exist
-            raise FileNotFoundError(f"GoSSfile does not exist or is invalid: {gossfile}")
+            raise FileNotFoundError(f'GoSSfile does not exist or is invalid: {gossfile}')
 
     return command

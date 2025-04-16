@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for terraform plan"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: terraform_plan
 
@@ -60,9 +61,9 @@ requirements:
     - terraform >= 1.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # produce destroy plan for /path/to/terraform_config_dir
 - name: Produce destroy plan for /path/to/terraform_config_dir
   mschuchard.general.terraform_plan:
@@ -87,15 +88,15 @@ EXAMPLES = r'''
     var_file:
     - one.tfvars
     - two.tfvars
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Terraform command executed by Ansible.
     type: str
     returned: always
     sample: 'terraform plan -out plan.tfplan'
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -115,9 +116,9 @@ def main() -> None:
             'replace': {'type': 'list', 'required': False},
             'target': {'type': 'list', 'required': False},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False}
+            'var_file': {'type': 'list', 'required': False},
         },
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -166,16 +167,21 @@ def main() -> None:
     return_code: int
     stdout: str
     stderr: str
-    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION':'true'})
+    return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION': 'true'})
 
     # post-process
     if return_code == 0:
         module.exit_json(changed=False, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

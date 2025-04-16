@@ -1,4 +1,5 @@
 """unit test for puppet agent module"""
+
 __metaclass__ = type
 
 

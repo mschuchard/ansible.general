@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for goss render"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: goss_render
 
@@ -44,9 +45,9 @@ requirements:
     - goss >= 0.3.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # render a gossfile at /path/to/my_gossfile.yaml
 - name: Render a gossfile at /path/to/my_gossfile.yaml
   mschuchard.general.goss_render:
@@ -63,14 +64,14 @@ EXAMPLES = r'''
     vars_inline:
       my_service: httpd
       my_package: apache
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw GoSS command executed by Ansible.
     type: str
     returned: always
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -86,10 +87,10 @@ def main() -> None:
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'package': {'type': 'str', 'required': False},
             'vars': {'type': 'path', 'required': False},
-            'vars_inline': {'type': 'dict', 'required': False}
+            'vars_inline': {'type': 'dict', 'required': False},
         },
         mutually_exclusive=[('vars', 'vars_inline')],
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # initialize
@@ -138,9 +139,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

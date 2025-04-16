@@ -1,6 +1,5 @@
 """unit test for terraform module util"""
 
-
 import pytest
 from mschuchard.general.plugins.module_utils import terraform
 from mschuchard.general.tests.unit.plugins.modules import utils
@@ -33,11 +32,11 @@ def test_terraform_cmd_errors():
         terraform.cmd(action='init', target_dir='/1234567890')
 
     # test fails on unsupported arg value type
-    with pytest.raises(RuntimeError, match='Unexpected issue with argument name \'backend_config\' and argument value \'1\''):
+    with pytest.raises(RuntimeError, match="Unexpected issue with argument name 'backend_config' and argument value '1'"):
         terraform.cmd(action='init', args={'backend_config': 1})
 
     # test fails on arg expecting value of list type and str type is provided
-    with pytest.raises(RuntimeError, match='Unexpected issue with argument name \'plugin_dir\' and argument value \'foo\''):
+    with pytest.raises(RuntimeError, match="Unexpected issue with argument name 'plugin_dir' and argument value 'foo'"):
         terraform.cmd(action='init', args={'plugin_dir': 'foo'})
 
 
@@ -50,13 +49,30 @@ def test_terraform_cmd():
     assert terraform.cmd(action='fmt', flags=['check'], target_dir='/home') == ['terraform', '-chdir=/home', 'fmt', '-no-color', '-list=false', '-check']
 
     # test init with default target_dir, no flags, backend and backend_config args
-    assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', "-backend-config='bar=baz'"]}) == ['terraform', 'init', '-no-color', '-input=false', '-backend=false', '-backend-config=foo', "-backend-config='bar=baz'"]
+    assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', "-backend-config='bar=baz'"]}) == [
+        'terraform',
+        'init',
+        '-no-color',
+        '-input=false',
+        '-backend=false',
+        '-backend-config=foo',
+        "-backend-config='bar=baz'",
+    ]
 
     # test init with force_copy and migrate_state flags, and plugin_dir args
-    assert terraform.cmd(action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home']
+    assert terraform.cmd(
+        action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home'
+    ) == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home']
 
     # test bare apply with plan file
-    assert terraform.cmd(action='apply', target_dir=f"{str(utils.fixtures_dir())}/config.tf") == ['terraform', 'apply', '-no-color', '-input=false', '-auto-approve', f"{str(utils.fixtures_dir())}/config.tf"]
+    assert terraform.cmd(action='apply', target_dir=f'{str(utils.fixtures_dir())}/config.tf') == [
+        'terraform',
+        'apply',
+        '-no-color',
+        '-input=false',
+        '-auto-approve',
+        f'{str(utils.fixtures_dir())}/config.tf',
+    ]
 
 
 def test_ansible_to_terraform_errors():
@@ -66,8 +82,10 @@ def test_ansible_to_terraform_errors():
         terraform.ansible_to_terraform(args={'backend_config': ['/1234567890']})
 
     # test warns on backend config list element with improper type
-    with pytest.warns(RuntimeWarning, match='backend_config element value \'7\' is not a valid type; must be string for file path, or dict for key-value pair'):
-        assert terraform.ansible_to_terraform(args={'backend_config': [7, 'galaxy.yml', {'foo':'bar'}]}) == {'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"]}
+    with pytest.warns(RuntimeWarning, match="backend_config element value '7' is not a valid type; must be string for file path, or dict for key-value pair"):
+        assert terraform.ansible_to_terraform(args={'backend_config': [7, 'galaxy.yml', {'foo': 'bar'}]}) == {
+            'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"]
+        }
 
     # test fails on nonexistent plugin_dir directory argument value
     with pytest.raises(FileNotFoundError, match='Plugin directory does not exist: /1234567890'):
@@ -77,17 +95,19 @@ def test_ansible_to_terraform_errors():
 def test_ansible_to_terraform():
     """test various ansible_to_terraform returns"""
     # test all possible args with multiple values
-    assert terraform.ansible_to_terraform(args={
-        'backend_config': ['galaxy.yml', {'foo':'bar'}],
-        'filter': ['machine.tf', 'network.tf'],
-        'plugin_dir': ['/tmp', '/home'],
-        'replace': ['random.foo', 'local.bar'],
-        # 'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
-        'resource': {'resource.name':'resource.id'},
-        'target': ['random.foo', 'local.bar'],
-        'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
-        'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml']
-    }) == {
+    assert terraform.ansible_to_terraform(
+        args={
+            'backend_config': ['galaxy.yml', {'foo': 'bar'}],
+            'filter': ['machine.tf', 'network.tf'],
+            'plugin_dir': ['/tmp', '/home'],
+            'replace': ['random.foo', 'local.bar'],
+            # 'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
+            'resource': {'resource.name': 'resource.id'},
+            'target': ['random.foo', 'local.bar'],
+            'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
+            'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
+        }
+    ) == {
         'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"],
         'filter': ['-filter=machine.tf', '-filter=network.tf'],
         'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home'],
@@ -95,6 +115,6 @@ def test_ansible_to_terraform():
         # 'resources': ['resource.name resource.id', 'aws_instance.this i-1234567890'],
         'resource': ['resource.name', 'resource.id'],
         'target': ['-target=random.foo', '-target=local.bar'],
-        'var': ['-var', 'var1=\'value1\'', '-var', 'var2=\'value2\'', '-var', 'var3=\'value3\''],
-        'var_file': ['-var-file=galaxy.yml', '-var-file=galaxy.yml', '-var-file=galaxy.yml']
+        'var': ['-var', "var1='value1'", '-var', "var2='value2'", '-var', "var3='value3'"],
+        'var_file': ['-var-file=galaxy.yml', '-var-file=galaxy.yml', '-var-file=galaxy.yml'],
     }

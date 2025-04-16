@@ -1,4 +1,5 @@
 """utils from ansible module unit test doc"""
+
 import json
 from pathlib import Path
 from ansible.module_utils import basic

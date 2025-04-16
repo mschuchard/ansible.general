@@ -4,9 +4,10 @@
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for packer init"""
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: packer_init
 
@@ -32,9 +33,9 @@ requirements:
     - packer >= 1.7.0
 
 author: Matthew Schuchard (@mschuchard)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # initialize directory in /path/to/packer_config_dir
 - name: Initialize packer directory in /path/to/packer_config_dir
   mschuchard.general.packer_init:
@@ -50,15 +51,15 @@ EXAMPLES = r'''
   mschuchard.general.packer_init:
     config_dir: /path/to/packer_config_dir
     upgrade: true
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 command:
     description: The raw Packer command executed by Ansible.
     type: str
     returned: always
     sample: 'packer init -machine-readable /home/packer'
-'''
+"""
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
@@ -69,11 +70,8 @@ def main() -> None:
     """primary function for packer init module"""
     # instanstiate ansible module
     module = AnsibleModule(
-        argument_spec={
-            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'upgrade': {'type': 'bool', 'required': False}
-        },
-        supports_check_mode=True
+        argument_spec={'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()}, 'upgrade': {'type': 'bool', 'required': False}},
+        supports_check_mode=True,
     )
 
     # initialize
@@ -107,9 +105,14 @@ def main() -> None:
         module.exit_json(changed=changed, stdout=stdout, stderr=stderr, command=command)
     else:
         module.fail_json(
-            msg=stderr.rstrip(), return_code=return_code, cmd=command,
-            stdout=stdout, stdout_lines=stdout.splitlines(),
-            stderr=stderr, stderr_lines=stderr.splitlines())
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
 
 
 if __name__ == '__main__':

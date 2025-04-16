@@ -1,4 +1,5 @@
 """unit test for terraform apply module"""
+
 __metaclass__ = type
 
 
@@ -36,14 +37,14 @@ def test_terraform_apply_config_destroy(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert f"-chdir={str(utils.fixtures_dir())}" in info['command']
+    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
     assert '-destroy' in info['command']
     assert 'No changes.' in info['stdout']
 
 
 def test_terraform_apply_plan_file(capfd):
     """test terraform apply with plan_file"""
-    utils.set_module_args({'plan_file': f"{str(utils.fixtures_dir())}/plan.tfplan"})
+    utils.set_module_args({'plan_file': f'{str(utils.fixtures_dir())}/plan.tfplan'})
     with pytest.raises(SystemExit, match='1'):
         terraform_apply.main()
 
@@ -51,17 +52,20 @@ def test_terraform_apply_plan_file(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert f"{str(utils.fixtures_dir())}/plan.tfplan" == info['cmd'][-1]
+    assert f'{str(utils.fixtures_dir())}/plan.tfplan' == info['cmd'][-1]
     assert 'Error: Saved plan does not match the given state' in info['stderr']
+
 
 def test_terraform_apply_multiple_args(capfd):
     """test terraform apply with multiple arguments and a flag"""
-    utils.set_module_args({
-        'target': ['aws_instance.this', 'local_file.that'],
-        'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
-        'var_file': [f"{str(utils.fixtures_dir())}/foo.tfvars", f"{str(utils.fixtures_dir())}/foo.tfvars"],
-        'config_dir': str(utils.fixtures_dir())
-    })
+    utils.set_module_args(
+        {
+            'target': ['aws_instance.this', 'local_file.that'],
+            'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
+            'var_file': [f'{str(utils.fixtures_dir())}/foo.tfvars', f'{str(utils.fixtures_dir())}/foo.tfvars'],
+            'config_dir': str(utils.fixtures_dir()),
+        }
+    )
     with pytest.raises(SystemExit, match='0'):
         terraform_apply.main()
 
@@ -74,8 +78,8 @@ def test_terraform_apply_multiple_args(capfd):
     assert '-target=aws_instance.this' in info['command']
     assert '-target=local_file.that' in info['command']
     assert '-var' in info['command']
-    assert 'var_name=\'var_value\'' in info['command']
-    assert 'var_name_other=\'var_value_other\'' in info['command']
-    assert f"-var-file={str(utils.fixtures_dir())}/foo.tfvars" in info['command']
-    assert f"-var-file={str(utils.fixtures_dir())}/foo.tfvars" in info['command']
+    assert "var_name='var_value'" in info['command']
+    assert "var_name_other='var_value_other'" in info['command']
+    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['command']
+    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['command']
     assert 'No changes.' in info['stdout']
