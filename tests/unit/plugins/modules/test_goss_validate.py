@@ -45,7 +45,7 @@ def test_goss_validate_format_vars(capfd):
     assert '-o' in info['cmd']
     assert 'pretty' in info['cmd']
     assert '--vars' in info['cmd']
-    assert 'Count: 6, Failed: 1, Duration:' in info['stdout']
+    assert 'Count: 6, Failed: 1, Skipped: 0, Duration:' in info['stdout']
 
 
 def test_goss_validate_retry_sleep(capfd):

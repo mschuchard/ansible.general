@@ -66,7 +66,7 @@ options:
         type: dict
 
 requirements:
-    - goss >= 0.3.0
+    - goss >= 0.4.0
 
 author: Matthew Schuchard (@mschuchard)
 """
