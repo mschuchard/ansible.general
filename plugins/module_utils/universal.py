@@ -16,7 +16,7 @@ def action_flags_command(command: list[str], flags: set[str] = [], action_flags_
     # iterate through input parameter flags
     for flag in flags:
         if flag in action_flags_map:
-            # add packer flag from corresponding module flag in FLAGS
+            # add tool flag from corresponding module flag in FLAGS
             command.append(action_flags_map[flag])
         else:
             # unsupported flag specified
