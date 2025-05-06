@@ -18,11 +18,16 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'quiet': '--quiet',
             'shrinkwrap': '--shrinkwrap',
         },
-        'deploy': {},
-        'invoke': {},
-        'list': {},
+        'deploy': {
+            'replace': '--replace',
+            'update': '--update',
+        },
+        'list': {'verbose': '-v'},
         'login': {},
-        'logs': {},
+        'logs': {
+            'instance': '--instance',
+            'name': '--name',
+        },
         'push': {},
         'remove': {},
     }
@@ -32,12 +37,17 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
         'build': {},
-        'deploy': {},
-        'invoke': {},
-        'list': {},
-        'login': {},
+        'deploy': {
+            'annotation': '',
+            'label': '',
+        },
+        'list': {'sort': '--sort'},
+        'login': {
+            'username': '-u',
+            'password': '-p',
+        },
         'logs': {},
-        'push': {},
+        'push': {'parellel': '--parallel'},
         'remove': {},
     }
 )
