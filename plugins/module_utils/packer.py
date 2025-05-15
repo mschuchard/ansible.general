@@ -93,7 +93,7 @@ def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
             # list[str] to comma-delimited string
             case 'excepts' | 'only':
                 args[arg] = ','.join(arg_value)
-            # list[dict[str, str]] to "key=value" string with args for n>1 values
+            # dict[str, str] to "key=value" string with args for n>1 values
             case 'var':
                 # assign converted value to var key
                 args['var'] = universal.vars_converter(arg_value)

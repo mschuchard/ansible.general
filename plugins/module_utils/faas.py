@@ -108,3 +108,16 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
             raise FileNotFoundError(f'Function config file does not exist or is invalid: {config_file}')
 
     return command
+
+
+def ansible_to_faas(args: dict) -> dict[str, list[str], bool]:
+    """converts ansible types and syntax to faas types and formatting for arguments only"""
+    # in this function args dict is mutable pseudo-reference and also returned
+    # iterate through ansible module argument
+    for arg, arg_value in args.items():
+        match arg:
+            # transform dict[str, str] to single "key=value key2=value2" string
+            case 'annotation' | 'label':
+                args[arg] = ' '.join([f'{key}={value}' for key, value in arg_value.items()])
+
+    return args

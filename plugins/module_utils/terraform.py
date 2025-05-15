@@ -201,7 +201,7 @@ def ansible_to_terraform(args: dict) -> dict[str, (str, list[str])]:
                 # below for single resource also requires flattening
                 # address should not require shell string cast since executed as ansible command and not in shell interpreter
                 args[arg] = list(itertools.chain.from_iterable([[address, id] for address, id in arg_value.items()]))
-            # list[dict[str, str]] to "key=value" string with args for n>1 values
+            # dict[str, str] to "key=value" string with args for n>1 values
             case 'var':
                 # assign converted value to var key
                 args['var'] = universal.vars_converter(arg_value)
