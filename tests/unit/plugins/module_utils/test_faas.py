@@ -16,7 +16,7 @@ def test_faas_cmd_errors():
 
     # test fails on function file with invalid yaml content
     with pytest.warns(SyntaxWarning, match='Specified YAML or JSON file does not contain valid YAML or JSON: .gitignore'), pytest.raises(ValueError):
-        faas.cmd(action='invoke', args={'config_file': '.gitignore'})
+        faas.cmd(action='deploy', args={'config_file': '.gitignore'})
 
 
 def test_faas_cmd():

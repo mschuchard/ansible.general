@@ -2,7 +2,7 @@
 
 __metaclass__ = type
 
-
+import warnings
 from typing import Final
 from pathlib import Path
 from mschuchard.general.plugins.module_utils import universal
@@ -64,6 +64,21 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, name: str 
 
     # append list of flag commands
     universal.action_flags_command(command, flags, FLAGS_MAP.get(action, {}))
+
+    # construct list of faas args
+    # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
+    action_args_map: dict = ARGS_MAP.get(action, {})
+    for arg, arg_value in args.items():
+        # verify this is a valid action argument
+        if arg in action_args_map:
+            if arg == 'sort' and arg_value not in ['name', 'invocations']:
+                raise ValueError('The "sort" parameter must be either "name" or "invocations"')
+
+            # append the value interpolated with the arg name from the dict to the command
+            command.extend([action_args_map[arg], arg_value])
+        else:
+            # unsupported arg specified
+            warnings.warn(f'Unsupported FaaS arg specified: {arg}', RuntimeWarning)
 
     return command
 
