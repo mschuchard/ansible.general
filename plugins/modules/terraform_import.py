@@ -95,6 +95,7 @@ def main() -> None:
     )
 
     # initialize
+    changed: bool = False
     config_dir: Path = Path(module.params.get('config_dir'))
     address: str = module.params.get('address')
     id: str = module.params.get('id')
@@ -118,7 +119,7 @@ def main() -> None:
 
     # exit early for check mode
     if module.check_mode:
-        module.exit_json(changed=False, command=command)
+        module.exit_json(changed=changed, command=command)
 
     # execute terraform
     return_code: int

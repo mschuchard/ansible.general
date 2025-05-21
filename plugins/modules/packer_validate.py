@@ -137,13 +137,13 @@ def main() -> None:
     var_file: list[Path] = module.params.get('var_file')
 
     # check flags
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('evaluate_datasources'):
-        flags.append('evaluate_datasources')
+        flags.add('evaluate_datasources')
     if module.params.get('syntax_only'):
-        flags.append('syntax_only')
+        flags.add('syntax_only')
     if not module.params.get('warn_undeclared_var'):
-        flags.append('no_warn_undeclared_var')
+        flags.add('no_warn_undeclared_var')
 
     # check args
     args: dict = {}

@@ -128,9 +128,9 @@ def main() -> None:
     # else check flags and other args
     else:
         # check flags
-        flags: list[str] = []
+        flags: set[str] = set()
         if module.params.get('destroy'):
-            flags.append('destroy')
+            flags.add('destroy')
 
         # check args
         args: dict = {}

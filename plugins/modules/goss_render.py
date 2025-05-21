@@ -104,9 +104,9 @@ def main() -> None:
         cwd = gossfile.parent
 
     # check on optional debug param
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('debug'):
-        flags.append('debug')
+        flags.add('debug')
 
     # check args
     args: dict = {}

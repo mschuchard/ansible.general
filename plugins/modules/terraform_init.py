@@ -122,13 +122,13 @@ def main() -> None:
     plugin_dir: list[Path] = module.params.get('plugin_dir')
 
     # check flags
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('force_copy'):
-        flags.append('force_copy')
+        flags.add('force_copy')
     if module.params.get('migrate_state'):
-        flags.append('migrate_state')
+        flags.add('migrate_state')
     if module.params.get('upgrade'):
-        flags.append('upgrade')
+        flags.add('upgrade')
 
     # check args
     args: dict = {}

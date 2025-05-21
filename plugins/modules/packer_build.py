@@ -156,13 +156,13 @@ def main() -> None:
     var_file: list[Path] = module.params.get('var_file')
 
     # check optional params
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('debug'):
-        flags.append('debug')
+        flags.add('debug')
     if module.params.get('force'):
-        flags.append('force')
+        flags.add('force')
     if module.params.get('timestamp_ui'):
-        flags.append('timestamp_ui')
+        flags.add('timestamp_ui')
 
     args: dict = {}
     if excepts:

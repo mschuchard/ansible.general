@@ -114,9 +114,9 @@ def main() -> None:
     var_file: list[Path] = module.params.get('var_file')
 
     # check flags
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('json'):
-        flags.append('json')
+        flags.add('json')
 
     # check args
     args: dict = {}

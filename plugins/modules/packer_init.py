@@ -79,9 +79,9 @@ def main() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
 
     # check on optional upgrade param
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('upgrade'):
-        flags.append('upgrade')
+        flags.add('upgrade')
 
     # determine packer command
     command: list[str] = packer.cmd(action='init', flags=flags, target_dir=config_dir)

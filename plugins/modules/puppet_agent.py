@@ -133,19 +133,19 @@ def main() -> None:
         args.update({'server_port': server_port})
 
     # check on optional flag params
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('debug'):
-        flags.append('debug')
+        flags.add('debug')
     if module.params.get('no_daemonize'):
-        flags.append('no_daemonize')
+        flags.add('no_daemonize')
     if module.params.get('no_op'):
-        flags.append('no_op')
+        flags.add('no_op')
     if module.params.get('onetime'):
-        flags.append('onetime')
+        flags.add('onetime')
     if test:
-        flags.append('test')
+        flags.add('test')
     if module.params.get('verbose'):
-        flags.append('verbose')
+        flags.add('verbose')
 
     # determine puppet command
     command: list[str] = puppet.cmd(action='agent', flags=flags, args=args)

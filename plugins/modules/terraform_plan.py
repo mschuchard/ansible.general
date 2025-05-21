@@ -131,11 +131,11 @@ def main() -> None:
     var_file: list[Path] = module.params.get('var_file')
 
     # check flags
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('destroy'):
-        flags.append('destroy')
+        flags.add('destroy')
     if module.params.get('refresh_only'):
-        flags.append('refresh_only')
+        flags.add('refresh_only')
 
     # check args
     args: dict = {}

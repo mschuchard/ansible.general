@@ -101,15 +101,15 @@ def main() -> None:
     test: bool = module.params.get('test')
 
     # check on optional flag params
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('debug'):
-        flags.append('debug')
+        flags.add('debug')
     if module.params.get('no_op'):
-        flags.append('no_op')
+        flags.add('no_op')
     if test:
-        flags.append('test')
+        flags.add('test')
     if module.params.get('verbose'):
-        flags.append('verbose')
+        flags.add('verbose')
 
     # determine puppet command
     command: list[str] = puppet.cmd(action='apply', flags=flags, manifest=manifest)

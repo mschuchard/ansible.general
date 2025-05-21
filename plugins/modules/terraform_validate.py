@@ -83,9 +83,9 @@ def main() -> None:
     test_dir: list[str] = module.params.get('test_dir')
 
     # check flags
-    flags: list[str] = []
+    flags: set[str] = set()
     if module.params.get('json'):
-        flags.append('json')
+        flags.add('json')
 
     # check args
     args: dict = {}

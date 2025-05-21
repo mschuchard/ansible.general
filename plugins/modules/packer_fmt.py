@@ -103,14 +103,14 @@ def main() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
 
     # check flags
-    flags: list[str] = []
+    flags: set[str] = set()
     if check:
-        flags.append('check')
+        flags.add('check')
         changed = False
     if module.params.get('diff'):
-        flags.append('diff')
+        flags.add('diff')
     if module.params.get('recursive'):
-        flags.append('recursive')
+        flags.add('recursive')
 
     # check args
     args: dict = {}
