@@ -53,7 +53,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = [], args: dict[str, str] = {}, name: str = None) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}, name: str | None = None) -> list[str]:
     """constructs a list representing the openfaas command to execute"""
     # verify command
     if action not in FLAGS_MAP:
@@ -94,7 +94,7 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
 
     # check if regex is specified
     if 'regex' in args:
-        command.extend('--regex', args['regex'])
+        command.extend(['--regex', args['regex']])
 
     # check if config file is specified
     if 'config_file' in args:
@@ -110,7 +110,7 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
     return command
 
 
-def ansible_to_faas(args: dict) -> dict[str, list[str], bool]:
+def ansible_to_faas(args: dict) -> dict[str, str]:
     """converts ansible types and syntax to faas types and formatting for arguments only"""
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument

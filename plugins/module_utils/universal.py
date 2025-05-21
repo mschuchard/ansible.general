@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 
 
-def action_flags_command(command: list[str], flags: set[str] = [], action_flags_map: dict[str, str] = {}) -> list[str]:
+def action_flags_command(command: list[str], flags: set[str] = set(), action_flags_map: dict[str, str] = {}) -> list[str]:
     """convert action flags dict into list of command strings"""
     # in this function command list is mutable pseudo-reference and also returned
 
@@ -87,7 +87,7 @@ def var_files_converter(var_files: list[Path]) -> list[str]:
     return args
 
 
-def params_to_flags_args(params: dict, spec: dict[str, dict]) -> (list[str], dict):
+def params_to_flags_args(params: dict, spec: dict[str, dict]) -> tuple[list[str], dict]:
     """theoretical function to convert ansible module params to module utility action flags and args
     subtleties in specific module params prevent this from widespread use
     params dictionary argument should be populated from AnsibleModule.params{}, and spec from AnsibleModule.argument_spec{}"""

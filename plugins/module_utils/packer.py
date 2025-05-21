@@ -42,7 +42,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in FLAGS_MAP:
@@ -84,7 +84,7 @@ def cmd(action: str, flags: set[str] = [], args: dict[str, str | list[str]] = {}
     raise RuntimeError(f'Targeted directory or file does not exist: {target_dir}')
 
 
-def ansible_to_packer(args: dict) -> dict[str, (str, list[str])]:
+def ansible_to_packer(args: dict) -> dict[str, str | list[str]]:
     """converts ansible types and syntax to packer types and formatting for arguments only"""
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
