@@ -42,7 +42,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the packer command to execute"""
     # verify command
     if action not in FLAGS_MAP:

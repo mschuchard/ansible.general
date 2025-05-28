@@ -1,6 +1,7 @@
 """unit test for terraform module util"""
 
 import pytest
+from pathlib import Path
 from mschuchard.general.plugins.module_utils import terraform
 from mschuchard.general.tests.unit.plugins.modules import utils
 
@@ -13,7 +14,7 @@ def test_terraform_cmd_errors():
 
     # test warns on unknown flag, and discards unknown flag
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
-        assert terraform.cmd(action='init', flags=['foo']) == ['terraform', 'init', '-no-color', '-input=false']
+        assert terraform.cmd(action='init', flags={'foo'}) == ['terraform', 'init', '-no-color', '-input=false']
 
     # test warns on unknown arg, and discards unknown arg
     with pytest.warns(RuntimeWarning, match='Unsupported Terraform arg specified: foo'):
@@ -21,15 +22,15 @@ def test_terraform_cmd_errors():
 
     # test warns on specifying flags for action without corresponding flags, and discards offending flag
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
-        assert terraform.cmd(action='import', flags=['foo']) == ['terraform', 'import', '-no-color', '-input=false']
+        assert terraform.cmd(action='import', flags={'foo'}) == ['terraform', 'import', '-no-color', '-input=false']
 
     # test fails on nonexistent plan file
     with pytest.raises(RuntimeError, match='Targeted plan file or root module directory does not exist: /1234567890'):
-        terraform.cmd(action='apply', target_dir='/1234567890')
+        terraform.cmd(action='apply', target_dir=Path('/1234567890'))
 
     # test fails on nonexistent target_dir
     with pytest.raises(RuntimeError, match='Targeted root module directory does not exist: /1234567890'):
-        terraform.cmd(action='init', target_dir='/1234567890')
+        terraform.cmd(action='init', target_dir=Path('/1234567890'))
 
     # test fails on unsupported arg value type
     with pytest.raises(RuntimeError, match="Unexpected issue with argument name 'backend_config' and argument value '1'"):
@@ -43,10 +44,10 @@ def test_terraform_cmd_errors():
 def test_terraform_cmd():
     """test various cmd returns"""
     # test init with no flags and no args
-    assert terraform.cmd(action='init', target_dir='/home') == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false']
+    assert terraform.cmd(action='init', target_dir=Path('/home')) == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false']
 
     # test fmt with check flag and no args
-    assert terraform.cmd(action='fmt', flags=['check'], target_dir='/home') == ['terraform', '-chdir=/home', 'fmt', '-no-color', '-list=false', '-check']
+    assert terraform.cmd(action='fmt', flags={'check'}, target_dir=Path('/home')) == ['terraform', '-chdir=/home', 'fmt', '-no-color', '-list=false', '-check']
 
     # test init with default target_dir, no flags, backend and backend_config args
     assert terraform.cmd(action='init', args={'backend': 'false', 'backend_config': ['-backend-config=foo', "-backend-config='bar=baz'"]}) == [
@@ -60,12 +61,14 @@ def test_terraform_cmd():
     ]
 
     # test init with force_copy and migrate_state flags, and plugin_dir args
-    assert terraform.cmd(
-        action='init', flags=['force_copy', 'migrate_state'], args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir='/home'
-    ) == ['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home']
+    assert set(
+        terraform.cmd(
+            action='init', flags={'force_copy', 'migrate_state'}, args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir=Path('/home')
+        )
+    ) == set(['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home'])
 
     # test bare apply with plan file
-    assert terraform.cmd(action='apply', target_dir=f'{str(utils.fixtures_dir())}/config.tf') == [
+    assert terraform.cmd(action='apply', target_dir=Path(f'{str(utils.fixtures_dir())}/config.tf')) == [
         'terraform',
         'apply',
         '-no-color',

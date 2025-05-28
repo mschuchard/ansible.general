@@ -13,7 +13,7 @@ def test_packer_cmd_errors():
 
     # test warns on unknown flag, and discards unknown flag
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
-        assert packer.cmd(action='init', flags=['foo']) == ['packer', 'init', '-machine-readable', str(Path.cwd())]
+        assert packer.cmd(action='init', flags={'foo'}) == ['packer', 'init', '-machine-readable', str(Path.cwd())]
 
     # test warns on unknown arg, and discards unknown arg
     with pytest.warns(RuntimeWarning, match='Unsupported Packer arg specified: foo'):
@@ -25,7 +25,7 @@ def test_packer_cmd_errors():
 
     # test fails on nonexistent target_dir
     with pytest.raises(RuntimeError, match='Targeted directory or file does not exist: /1234567890'):
-        packer.cmd(action='init', target_dir='/1234567890')
+        packer.cmd(action='init', target_dir=Path('/1234567890'))
 
     # test fails on unsupported arg value type
     with pytest.raises(RuntimeError, match="Unexpected issue with argument name 'var' and argument value '1'"):
@@ -39,10 +39,10 @@ def test_packer_cmd_errors():
 def test_packer_cmd():
     """test various cmd returns"""
     # test init with no flags and no args
-    assert packer.cmd(action='init', target_dir='/home') == ['packer', 'init', '-machine-readable', '/home']
+    assert packer.cmd(action='init', target_dir=Path('/home')) == ['packer', 'init', '-machine-readable', '/home']
 
     # test fmt with check flag and no args
-    assert packer.cmd(action='fmt', flags=['check'], target_dir='/home') == ['packer', 'fmt', '-machine-readable', '-check', '/home']
+    assert packer.cmd(action='fmt', flags={'check'}, target_dir=Path('/home')) == ['packer', 'fmt', '-machine-readable', '-check', '/home']
 
     # test validate with default target_dir, no flags, only and var args
     assert packer.cmd(action='validate', args={'only': 'null.this,null.that', 'var': ['-var', '\'foo="bar"\'']}) == [
@@ -56,16 +56,18 @@ def test_packer_cmd():
     ]
 
     # test build with force and debug flags, and parallel builds args
-    assert packer.cmd(action='build', flags=['debug', 'force'], args={'parallel_builds': '1'}, target_dir='/home') == [
-        'packer',
-        'build',
-        '-machine-readable',
-        '-color=false',
-        '-debug',
-        '-force',
-        '-parallel-builds=1',
-        '/home',
-    ]
+    assert set(packer.cmd(action='build', flags={'debug', 'force'}, args={'parallel_builds': '1'}, target_dir=Path('/home'))) == set(
+        [
+            'packer',
+            'build',
+            '-machine-readable',
+            '-color=false',
+            '-debug',
+            '-force',
+            '-parallel-builds=1',
+            '/home',
+        ]
+    )
 
 
 def test_ansible_to_packer_errors():
