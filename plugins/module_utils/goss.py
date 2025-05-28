@@ -39,7 +39,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}, gossfile: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] = {}, gossfile: Path = Path.cwd()) -> list[str]:
     """constructs a list representing the goss command to execute"""
     # verify command
     if action not in FLAGS_MAP | ARGS_MAP:

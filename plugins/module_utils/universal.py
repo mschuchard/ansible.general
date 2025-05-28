@@ -51,7 +51,7 @@ def validate_json_yaml_file(file: Path) -> bool:
             raise ValueError(exc) from exc
 
 
-def vars_converter(var_pairs: dict[str, str]) -> list[str]:
+def vars_converter(var_pairs: dict[str, list | dict | str]) -> list[str]:
     """convert an ansible param dict of var name-value pairs to a hashi list of var name-value pairs"""
 
     # transform dict[<var name>, <var value>] into list["<var name>='<var value>'"] where <var value> is JSON encoded if complex type

@@ -1,6 +1,7 @@
 """unit test for puppet module util"""
 
 import pytest
+from pathlib import Path
 from mschuchard.general.plugins.module_utils import puppet
 
 
@@ -12,7 +13,7 @@ def test_puppet_cmd_errors():
 
     # test warns on unknown flag, and discards unknown flag
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
-        assert puppet.cmd(action='agent', flags=['foo']) == ['puppet', 'agent']
+        assert puppet.cmd(action='agent', flags={'foo'}) == ['puppet', 'agent']
 
     # test warns on unknown arg, and discards unknown arg
     with pytest.warns(RuntimeWarning, match='Unsupported Puppet arg specified: foo'):
@@ -27,7 +28,7 @@ def test_puppet_cmd_errors():
 
     # test fails on directory specified for manifest
     with pytest.raises(FileNotFoundError, match='Puppet manifest is not a file or does not exist: /home'):
-        puppet.cmd(action='apply', manifest='/home')
+        puppet.cmd(action='apply', manifest=Path('/home'))
 
 
 def test_puppet_cmd():
@@ -36,7 +37,7 @@ def test_puppet_cmd():
     assert puppet.cmd(action='agent') == ['puppet', 'agent']
 
     # test apply with test and noop
-    assert puppet.cmd(action='apply', flags=['test', 'no_op'], manifest='/etc/group') == ['puppet', 'apply', '-t', '--noop', '/etc/group']
+    assert puppet.cmd(action='apply', flags={'test', 'no_op'}, manifest=Path('/etc/group')) == ['puppet', 'apply', '-t', '--noop', '/etc/group']
 
     # test agent with certname and serverport
     assert puppet.cmd(action='agent', args={'certname': 'example.domain', 'server_port': 1234}) == [

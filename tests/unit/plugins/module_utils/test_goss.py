@@ -1,6 +1,7 @@
 """unit test for goss module util"""
 
 import pytest
+from pathlib import Path
 from mschuchard.general.plugins.module_utils import goss
 
 
@@ -12,7 +13,7 @@ def test_goss_cmd_errors():
 
     # test warns on unknown flag, and discards unknown flag
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
-        assert goss.cmd(action='render', flags=['foo']) == ['goss', 'render']
+        assert goss.cmd(action='render', flags={'foo'}) == ['goss', 'render']
 
     # test warns on unknown arg, and discards unknown arg
     with pytest.warns(RuntimeWarning, match='Unsupported GoSS arg specified: foo'):
@@ -38,7 +39,7 @@ def test_goss_cmd_errors():
 
     # test fails on nonexistent gossfile
     with pytest.raises(FileNotFoundError, match='GoSSfile does not exist or is invalid: /gossfile.yaml'):
-        goss.cmd(action='render', gossfile='/gossfile.yaml')
+        goss.cmd(action='render', gossfile=Path('/gossfile.yaml'))
 
     # test fails on invalid package parameter value
     with pytest.raises(ValueError, match='The specified parameter value for package chocolatey is not acceptable for GoSS'):
@@ -46,16 +47,16 @@ def test_goss_cmd_errors():
 
     # test fails on gossfile with invalid yaml content
     with pytest.warns(SyntaxWarning, match='Specified YAML or JSON file does not contain valid YAML or JSON: .gitignore'), pytest.raises(ValueError):
-        goss.cmd(action='render', gossfile='.gitignore')
+        goss.cmd(action='render', gossfile=Path('.gitignore'))
 
 
 def test_goss_cmd():
     """test various cmd returns"""
     # test render with no flags and no args
-    assert goss.cmd(action='render', gossfile='galaxy.yml') == ['goss', '-g', 'galaxy.yml', 'render']
+    assert goss.cmd(action='render', gossfile=Path('galaxy.yml')) == ['goss', '-g', 'galaxy.yml', 'render']
 
     # test render with debug flag and no args
-    assert goss.cmd(action='render', flags=['debug'], gossfile='galaxy.yml') == ['goss', '-g', 'galaxy.yml', 'render', '--debug']
+    assert goss.cmd(action='render', flags={'debug'}, gossfile=Path('galaxy.yml')) == ['goss', '-g', 'galaxy.yml', 'render', '--debug']
 
     # test validate with default gossfile, no flags, format arg, and vars and package args
     assert goss.cmd(action='validate', args={'format': 'rspecish', 'vars': 'galaxy.yml', 'package': 'apk'}) == [

@@ -8,25 +8,25 @@ from mschuchard.general.plugins.module_utils import universal
 def test_validate_json_yaml_file():
     """test yaml and json file validator"""
     # test valid yaml file
-    assert universal.validate_json_yaml_file('galaxy.yml')
+    assert universal.validate_json_yaml_file(Path('galaxy.yml'))
 
     # test invalid yaml or json file
     with pytest.warns(SyntaxWarning, match='Specified YAML or JSON file does not contain valid YAML or JSON: .gitignore'), pytest.raises(ValueError):
-        assert not universal.validate_json_yaml_file('.gitignore')
+        assert not universal.validate_json_yaml_file(Path('.gitignore'))
 
 
 def test_action_flags_command():
     """test action flags dict to list of command strings converter"""
     # test accurate flags conversion
-    assert universal.action_flags_command(['hello'], ['foo', 'bar'], {'foo': '--foo', 'bar': '--bar'}) == ['hello', '--foo', '--bar']
+    assert set(universal.action_flags_command(['hello'], {'foo', 'bar'}, {'foo': '--foo', 'bar': '--bar'})) == set(['hello', '--foo', '--bar'])
 
     # test unsupported flag input
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: baz'):
-        assert universal.action_flags_command(['hello'], ['foo', 'baz'], {'foo': '--foo', 'bar': '--bar'}) == ['hello', '--foo']
+        assert universal.action_flags_command(['hello'], {'foo', 'baz'}, {'foo': '--foo', 'bar': '--bar'}) == ['hello', '--foo']
 
     # test action with no action flags input
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: foo'):
-        assert universal.action_flags_command(['hello'], ['foo'], {}) == ['hello']
+        assert universal.action_flags_command(['hello'], {'foo'}, {}) == ['hello']
 
 
 def test_vars_converter():
@@ -54,10 +54,14 @@ def test_var_files_converter():
     """test ansible var files param to hashi cli converter"""
     # test fails on missing var file
     with pytest.raises(FileNotFoundError, match='Var file does not exist: one.pkrvars.hcl'):
-        universal.var_files_converter(['galaxy.yml', 'one.pkrvars.hcl'])
+        universal.var_files_converter([Path('galaxy.yml'), Path('one.pkrvars.hcl')])
 
     # test accurate var files conversion
-    assert universal.var_files_converter(['galaxy.yml', 'galaxy.yml', 'galaxy.yml']) == ['-var-file=galaxy.yml', '-var-file=galaxy.yml', '-var-file=galaxy.yml']
+    assert universal.var_files_converter([Path('galaxy.yml'), Path('galaxy.yml'), Path('galaxy.yml')]) == [
+        '-var-file=galaxy.yml',
+        '-var-file=galaxy.yml',
+        '-var-file=galaxy.yml',
+    ]
 
 
 def test_params_to_flags_args():
