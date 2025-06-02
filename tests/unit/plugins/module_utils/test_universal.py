@@ -18,7 +18,7 @@ def test_validate_json_yaml_file():
 def test_action_flags_command():
     """test action flags dict to list of command strings converter"""
     # test accurate flags conversion
-    assert set(universal.action_flags_command(['hello'], {'foo', 'bar'}, {'foo': '--foo', 'bar': '--bar'})) == set(['hello', '--foo', '--bar'])
+    assert set(universal.action_flags_command(['hello'], {'foo', 'bar'}, {'foo': '--foo', 'bar': '--bar'})) == {'hello', '--foo', '--bar'}
 
     # test unsupported flag input
     with pytest.warns(RuntimeWarning, match='Unsupported flag specified: baz'):

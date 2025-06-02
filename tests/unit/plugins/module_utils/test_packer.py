@@ -56,18 +56,16 @@ def test_packer_cmd():
     ]
 
     # test build with force and debug flags, and parallel builds args
-    assert set(packer.cmd(action='build', flags={'debug', 'force'}, args={'parallel_builds': '1'}, target_dir=Path('/home'))) == set(
-        [
-            'packer',
-            'build',
-            '-machine-readable',
-            '-color=false',
-            '-debug',
-            '-force',
-            '-parallel-builds=1',
-            '/home',
-        ]
-    )
+    assert set(packer.cmd(action='build', flags={'debug', 'force'}, args={'parallel_builds': '1'}, target_dir=Path('/home'))) == {
+        'packer',
+        'build',
+        '-machine-readable',
+        '-color=false',
+        '-debug',
+        '-force',
+        '-parallel-builds=1',
+        '/home',
+    }
 
 
 def test_ansible_to_packer_errors():

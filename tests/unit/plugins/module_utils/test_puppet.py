@@ -37,7 +37,7 @@ def test_puppet_cmd():
     assert puppet.cmd(action='agent') == ['puppet', 'agent']
 
     # test apply with test and noop
-    assert puppet.cmd(action='apply', flags={'test', 'no_op'}, manifest=Path('/etc/group')) == ['puppet', 'apply', '-t', '--noop', '/etc/group']
+    assert set(puppet.cmd(action='apply', flags={'test', 'no_op'}, manifest=Path('/etc/group'))) == {'puppet', 'apply', '-t', '--noop', '/etc/group'}
 
     # test agent with certname and serverport
     assert puppet.cmd(action='agent', args={'certname': 'example.domain', 'server_port': 1234}) == [

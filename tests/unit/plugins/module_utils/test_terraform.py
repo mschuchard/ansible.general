@@ -65,7 +65,7 @@ def test_terraform_cmd():
         terraform.cmd(
             action='init', flags={'force_copy', 'migrate_state'}, args={'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home']}, target_dir=Path('/home')
         )
-    ) == set(['terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home'])
+    ) == {'terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home'}
 
     # test bare apply with plan file
     assert terraform.cmd(action='apply', target_dir=Path(f'{str(utils.fixtures_dir())}/config.tf')) == [
