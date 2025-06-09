@@ -36,10 +36,11 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 # dictionary that maps input args to terraform args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
-        'build': {},
+        'build': {'name': '--name'},
         'deploy': {
             'annotation': '',
             'label': '',
+            'name': '--name',
         },
         'list': {'sort': '--sort'},
         'login': {
@@ -53,7 +54,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}, name: str | None = None) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list[str]:
     """constructs a list representing the openfaas command to execute"""
     # verify command
     if action not in FLAGS_MAP:
