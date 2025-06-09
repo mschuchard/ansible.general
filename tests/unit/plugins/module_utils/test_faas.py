@@ -37,11 +37,31 @@ def test_faas_cmd_errors():
 
 def test_faas_cmd():
     """test various cmd returns"""
+    # test list with no flags and no args
+    assert faas.cmd(action='list') == ['faas-cli', 'list']
+
+    # test deploy with both flags and no args
+    assert set(faas.cmd(action='deploy', flags={'replace', 'update'})) == {'faas-cli', 'deploy', '--replace', '--update'}
+
+    # test login with no flags and both args
+    assert faas.cmd(action='login', args={'username': 'me', 'password': 'secret'}) == ['faas-cli', 'login', '-u', 'me', '-p', 'secret']
+
+    # test build with pull and quiet flags, and name arg
+    assert set(faas.cmd(action='build', flags={'pull', 'quiet'}, args={'name': 'myfunction'})) == {
+        'faas-cli',
+        'build',
+        '--pull',
+        '--quiet',
+        '--name',
+        'myfunction',
+    }
 
 
 def test_ansible_to_faas_errors():
     """test various ansible_to_faas errors"""
+    pass
 
 
 def test_ansible_to_faas():
     """test various ansible_to_faas returns"""
+    assert faas.ansible_to_faas({'label': {'foo': 'bar', 'baz': 'bat'}}) == {'label': 'foo=bar baz=bat'}
