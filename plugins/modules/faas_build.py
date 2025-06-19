@@ -95,3 +95,92 @@ command:
     type: str
     returned: always
 """
+
+from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
+from mschuchard.general.plugins.module_utils import faas
+
+
+def main() -> None:
+    """primary function for faas build module"""
+    # instantiate ansible module
+    module: AnsibleModule = AnsibleModule(
+        argument_spec={
+            'config_file': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'disable_stack_pull': {'type': 'bool', 'default': False},
+            'env_subst': {'type': 'bool', 'default': True},
+            'filter': {'type': 'str', 'required': False},
+            'name': {'type': 'str', 'required': False},
+            'no_cache': {'type': 'bool', 'default': False},
+            'pull': {'type': 'bool', 'default': False},
+            'quiet': {'type': 'bool', 'default': False},
+            'regex': {'type': 'str', 'required': False},
+            'shrinkwrap': {'type': 'bool', 'default': False},
+        },
+        mutually_exclusive=[('config_file', 'name')],
+        required_one_of=[('config_file', 'name')],
+        supports_check_mode=True,
+    )
+
+    # initialize
+    filter: str = module.params.get('filter')
+    name: str = module.params.get('name')
+    regex: str = module.params.get('regex')
+    config_file: Path = module.params.get('config_file')
+
+    # check on optional debug param
+    flags: set[str] = set()
+    if module.params.get('disable_stack_pull'):
+        flags.add('disable_stack_pull')
+    if module.params.get('env_subst'):
+        flags.add('envsubst')
+    if module.params.get('no_cache'):
+        flags.add('no_cache')
+    if module.params.get('pull'):
+        flags.add('pull')
+    if module.params.get('quiet'):
+        flags.add('quiet')
+    if module.params.get('shrinkwrap'):
+        flags.add('shrinkwrap')
+
+    # check args
+    args: dict = {}
+    if filter:
+        args.update({'filter': filter})
+    if name:
+        args.update({'name': name})
+    if regex:
+        args.update({'regex': regex})
+    elif config_file:
+        args.update({'config_file': Path(config_file)})
+
+    # determine faas command
+    command: list[str] = faas.cmd(action='build', flags=flags, args=args)
+
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=False, command=command)
+
+    # execute faas
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
+
+    # post-process
+    if return_code == 0:
+        module.exit_json(changed=True, stdout=stdout, stderr=stderr, command=command)
+    else:
+        module.fail_json(
+            msg=stderr.rstrip(),
+            return_code=return_code,
+            cmd=command,
+            stdout=stdout,
+            stdout_lines=stdout.splitlines(),
+            stderr=stderr,
+            stderr_lines=stderr.splitlines(),
+        )
+
+
+if __name__ == '__main__':
+    main()
