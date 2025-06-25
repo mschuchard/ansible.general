@@ -106,7 +106,7 @@ def main() -> None:
     # instantiate ansible module
     module: AnsibleModule = AnsibleModule(
         argument_spec={
-            'config_file': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'config_file': {'type': 'path', 'required': False},
             'disable_stack_pull': {'type': 'bool', 'default': False},
             'env_subst': {'type': 'bool', 'default': True},
             'filter': {'type': 'str', 'required': False},
@@ -132,8 +132,8 @@ def main() -> None:
     flags: set[str] = set()
     if module.params.get('disable_stack_pull'):
         flags.add('disable_stack_pull')
-    if module.params.get('env_subst'):
-        flags.add('envsubst')
+    if module.params.get('env_subst') is False:
+        flags.add('env_subst')
     if module.params.get('no_cache'):
         flags.add('no_cache')
     if module.params.get('pull'):
@@ -149,10 +149,10 @@ def main() -> None:
         args.update({'filter': filter})
     if name:
         args.update({'name': name})
-    if regex:
-        args.update({'regex': regex})
     elif config_file:
         args.update({'config_file': Path(config_file)})
+    if regex:
+        args.update({'regex': regex})
 
     # determine faas command
     command: list[str] = faas.cmd(action='build', flags=flags, args=args)

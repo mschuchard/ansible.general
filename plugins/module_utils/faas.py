@@ -92,10 +92,12 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
     # check if filter is specified
     if 'filter' in args:
         command.extend(['--filter', args['filter']])
+        del args['filter']
 
     # check if regex is specified
     if 'regex' in args:
         command.extend(['--regex', args['regex']])
+        del args['regex']
 
     # check if config file is specified
     if 'config_file' in args:
@@ -104,6 +106,7 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
         if config_file.is_file() and universal.validate_json_yaml_file(config_file):
             # config file is valid
             command.extend(['-f', str(config_file)])
+            del args['config_file']
         else:
             # error if config file has issue
             raise FileNotFoundError(f'Function config file does not exist or is invalid: {config_file}')
