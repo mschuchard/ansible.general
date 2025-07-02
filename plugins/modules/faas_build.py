@@ -13,7 +13,7 @@ module: faas_build
 
 short_description: Module to build a FaaS function container.
 
-version_added: "1.0.0"
+version_added: "1.3.0"
 
 description: Builds OpenFaaS function containers either via the supplied YAML config, or via parameters.
 
@@ -76,7 +76,7 @@ EXAMPLES = r"""
 - name: Build a function from a stack.yaml file with no cache, filter, and regex
   mschuchard.general.faas_build:
     config_file: stack.yaml
-    no_cache: True
+    cache: False
     filter: '*gif*'
     regex: 'fn[0-9]_.*'
 
@@ -84,7 +84,7 @@ EXAMPLES = r"""
 - name: Build a function from a stack.yaml file with pull, shrinkwrap, and disabled stack pull
   mschuchard.general.faas_build:
     config_file: stack.yaml
-    disable_stack_pull: True
+    stack_pull: False
     pull: True
     shrinkwrap: True
 """
@@ -107,15 +107,15 @@ def main() -> None:
     module: AnsibleModule = AnsibleModule(
         argument_spec={
             'config_file': {'type': 'path', 'required': False},
-            'disable_stack_pull': {'type': 'bool', 'default': False},
-            'env_subst': {'type': 'bool', 'default': True},
+            'stack_pull': {'type': 'bool', 'required': False, 'default': True},
+            'env_subst': {'type': 'bool', 'required': False, 'default': True},
             'filter': {'type': 'str', 'required': False},
             'name': {'type': 'str', 'required': False},
-            'no_cache': {'type': 'bool', 'default': False},
-            'pull': {'type': 'bool', 'default': False},
-            'quiet': {'type': 'bool', 'default': False},
+            'cache': {'type': 'bool', 'required': False, 'default': True},
+            'pull': {'type': 'bool', 'required': False},
+            'quiet': {'type': 'bool', 'required': False},
             'regex': {'type': 'str', 'required': False},
-            'shrinkwrap': {'type': 'bool', 'default': False},
+            'shrinkwrap': {'type': 'bool', 'required': False},
         },
         mutually_exclusive=[('config_file', 'name')],
         required_one_of=[('config_file', 'name')],
@@ -130,11 +130,11 @@ def main() -> None:
 
     # check on optional debug param
     flags: set[str] = set()
-    if module.params.get('disable_stack_pull'):
+    if module.params.get('stack_pull') is False:
         flags.add('disable_stack_pull')
     if module.params.get('env_subst') is False:
         flags.add('env_subst')
-    if module.params.get('no_cache'):
+    if module.params.get('cache') is False:
         flags.add('no_cache')
     if module.params.get('pull'):
         flags.add('pull')

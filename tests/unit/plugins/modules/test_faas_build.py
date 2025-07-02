@@ -28,7 +28,7 @@ def test_faas_build_defaults(capfd):
 
 def test_faas_build_no_cache_globals(capfd):
     """test faas build with no cache and globals"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'no_cache': True, 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'cache': False, 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
     with pytest.raises(SystemExit, match='1'):
         faas_build.main()
 
@@ -47,7 +47,7 @@ def test_faas_build_no_cache_globals(capfd):
 
 def test_faas_build_stack_pull_shrinkwrap(capfd):
     """test faas build with disable stack pull, pull, and shrinkwrap"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'disable_stack_pull': True, 'pull': True, 'shrinkwrap': True})
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'stack_pull': False, 'pull': True, 'shrinkwrap': True})
     with pytest.raises(SystemExit, match='1'):
         faas_build.main()
 

@@ -23,13 +23,10 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'update': '--update',
         },
         'list': {'verbose': '-v'},
-        'login': {},
         'logs': {
             'instance': '--instance',
             'name': '--name',
         },
-        'push': {},
-        'remove': {},
     }
 )
 
@@ -47,7 +44,6 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'username': '-u',
             'password': '-p',
         },
-        'logs': {},
         'push': {'parellel': '--parallel'},
         'remove': {},
     }
@@ -57,7 +53,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list[str]:
     """constructs a list representing the openfaas command to execute"""
     # verify command
-    if action not in FLAGS_MAP:
+    if action not in FLAGS_MAP | ARGS_MAP:
         raise RuntimeError(f'Unsupported FaaS action attempted: {action}')
 
     # initialize faas-cli command
