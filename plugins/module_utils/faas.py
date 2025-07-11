@@ -12,7 +12,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
         'build': {
             'disable_stack_pull': '--disable-stack-pull',
-            'env_subst': '--envsubst',
+            'env_subst': '--envsubst=false',
             'no_cache': '--no-cache',
             'pull': '--pull',
             'quiet': '--quiet',
@@ -20,7 +20,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
         },
         'deploy': {
             'replace': '--replace',
-            'update': '--update',
+            'update': '--update=false',
         },
         'list': {'verbose': '-v'},
         'logs': {

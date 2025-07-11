@@ -60,16 +60,17 @@ author: Matthew Schuchard (@mschuchard)
 """
 
 EXAMPLES = r"""
-# deploy a function from a stack.yaml file with function re-creation, filter, and regex
-- name: Deploy a function from a stack.yaml file with function re-creation, filter, and regex
+# deploy a function from a stack.yaml file with function re-creation and no rolling updates, filter, and regex
+- name: Deploy a function from a stack.yaml file with function re-creation and no rolling updates, filter, and regex
   mschuchard.general.faas_deploy:
     config_file: stack.yaml
     replace: true
+    update: false
     filter: '*gif*'
     regex: 'fn[0-9]_.*'
 
-# deploy a function from a stack.yaml file with annotations, labels, and no rolling updates
-- name: Deploy a function from a stack.yaml file with annotations, labels, and no rolling updates
+# deploy a function from a stack.yaml file with annotations and labels
+- name: Deploy a function from a stack.yaml file with annotations and labels
   mschuchard.general.faas_deploy:
     config_file: stack.yaml
     annotation:
@@ -78,7 +79,6 @@ EXAMPLES = r"""
     label:
       app: myapp
       tier: backend
-    update: false
 """
 
 RETURN = r"""

@@ -76,17 +76,18 @@ EXAMPLES = r"""
 - name: Build a function from a stack.yaml file with no cache, filter, and regex
   mschuchard.general.faas_build:
     config_file: stack.yaml
-    cache: False
+    cache: false
     filter: '*gif*'
     regex: 'fn[0-9]_.*'
 
-# build a function from a stack.yaml file with pull, shrinkwrap, and disabled stack pull
-- name: Build a function from a stack.yaml file with pull, shrinkwrap, and disabled stack pull
+# build a function from a stack.yaml file with pull and shrinkwrap, and disabled stack pull and environment substitution
+- name: Build a function from a stack.yaml file with pull and shrinkwrap, and disabled stack pull and environment substitution
   mschuchard.general.faas_build:
     config_file: stack.yaml
-    stack_pull: False
-    pull: True
-    shrinkwrap: True
+    stack_pull: false
+    env_subst: false
+    pull: true
+    shrinkwrap: true
 """
 
 RETURN = r"""
