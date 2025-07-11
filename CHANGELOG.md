@@ -2,6 +2,7 @@
 - Simplify `var` parameter in Hashi modules to dictionary type.
 - Minor code improvements and fixes.
 - Increase minimum GoSS version to 0.4.0.
+- Add first set of OpenFaaS modules.
 
 ### 1.2.1
 - General code improvements.

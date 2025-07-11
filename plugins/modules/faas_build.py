@@ -18,15 +18,15 @@ version_added: "1.3.0"
 description: Builds OpenFaaS function containers either via the supplied YAML config, or via parameters.
 
 options:
+    cache:
+        description: Use Docker's build cache
+        required: false
+        default: true
+        type: bool
     config_file:
         description: Path to YAML file describing function(s)
         required: false
         type: path
-    disable_stack_pull:
-        description: Disables the template configuration in the stack.yaml
-        required: false
-        default: false
-        type: bool
     env_subst:
         description: Substitute environment variables in stack.yaml file
         required: false
@@ -40,11 +40,6 @@ options:
         description: Name of the deployed function
         required: false
         type: str
-    no_cache:
-        description: Do not use Docker's build cache
-        required: false
-        default: false
-        type: bool
     pull:
         description: Force a re-pull of base images in template during build, useful for publishing images
         required: false
@@ -63,6 +58,11 @@ options:
         description: Just write files to ./build/ folder for shrink-wrapping
         required: false
         default: false
+        type: bool
+    stack_pull:
+        description: Enables the template configuration in the stack.yaml
+        required: false
+        default: true
         type: bool
 
 requirements:
@@ -106,16 +106,16 @@ def main() -> None:
     # instantiate ansible module
     module: AnsibleModule = AnsibleModule(
         argument_spec={
+            'cache': {'type': 'bool', 'required': False, 'default': True},
             'config_file': {'type': 'path', 'required': False},
-            'stack_pull': {'type': 'bool', 'required': False, 'default': True},
             'env_subst': {'type': 'bool', 'required': False, 'default': True},
             'filter': {'type': 'str', 'required': False},
             'name': {'type': 'str', 'required': False},
-            'cache': {'type': 'bool', 'required': False, 'default': True},
             'pull': {'type': 'bool', 'required': False},
             'quiet': {'type': 'bool', 'required': False},
             'regex': {'type': 'str', 'required': False},
             'shrinkwrap': {'type': 'bool', 'required': False},
+            'stack_pull': {'type': 'bool', 'required': False, 'default': True},
         },
         mutually_exclusive=[('config_file', 'name')],
         required_one_of=[('config_file', 'name')],
