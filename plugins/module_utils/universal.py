@@ -74,7 +74,7 @@ def var_files_converter(var_files: list[Path]) -> list[str]:
     """convert an ansible param list of var files to a hashi list of var files"""
 
     # initialize args
-    args = []
+    args: list[str] = []
 
     # iterate through var_files and convert
     for var_file in var_files:

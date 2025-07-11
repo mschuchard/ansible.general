@@ -64,4 +64,4 @@ def test_ansible_to_faas_errors():
 
 def test_ansible_to_faas():
     """test various ansible_to_faas returns"""
-    assert faas.ansible_to_faas({'label': {'foo': 'bar', 'baz': 'bat'}}) == {'label': 'foo=bar baz=bat'}
+    assert faas.ansible_to_faas({'label': {'foo': 'bar', 'baz': 'bat'}}) == {'label': ['--label', 'foo=bar', '--label', 'baz=bat']}

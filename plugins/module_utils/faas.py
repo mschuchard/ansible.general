@@ -71,8 +71,12 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
             if arg == 'sort' and arg_value not in ['name', 'invocations']:
                 raise ValueError('The "sort" parameter must be either "name" or "invocations"')
 
+            # annotation and label have properly formatted value of type list[str] and so need to be extended directly
+            if arg in ['annotation', 'label']:
+                command.extend(arg_value)
             # append the value interpolated with the arg name from the dict to the command
-            command.extend([action_args_map[arg], arg_value])
+            else:
+                command.extend([action_args_map[arg], arg_value])
         else:
             # unsupported arg specified
             warnings.warn(f'Unsupported FaaS arg specified: {arg}', RuntimeWarning)
@@ -110,14 +114,14 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
     return command
 
 
-def ansible_to_faas(args: dict) -> dict[str, str]:
+def ansible_to_faas(args: dict) -> dict[str, list[str]]:
     """converts ansible types and syntax to faas types and formatting for arguments only"""
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
     for arg, arg_value in args.items():
         match arg:
-            # transform dict[str, str] to single "key=value key2=value2" string
+            # transform dict[str, str] to list of '--arg' 'key=value' '--arg' 'key2=value2' strings
             case 'annotation' | 'label':
-                args[arg] = ' '.join([f'{key}={value}' for key, value in arg_value.items()])
+                args[arg] = ' '.join([f'--{arg} {key}={value}' for key, value in arg_value.items()]).split()
 
     return args
