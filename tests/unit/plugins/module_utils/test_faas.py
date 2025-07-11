@@ -41,17 +41,18 @@ def test_faas_cmd():
     assert faas.cmd(action='list') == ['faas-cli', 'list']
 
     # test deploy with both flags and no args
-    assert set(faas.cmd(action='deploy', flags={'replace', 'update'})) == {'faas-cli', 'deploy', '--replace', '--update'}
+    assert set(faas.cmd(action='deploy', flags={'replace', 'update'})) == {'faas-cli', 'deploy', '--replace', '--update=false'}
 
     # test login with no flags and both args
     assert faas.cmd(action='login', args={'username': 'me', 'password': 'secret'}) == ['faas-cli', 'login', '-u', 'me', '-p', 'secret']
 
-    # test build with pull and quiet flags, and name arg
-    assert set(faas.cmd(action='build', flags={'pull', 'quiet'}, args={'name': 'myfunction'})) == {
+    # test build with pull and quiet and env_subst flags, and name arg
+    assert set(faas.cmd(action='build', flags={'pull', 'quiet', 'env_subst'}, args={'name': 'myfunction'})) == {
         'faas-cli',
         'build',
         '--pull',
         '--quiet',
+        '--envsubst=false',
         '--name',
         'myfunction',
     }
