@@ -1,4 +1,4 @@
-### 1.3.0 (Next)
+### 1.3.0
 - Simplify `var` parameter in Hashi modules to dictionary type.
 - Minor code improvements and fixes.
 - Increase minimum GoSS version to 0.4.0.

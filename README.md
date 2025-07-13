@@ -3,6 +3,7 @@
 This repository contains the `mschuchard.general` collection. This collection primarily contains module plugins that support tools commonly considered part of the "DevOps" ecosystem. The tools to be supported are chosen either because no current module plugin support exists, or there are feature requests and functionality gaps for any current module plugins supporting those tools.
 
 **Supported Tools**
+- [FaaS](https://www.openfaas.com)
 - [GoSS](https://github.com/goss-org/goss)
 - [Packer](https://www.packer.io/)
 - [Puppet](https://www.puppet.com/)

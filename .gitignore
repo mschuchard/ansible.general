@@ -1,3 +1,4 @@
 *cache*
 .terraform
 terraform.tfstate
+plan.tfplan

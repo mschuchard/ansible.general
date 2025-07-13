@@ -2,6 +2,9 @@
 requires_ansible: '>=2.12.0'
 
 action_groups:
+  faas:
+  - faas_build
+  - faas_deploy
   goss:
   - goss_render
   - goss_serve
