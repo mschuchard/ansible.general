@@ -21,7 +21,7 @@ options:
     certname:
         description: Set the certname (unique ID) of the client.
         required: false
-        default: fqdn
+        default: client's FQDN
         type: str
     debug:
         description: Enable full debugging.

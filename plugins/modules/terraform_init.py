@@ -26,7 +26,6 @@ options:
     backend_config:
         description: Configurations to be merged with what is in the configuration file's 'backend' block. These can be either paths to HCL files with key/value assignments (same format as terraform.tfvars), or key-value pairs. Files should be a string type element in the list, and key-value pairs should be a single-level dictionary type element in the list. The backend type must be in the configuration itself.
         required: false
-        default: []
         type: list
     config_dir:
         description: Location of the directory containing the Terraform root module config files.
@@ -46,7 +45,6 @@ options:
     plugin_dir:
         description: Directories containing plugin binaries. These override all default search paths for plugins, and prevents the automatic installation of plugins.
         required: false
-        default: []
         type: list
     upgrade:
         description: Install the latest module and provider versions allowed within configured constraints. This overrides the default behavior of selecting exactly the versions recorded in the dependency lockfile.

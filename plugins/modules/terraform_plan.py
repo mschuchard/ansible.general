@@ -26,6 +26,7 @@ options:
     destroy:
         description: Select the destroy planning mode which creates a plan to destroy all objects currently managed by this Terraform configuration instead of the usual behavior.
         required: false
+        default: false
         type: bool
     generate_config:
         description: If import blocks are present in configuration, then instructs Terraform to generate HCL for any imported resources not already present. The configuration is written to a new file at the parameter value which must not already exist. Terraform may still attempt to write configuration if the plan errors.
@@ -38,6 +39,7 @@ options:
     refresh_only:
         description: Select the refresh only planning mode which checks whether remote objects still match the outcome of the most recent Terraform apply, but does not propose any actions to undo any changes made outside of Terraform.
         required: false
+        default: false
         type: bool
     replace:
         description: Force replacement of a particular resource instance using its resource address. If the plan would normally produce an update or no-op action for this instance, then Terraform will plan to replace it instead.

@@ -26,6 +26,7 @@ options:
     destroy:
         description: Destroy Terraform-managed infrastructure.
         required: false
+        default: false
         type: bool
     plan_file:
         description: Location of the output file generated during a plan. Mutually exclusive with all other parameters since the parameters are all defined instead during the plan execution.

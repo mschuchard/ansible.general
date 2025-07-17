@@ -31,7 +31,6 @@ options:
     excepts:
         description: Run all builds and post-processors other than these.
         required: false
-        default: []
         type: list
     force:
         description: Force a build to continue if artifacts exist, deletes existing artifacts.
@@ -41,15 +40,13 @@ options:
     on_error:
         description: If the build fails do clean up (default), abort, ask, or run-cleanup-provisioner
         required: false
-        default: ''
         type: str
     only:
         description: Build only the specified builds.
         required: false
-        default: []
         type: list
     parallel_builds:
-        description: Number of builds to run in parallel. 0 means no limit.
+        description: Number of builds to run in parallel. 0 denotes "no limit".
         required: false
         default: 0
         type: int
@@ -61,12 +58,10 @@ options:
     var:
         description: Variables for templates.
         required: false
-        default: {}
         type: dict
     var_file:
         description: HCL2 files containing user variables.
         required: false
-        default: []
         type: list
 
 requirements:

@@ -34,6 +34,7 @@ options:
     json:
         description: Machine readable output will be output to stdout in JSON format.
         required: false
+        default: false
         type: bool
     test_dir:
         description: Set the Terraform test directory.

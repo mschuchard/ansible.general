@@ -31,12 +31,10 @@ options:
     excepts:
         description: Validate all builds other than these.
         required: false
-        default: []
         type: list
     only:
         description: Validate only these builds.
         required: false
-        default: []
         type: list
     syntax_only:
         description: Only check syntax. Do not verify config of the template.
@@ -46,12 +44,10 @@ options:
     var:
         description: Variables for templates.
         required: false
-        default: {}
         type: dict
     var_file:
         description: HCL2 files containing user variables.
         required: false
-        default: []
         type: list
     warn_undeclared_var:
         description: Warnings for user variable files containing undeclared variables (>= 1.8.5)
