@@ -132,7 +132,7 @@ def main() -> None:
     args: dict = {}
     # reminder: the flag that must be argued instead
     # ruff complains so default should protect against falsey with None
-    if not module.params.get('backend'):
+    if module.params.get('backend') is False:
         args.update({'backend': 'false'})
     if backend_config:
         args.update({'backend_config': backend_config})

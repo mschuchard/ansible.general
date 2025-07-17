@@ -138,7 +138,7 @@ def main() -> None:
         flags.add('evaluate_datasources')
     if module.params.get('syntax_only'):
         flags.add('syntax_only')
-    if not module.params.get('warn_undeclared_var'):
+    if module.params.get('warn_undeclared_var') is False:
         flags.add('no_warn_undeclared_var')
 
     # check args

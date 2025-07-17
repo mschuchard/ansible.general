@@ -112,7 +112,7 @@ def main() -> None:
     args: dict = {}
     # reminder: the flag that must be argued instead
     # ruff complains so default should protect against falsey with None
-    if not module.params.get('write'):
+    if module.params.get('write') is False:
         args.update({'write': 'false'})
         changed = False
 
