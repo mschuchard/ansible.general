@@ -47,11 +47,20 @@ options:
         required: false
         default: false
         type: bool
+        removed_in_version: '1.4.0'
+    strategy:
+        description: Whether to perform rolling update, or remove and re-create, one or more existing functions. This will deprecate the `replace` and `update` parameters in version 1.4.0.
+        choices: [replace, update]
+        required: false
+        default: update
+        type: str
+        new_in_version: '1.3.1'
     update:
         description: Perform rolling update on one or more existing functions
         required: false
         default: true
         type: bool
+        removed_in_version: '1.4.0'
 
 requirements:
     - faas-cli >= 0.17.0
@@ -70,7 +79,7 @@ EXAMPLES = r"""
     regex: 'fn[0-9]_.*'
 
 # deploy a function from a stack.yaml file with annotations and labels
-- name: Deploy a function from a stack.yaml file with annotations and labels
+- name: Deploy a function from a stack.yaml file with function re-creation, and annotations and labels
   mschuchard.general.faas_deploy:
     config_file: stack.yaml
     annotation:
@@ -79,6 +88,7 @@ EXAMPLES = r"""
     label:
       app: myapp
       tier: backend
+    strategy: replace
 """
 
 RETURN = r"""
@@ -104,10 +114,16 @@ def main() -> None:
             'label': {'type': 'dict', 'required': False},
             'name': {'type': 'str', 'required': False},
             'regex': {'type': 'str', 'required': False},
-            'replace': {'type': 'bool', 'required': False},
-            'update': {'type': 'bool', 'required': False, 'default': True},
+            'replace': {'type': 'bool', 'required': False, 'removed_in_version': '1.4.0'},
+            'strategy': {'type': 'str', 'choices': ['replace', 'update'], 'default': 'update', 'required': False, 'new_in_version': '1.3.1'},
+            'update': {
+                'type': 'bool',
+                'required': False,
+                'default': True,
+                'removed_in_version': '1.4.0',
+            },
         },
-        mutually_exclusive=[('config_file', 'name')],
+        mutually_exclusive=[('config_file', 'name'), ('strategy', 'replace'), ('strategy', 'update')],
         required_one_of=[('config_file', 'name')],
         supports_check_mode=True,
     )
