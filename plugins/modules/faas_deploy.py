@@ -47,7 +47,6 @@ options:
         required: false
         default: false
         type: bool
-        removed_in_version: '1.4.0'
     strategy:
         description: Whether to perform rolling update, or remove and re-create, one or more existing functions. This will deprecate the `replace` and `update` parameters in version 1.4.0.
         choices: [replace, update]
@@ -60,7 +59,6 @@ options:
         required: false
         default: true
         type: bool
-        removed_in_version: '1.4.0'
 
 requirements:
     - faas-cli >= 0.17.0
@@ -114,14 +112,9 @@ def main() -> None:
             'label': {'type': 'dict', 'required': False},
             'name': {'type': 'str', 'required': False},
             'regex': {'type': 'str', 'required': False},
-            'replace': {'type': 'bool', 'required': False, 'removed_in_version': '1.4.0'},
+            'replace': {'type': 'bool', 'required': False},
             'strategy': {'type': 'str', 'choices': ['replace', 'update'], 'default': 'update', 'required': False, 'new_in_version': '1.3.1'},
-            'update': {
-                'type': 'bool',
-                'required': False,
-                'default': True,
-                'removed_in_version': '1.4.0',
-            },
+            'update': {'type': 'bool', 'required': False, 'default': True},
         },
         mutually_exclusive=[('config_file', 'name'), ('strategy', 'replace'), ('strategy', 'update')],
         required_one_of=[('config_file', 'name')],
@@ -135,13 +128,18 @@ def main() -> None:
     config_file: Path = module.params.get('config_file')
     annotation: dict = module.params.get('annotation')
     label: dict = module.params.get('label')
+    strategy: str = module.params.get('strategy')
 
-    # check on optional debug param
+    # check on optional strategy param
     flags: set[str] = set()
-    if module.params.get('update') is False:
+    if strategy == 'replace':
         flags.add('update')
-    if module.params.get('replace'):
         flags.add('replace')
+    else:
+        if module.params.get('update') is False:
+            flags.add('update')
+        if module.params.get('replace'):
+            flags.add('replace')
 
     # check args
     args: dict = {}

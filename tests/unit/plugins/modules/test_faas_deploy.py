@@ -56,6 +56,7 @@ def test_faas_deploy_annotation_label(capfd):
             'config_file': f'{str(utils.fixtures_dir())}/stack.yaml',
             'annotation': {'imageregistry': 'docker.io', 'loadbalancer': 'mycloud'},
             'label': {'app': 'myapp', 'tier': 'backend'},
+            'strategy': 'replace',
         }
     )
     with pytest.raises(SystemExit, match='1'):
@@ -72,5 +73,7 @@ def test_faas_deploy_annotation_label(capfd):
     assert '--label' in info['cmd']
     assert 'app=myapp' in info['cmd']
     assert 'tier=backend' in info['cmd']
+    assert '--replace' in info['cmd']
+    assert '--update=false' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
