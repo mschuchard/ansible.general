@@ -39,6 +39,7 @@ options:
         description: Load variable values from the given HCL2 files in addition to the default files terraform.tfvars and *.auto.tfvars.
         required: false
         type: list
+        elements: path
 
 requirements:
     - terraform >= 1.0
@@ -89,7 +90,7 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'id': {'type': 'str', 'required': True},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'elements': 'path', 'required': False},
         },
         supports_check_mode=True,
     )

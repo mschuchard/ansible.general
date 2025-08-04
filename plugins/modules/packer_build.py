@@ -32,6 +32,7 @@ options:
         description: Run all builds and post-processors other than these.
         required: false
         type: list
+        elements: str
     force:
         description: Force a build to continue if artifacts exist, deletes existing artifacts.
         required: false
@@ -45,6 +46,7 @@ options:
         description: Build only the specified builds.
         required: false
         type: list
+        elements: str
     parallel_builds:
         description: Number of builds to run in parallel. 0 denotes "no limit".
         required: false
@@ -63,6 +65,7 @@ options:
         description: HCL2 files containing user variables.
         required: false
         type: list
+        elements: path
 
 requirements:
     - packer >= 1.7.0
@@ -127,14 +130,14 @@ def main() -> None:
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'debug': {'type': 'bool', 'required': False},
-            'excepts': {'type': 'list', 'required': False},
+            'excepts': {'type': 'list', 'elements': 'str', 'required': False},
             'force': {'type': 'bool', 'required': False},
             'on_error': {'type': 'str', 'required': False},
-            'only': {'type': 'list', 'required': False},
+            'only': {'type': 'list', 'elements': 'str', 'required': False},
             'parallel_builds': {'type': 'int', 'required': False},
             'timestamp_ui': {'type': 'bool', 'required': False},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'elements': 'path', 'required': False},
         },
         mutually_exclusive=[('excepts', 'only')],
         supports_check_mode=True,

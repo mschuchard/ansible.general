@@ -31,6 +31,7 @@ options:
         description: Terraform will only execute the test files specified by this parameter.
         required: false
         type: list
+        elements: path
     json:
         description: Machine readable output will be output to stdout in JSON format.
         required: false
@@ -49,6 +50,7 @@ options:
         description: Load variable values from the given HCL2 files in addition to the default files terraform.tfvars and *.auto.tfvars.
         required: false
         type: list
+        elements: path
 
 
 requirements:
@@ -96,12 +98,12 @@ def main() -> None:
         argument_spec={
             'cloud_run': {'type': 'str', 'required': False},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
-            'filter': {'type': 'list', 'required': False},
+            'filter': {'type': 'list', 'elements': 'path', 'required': False},
             'json': {'type': 'bool', 'required': False},
             'migrate_state': {'type': 'bool', 'required': False},
             'test_dir': {'type': 'path', 'required': False},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'elements': 'path', 'required': False},
         },
         supports_check_mode=True,
     )
@@ -109,7 +111,7 @@ def main() -> None:
     # initialize
     cloud_run: list[str] = module.params.get('cloud_run')
     config_dir: Path = Path(module.params.get('config_dir'))
-    filter: list[str] = module.params.get('filter')
+    filter: list[Path] = module.params.get('filter')
     test_dir: Path = module.params.get('test_dir')
     var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')

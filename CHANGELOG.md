@@ -2,6 +2,7 @@
 - Improve accuracy of `default` in plugin documentation.
 - Improve check on boolean parameters with default `true`.
 - Add `strategy` parameter to `faas_deploy` module.
+- Further define `list` type parameters with `elements` specifications.
 
 ### 1.3.0
 - Simplify `var` parameter in Hashi modules to dictionary type.

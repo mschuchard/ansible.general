@@ -45,10 +45,12 @@ options:
         description: Force replacement of a particular resource instance using its resource address. If the plan would normally produce an update or no-op action for this instance, then Terraform will plan to replace it instead.
         required: false
         type: list
+        elements: str
     target:
         description: Limit the planning operation to only the given module, resource, or resource instance, and all of its dependencies.
         required: false
         type: list
+        elements: str
     var:
         description: Set values for one or more of the input variables in the root module of the configuration.
         required: false
@@ -57,6 +59,7 @@ options:
         description: Load variable values from the given HCL2 files in addition to the default files terraform.tfvars and *.auto.tfvars.
         required: false
         type: list
+        elements: path
 
 
 requirements:
@@ -115,10 +118,10 @@ def main() -> None:
             'generate_config': {'path': 'path', 'required': False},
             'out': {'type': 'path', 'required': False},
             'refresh_only': {'type': 'bool', 'required': False},
-            'replace': {'type': 'list', 'required': False},
-            'target': {'type': 'list', 'required': False},
+            'replace': {'type': 'list', 'elements': 'str', 'required': False},
+            'target': {'type': 'list', 'elements': 'str', 'required': False},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'elements': 'path', 'required': False},
         },
         supports_check_mode=True,
     )

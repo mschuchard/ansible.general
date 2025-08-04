@@ -46,6 +46,7 @@ options:
         description: Directories containing plugin binaries. These override all default search paths for plugins, and prevents the automatic installation of plugins.
         required: false
         type: list
+        elements: path
     upgrade:
         description: Install the latest module and provider versions allowed within configured constraints. This overrides the default behavior of selecting exactly the versions recorded in the dependency lockfile.
         required: false
@@ -107,7 +108,7 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'force_copy': {'type': 'bool', 'required': False},
             'migrate_state': {'type': 'bool', 'required': False},
-            'plugin_dir': {'type': 'list', 'required': False},
+            'plugin_dir': {'type': 'list', 'elements': 'path', 'required': False},
             'upgrade': {'type': 'bool', 'required': False},
         },
         supports_check_mode=True,

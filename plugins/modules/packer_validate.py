@@ -32,10 +32,12 @@ options:
         description: Validate all builds other than these.
         required: false
         type: list
+        elements: str
     only:
         description: Validate only these builds.
         required: false
         type: list
+        elements: str
     syntax_only:
         description: Only check syntax. Do not verify config of the template.
         required: false
@@ -49,6 +51,7 @@ options:
         description: HCL2 files containing user variables.
         required: false
         type: list
+        elements: path
     warn_undeclared_var:
         description: Warnings for user variable files containing undeclared variables (>= 1.8.5)
         required: false
@@ -114,11 +117,11 @@ def main() -> None:
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'evaluate_datasources': {'type': 'bool', 'required': False},
-            'excepts': {'type': 'list', 'required': False},
-            'only': {'type': 'list', 'required': False},
+            'excepts': {'type': 'list', 'elements': 'str', 'required': False},
+            'only': {'type': 'list', 'elements': 'str', 'required': False},
             'syntax_only': {'type': 'bool', 'required': False},
             'var': {'type': 'dict', 'required': False},
-            'var_file': {'type': 'list', 'required': False},
+            'var_file': {'type': 'list', 'elements': 'path', 'required': False},
             'warn_undeclared_var': {'type': 'bool', 'required': False, 'default': True},
         },
         mutually_exclusive=[('excepts', 'only')],
