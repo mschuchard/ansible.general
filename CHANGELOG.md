@@ -1,4 +1,4 @@
-### 1.3.1 (Next)
+### 1.3.1
 - Improve accuracy of `default` in plugin documentation.
 - Improve check on boolean parameters with default `true`.
 - Add `strategy` parameter to `faas_deploy` module.
