@@ -109,7 +109,7 @@ def main() -> None:
     )
 
     # initialize
-    cloud_run: list[str] = module.params.get('cloud_run')
+    cloud_run: str = module.params.get('cloud_run')
     config_dir: Path = Path(module.params.get('config_dir'))
     filter: list[Path] = module.params.get('filter')
     test_dir: Path = module.params.get('test_dir')

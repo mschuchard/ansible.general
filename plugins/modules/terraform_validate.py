@@ -81,7 +81,7 @@ def main() -> None:
 
     # initialize
     config_dir: Path = Path(module.params.get('config_dir'))
-    test_dir: list[str] = module.params.get('test_dir')
+    test_dir: Path = module.params.get('test_dir')
 
     # check flags
     flags: set[str] = set()
@@ -91,7 +91,7 @@ def main() -> None:
     # check args
     args: dict = {}
     if test_dir:
-        args.update({'test_dir': test_dir})
+        args.update({'test_dir': Path(test_dir)})
 
     # convert ansible params to terraform args
     args = terraform.ansible_to_terraform(args)

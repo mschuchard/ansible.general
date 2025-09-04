@@ -115,7 +115,7 @@ def main() -> None:
         argument_spec={
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'destroy': {'type': 'bool', 'required': False},
-            'generate_config': {'path': 'path', 'required': False},
+            'generate_config': {'type': 'path', 'required': False},
             'out': {'type': 'path', 'required': False},
             'refresh_only': {'type': 'bool', 'required': False},
             'replace': {'type': 'list', 'elements': 'str', 'required': False},
