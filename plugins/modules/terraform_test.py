@@ -100,7 +100,6 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'filter': {'type': 'list', 'elements': 'path', 'required': False},
             'json': {'type': 'bool', 'required': False},
-            'migrate_state': {'type': 'bool', 'required': False},
             'test_dir': {'type': 'path', 'required': False},
             'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'elements': 'path', 'required': False},
