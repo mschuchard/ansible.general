@@ -65,6 +65,10 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[s
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str, then append the value interpolated with the arg name from the dict to the command
             if (isinstance(arg_value, str) or isinstance(arg_value, bool)) and len(action_args_map[arg]) > 0:
+                # validate on_error arg value
+                if arg == 'on_error' and arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
+                    raise RuntimeError(f'Unsupported on error argument value specified: {arg_value}')
+
                 command.append(f'{action_args_map[arg]}{arg_value}')
             # if the arg value is a list, then extend the command with the values because they are already formatted correctly
             elif isinstance(arg_value, list) and len(action_args_map[arg]) == 0:

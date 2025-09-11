@@ -68,7 +68,6 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] 
             elif arg == 'format' and arg_value not in [
                 'documentation',
                 'json',
-                'json_oneline',
                 'junit',
                 'nagios',
                 'prometheus',
