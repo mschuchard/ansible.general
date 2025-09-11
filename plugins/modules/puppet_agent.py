@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: puppet agent
+module: puppet_agent
 
 short_description: Module to manage the Puppet agent daemon.
 

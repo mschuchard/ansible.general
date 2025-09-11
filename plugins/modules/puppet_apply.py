@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: puppet apply
+module: puppet_apply
 
 short_description: Module to execute a Puppet application of a manifest.
 

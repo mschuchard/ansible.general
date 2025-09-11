@@ -35,7 +35,7 @@ options:
     vars:
         description: Path to YAML or JSON format file containing variables for template.
         required: false
-        type: bool
+        type: path
     vars_inline:
         description: Variables for the template.
         required: false

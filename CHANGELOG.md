@@ -1,5 +1,6 @@
 ### 1.3.2 (Next)
 - Miscellaneous minor Terraform module plugin fixes.
+- Minor documentation corrections.
 
 ### 1.3.1
 - Improve accuracy of `default` in plugin documentation.

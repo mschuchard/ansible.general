@@ -54,7 +54,7 @@ options:
     vars:
         description: Path to YAML or JSON format file containing variables for template.
         required: false
-        type: bool
+        type: path
     vars_inline:
         description: Variables for the template.
         required: false
@@ -88,10 +88,10 @@ EXAMPLES = r"""
 # validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
 - name: Validate a system with a default location gossfile and its corresponding golang template with inline variables and dpkg package
   mschuchard.general.goss_validate:
-    package: rpm
+    package: dpkg
     vars_inline:
-      my_service: httpd
-      my_package: apache
+      my_service: apache2
+      my_package: apache2
 """
 
 RETURN = r"""

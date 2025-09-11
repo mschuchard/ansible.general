@@ -120,7 +120,7 @@ def main() -> None:
         args.update({'write': 'false'})
         changed = False
 
-    # convert ansible params to terraform args
+    # convert ansible params to packer args
     args = packer.ansible_to_packer(args)
 
     # determine packer command
