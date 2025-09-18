@@ -23,10 +23,12 @@ options:
         required: false
         default: rspecish
         type: str
+        choices: ['documentation', 'json', 'junit', 'nagios', 'prometheus', 'rspecish', 'silent', 'structured', 'tap']
     format_opts:
-        description: Extra options passed to the formatter. Valid options are perfdata, pretty, or verbose.
+        description: Extra options passed to the formatter.
         required: false
         type: str
+        choices: ['perfdata', 'pretty', 'verbose']
     gossfile:
         description: The specific gossfile used for validating the output.
         required: false
@@ -111,8 +113,12 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
-            'format': {'type': 'str', 'required': False},
-            'format_opts': {'type': 'str', 'required': False},
+            'format': {
+                'type': 'str',
+                'required': False,
+                'choices': ['documentation', 'json', 'junit', 'nagios', 'prometheus', 'rspecish', 'silent', 'structured', 'tap'],
+            },
+            'format_opts': {'type': 'str', 'required': False, 'choices': ['perfdata', 'pretty', 'verbose']},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'max_concur': {'type': 'int', 'required': False},
             'package': {'type': 'str', 'required': False},
