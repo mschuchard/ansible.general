@@ -2,6 +2,7 @@
 - Miscellaneous minor Terraform module plugin fixes.
 - Minor documentation corrections.
 - Update GoSS `format` and Packer `on_error` validations.
+- Add `choices` specification where appropriate.
 
 ### 1.3.1
 - Improve accuracy of `default` in plugin documentation.

@@ -108,9 +108,5 @@ def ansible_to_packer(args: dict) -> dict[str, str | list[str]]:
             # int to str
             case 'parallel_builds':
                 args['parallel_builds'] = str(arg_value)
-            # validate on_error arg value
-            case 'on_error':
-                if arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
-                    raise RuntimeError(f'Unsupported on error argument value specified: {arg_value}')
 
     return args

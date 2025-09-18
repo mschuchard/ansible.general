@@ -42,6 +42,7 @@ options:
         description: If the build fails do clean up (default), abort, ask, or run-cleanup-provisioner
         required: false
         type: str
+        choices: ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']
     only:
         description: Build only the specified builds.
         required: false
@@ -132,7 +133,7 @@ def main() -> None:
             'debug': {'type': 'bool', 'required': False},
             'excepts': {'type': 'list', 'elements': 'str', 'required': False},
             'force': {'type': 'bool', 'required': False},
-            'on_error': {'type': 'str', 'required': False},
+            'on_error': {'type': 'str', 'required': False, 'choices': ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']},
             'only': {'type': 'list', 'elements': 'str', 'required': False},
             'parallel_builds': {'type': 'int', 'required': False},
             'timestamp_ui': {'type': 'bool', 'required': False},
