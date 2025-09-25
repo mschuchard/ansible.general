@@ -9,7 +9,8 @@ import yaml
 
 
 def action_flags_command(command: list[str], flags: set[str] = set(), action_flags_map: dict[str, str] = {}) -> list[str]:
-    """convert action flags dict into list of command strings"""
+    """convert action flags dict into list of command strings
+    this is commonly used in the module_utils"""
     # in this function command list is mutable pseudo-reference and also returned
 
     # not all actions have flags, so input empty dict by default for the map to shortcut to RuntimeWarning for unsupported flag if flag specified for action without flags
@@ -88,7 +89,7 @@ def var_files_converter(var_files: list[Path]) -> list[str]:
 
 
 def params_to_flags_args(params: dict, spec: dict[str, dict]) -> tuple[set[str], dict]:
-    """theoretical function to convert ansible module params to module utility action flags and args
+    """function to convert ansible module params to module utility action flags and args
     subtleties in specific module params prevent this from widespread use
     params dictionary argument should be populated from AnsibleModule.params{}, and spec from AnsibleModule.argument_spec{}"""
 

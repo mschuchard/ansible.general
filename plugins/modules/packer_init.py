@@ -63,7 +63,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import packer
+from mschuchard.general.plugins.module_utils import packer, universal
 
 
 def main() -> None:
@@ -78,13 +78,11 @@ def main() -> None:
     changed: bool = False
     config_dir: Path = Path(module.params.get('config_dir'))
 
-    # check on optional upgrade param
-    flags: set[str] = set()
-    if module.params.get('upgrade'):
-        flags.add('upgrade')
+    # check optional params
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine packer command
-    command: list[str] = packer.cmd(action='init', flags=flags, target_dir=config_dir)
+    command: list[str] = packer.cmd(action='init', flags=flags_args[0], target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

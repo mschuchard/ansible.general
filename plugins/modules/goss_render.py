@@ -75,7 +75,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import goss
+from mschuchard.general.plugins.module_utils import goss, universal
 
 
 def main() -> None:
@@ -104,9 +104,7 @@ def main() -> None:
         cwd = gossfile.parent
 
     # check on optional debug param
-    flags: set[str] = set()
-    if module.params.get('debug'):
-        flags.add('debug')
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # check args
     args: dict = {}
@@ -118,7 +116,7 @@ def main() -> None:
         args.update({'vars_inline': vars_inline})
 
     # determine goss command
-    command: list[str] = goss.cmd(action='render', flags=flags, args=args, gossfile=gossfile)
+    command: list[str] = goss.cmd(action='render', flags=flags_args[0], args=args, gossfile=gossfile)
 
     # exit early for check mode
     if module.check_mode:

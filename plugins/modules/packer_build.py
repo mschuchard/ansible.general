@@ -121,7 +121,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import packer
+from mschuchard.general.plugins.module_utils import packer, universal
 
 
 def main() -> None:
@@ -146,42 +146,16 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    config_dir: Path = Path(module.params.get('config_dir'))
-    excepts: list[str] = module.params.get('excepts')
-    on_error: str = module.params.get('on_error')
-    only: list[str] = module.params.get('only')
-    parallel_builds: int = module.params.get('parallel_builds')
-    var: dict = module.params.get('var')
-    var_file: list[Path] = module.params.get('var_file')
+    config_dir: Path = Path(module.params.pop('config_dir'))
 
     # check optional params
-    flags: set[str] = set()
-    if module.params.get('debug'):
-        flags.add('debug')
-    if module.params.get('force'):
-        flags.add('force')
-    if module.params.get('timestamp_ui'):
-        flags.add('timestamp_ui')
-
-    args: dict = {}
-    if excepts:
-        args.update({'excepts': excepts})
-    if on_error:
-        args.update({'on_error': on_error})
-    if only:
-        args.update({'only': only})
-    if parallel_builds:
-        args.update({'parallel_builds': parallel_builds})
-    if var:
-        args.update({'var': var})
-    if var_file:
-        args.update({'var_file': var_file})
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # convert ansible params to packer args
-    args = packer.ansible_to_packer(args)
+    args = packer.ansible_to_packer(flags_args[1])
 
     # determine packer command
-    command: list[str] = packer.cmd(action='build', flags=flags, args=args, target_dir=config_dir)
+    command: list[str] = packer.cmd(action='build', flags=flags_args[0], args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

@@ -107,7 +107,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import packer
+from mschuchard.general.plugins.module_utils import packer, universal
 
 
 def main() -> None:
@@ -129,11 +129,7 @@ def main() -> None:
     )
 
     # initialize
-    config_dir: Path = Path(module.params.get('config_dir'))
-    excepts: list[str] = module.params.get('excepts')
-    only: list[str] = module.params.get('only')
-    var: dict = module.params.get('var')
-    var_file: list[Path] = module.params.get('var_file')
+    config_dir: Path = Path(module.params.pop('config_dir'))
 
     # check flags
     flags: set[str] = set()
@@ -145,18 +141,11 @@ def main() -> None:
         flags.add('no_warn_undeclared_var')
 
     # check args
-    args: dict = {}
-    if excepts:
-        args.update({'excepts': excepts})
-    if only:
-        args.update({'only': only})
-    if var:
-        args.update({'var': var})
-    if var_file:
-        args.update({'var_file': var_file})
+    # check optional params
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # convert ansible params to packer args
-    args = packer.ansible_to_packer(args)
+    args = packer.ansible_to_packer(flags_args[1])
 
     # determine packer command
     command: list[str] = packer.cmd(action='validate', flags=flags, args=args, target_dir=config_dir)
