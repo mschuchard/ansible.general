@@ -80,4 +80,4 @@ def test_params_to_flags_args():
         'path': {'type': 'path', 'required': False, 'default': Path.cwd()},
     }
 
-    assert universal.params_to_flags_args(params, spec) == (['baz'], {'foo': 'bar', 'path': Path('/tmp')})
+    assert universal.params_to_flags_args(params, spec) == ({'baz'}, {'foo': 'bar', 'path': Path('/tmp')})

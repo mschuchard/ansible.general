@@ -87,13 +87,13 @@ def var_files_converter(var_files: list[Path]) -> list[str]:
     return args
 
 
-def params_to_flags_args(params: dict, spec: dict[str, dict]) -> tuple[list[str], dict]:
+def params_to_flags_args(params: dict, spec: dict[str, dict]) -> tuple[set[str], dict]:
     """theoretical function to convert ansible module params to module utility action flags and args
     subtleties in specific module params prevent this from widespread use
     params dictionary argument should be populated from AnsibleModule.params{}, and spec from AnsibleModule.argument_spec{}"""
 
     # initialize
-    flags: list[str] = []
+    flags: set[str] = set()
     args: dict = {}
 
     # iterate through populated params
@@ -104,7 +104,7 @@ def params_to_flags_args(params: dict, spec: dict[str, dict]) -> tuple[list[str]
             match spec[param]['type']:
                 # check if bool type --> probably flag
                 case 'bool':
-                    flags.append(param)
+                    flags.add(param)
                 # check if path type --> probably need type conversion
                 case 'path':
                     args.update({param: Path(attribute)})
