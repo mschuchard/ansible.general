@@ -143,9 +143,7 @@ def main() -> None:
     retry_timeout: str = module.params.get('retry_timeout')
     sleep: str = module.params.get('sleep')
     gossfile: Path = Path(module.params.get('gossfile'))
-    cwd: Path = Path.cwd()
-    if gossfile != Path.cwd():
-        cwd = gossfile.parent
+    cwd: Path = Path.cwd() if gossfile == Path.cwd() else gossfile.parent
 
     # check args
     args: dict = {}

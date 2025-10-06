@@ -150,9 +150,7 @@ def main() -> None:
     package: str = module.params.get('package')
     port: int = module.params.get('port')
     gossfile: Path = Path(module.params.get('gossfile'))
-    cwd: Path = Path.cwd()
-    if gossfile != Path.cwd():
-        cwd = gossfile.parent
+    cwd: Path = Path.cwd() if gossfile == Path.cwd() else gossfile.parent
 
     # check args
     args: dict = {}

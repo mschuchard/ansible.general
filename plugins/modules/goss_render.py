@@ -99,9 +99,7 @@ def main() -> None:
     vars_inline: dict = module.params.get('vars_inline')
     package: str = module.params.get('package')
     gossfile: Path = Path(module.params.get('gossfile'))
-    cwd: Path = Path.cwd()
-    if gossfile != Path.cwd():
-        cwd = gossfile.parent
+    cwd: Path = Path.cwd() if gossfile == Path.cwd() else gossfile.parent
 
     # check on optional debug param
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
