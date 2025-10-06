@@ -78,7 +78,7 @@ return_code:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import puppet
+from mschuchard.general.plugins.module_utils import puppet, universal
 
 
 def main() -> None:
@@ -100,19 +100,11 @@ def main() -> None:
     manifest: Path = Path(module.params.get('manifest'))
     test: bool = module.params.get('test')
 
-    # check on optional flag params
-    flags: set[str] = set()
-    if module.params.get('debug'):
-        flags.add('debug')
-    if module.params.get('no_op'):
-        flags.add('no_op')
-    if test:
-        flags.add('test')
-    if module.params.get('verbose'):
-        flags.add('verbose')
+    # check on optional params
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine puppet command
-    command: list[str] = puppet.cmd(action='apply', flags=flags, manifest=manifest)
+    command: list[str] = puppet.cmd(action='apply', flags=flags_args[0], manifest=manifest)
 
     # exit early for check mode
     if module.check_mode:

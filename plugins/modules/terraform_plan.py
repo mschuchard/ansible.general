@@ -105,7 +105,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import terraform
+from mschuchard.general.plugins.module_utils import terraform, universal
 
 
 def main() -> None:
@@ -127,42 +127,16 @@ def main() -> None:
     )
 
     # initialize
-    config_dir: Path = Path(module.params.get('config_dir'))
-    generate_config: Path = module.params.get('generate_config')
-    out: Path = module.params.get('out')
-    replace: list[str] = module.params.get('replace')
-    target: list[str] = module.params.get('target')
-    var: dict = module.params.get('var')
-    var_file: list[Path] = module.params.get('var_file')
+    config_dir: Path = Path(module.params.pop('config_dir'))
 
-    # check flags
-    flags: set[str] = set()
-    if module.params.get('destroy'):
-        flags.add('destroy')
-    if module.params.get('refresh_only'):
-        flags.add('refresh_only')
-
-    # check args
-    args: dict = {}
-    # ruff complains so default should protect against falsey with None
-    if generate_config:
-        args.update({'generate_config': Path(generate_config)})
-    if out:
-        args.update({'out': Path(out)})
-    if replace:
-        args.update({'replace': replace})
-    if target:
-        args.update({'target': target})
-    if var:
-        args.update({'var': var})
-    if var_file:
-        args.update({'var_file': var_file})
+    # check optional params
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # convert ansible params to terraform args
-    args = terraform.ansible_to_terraform(args)
+    args = terraform.ansible_to_terraform(flags_args[1])
 
     # determine terraform command
-    command: list[str] = terraform.cmd(action='plan', flags=flags, args=args, target_dir=config_dir)
+    command: list[str] = terraform.cmd(action='plan', flags=flags_args[0], args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

@@ -88,7 +88,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import terraform
+from mschuchard.general.plugins.module_utils import terraform, universal
 
 
 def main() -> None:
@@ -108,36 +108,16 @@ def main() -> None:
     )
 
     # initialize
-    cloud_run: str = module.params.get('cloud_run')
-    config_dir: Path = Path(module.params.get('config_dir'))
-    filter: list[Path] = module.params.get('filter')
-    test_dir: Path = module.params.get('test_dir')
-    var: dict = module.params.get('var')
-    var_file: list[Path] = module.params.get('var_file')
+    config_dir: Path = Path(module.params.pop('config_dir'))
 
-    # check flags
-    flags: set[str] = set()
-    if module.params.get('json'):
-        flags.add('json')
-
-    # check args
-    args: dict = {}
-    if cloud_run:
-        args.update({'cloud_run': cloud_run})
-    if filter:
-        args.update({'filter': filter})
-    if test_dir:
-        args.update({'test_dir': Path(test_dir)})
-    if var:
-        args.update({'var': var})
-    if var_file:
-        args.update({'var_file': var_file})
+    # check optional params
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # convert ansible params to terraform args
-    args = terraform.ansible_to_terraform(args)
+    args = terraform.ansible_to_terraform(flags_args[1])
 
     # determine terraform command
-    command: list[str] = terraform.cmd(action='test', flags=flags, args=args, target_dir=config_dir)
+    command: list[str] = terraform.cmd(action='test', flags=flags_args[0], args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

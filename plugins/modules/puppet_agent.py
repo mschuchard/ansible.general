@@ -99,7 +99,7 @@ return_code:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import puppet
+from mschuchard.general.plugins.module_utils import puppet, universal
 
 
 def main() -> None:
@@ -121,34 +121,13 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    certname: str = module.params.get('certname')
-    server_port: int = module.params.get('server_port')
     test: bool = module.params.get('test')
 
-    # check args
-    args: dict = {}
-    if certname:
-        args.update({'certname': certname})
-    if server_port:
-        args.update({'server_port': server_port})
-
-    # check on optional flag params
-    flags: set[str] = set()
-    if module.params.get('debug'):
-        flags.add('debug')
-    if module.params.get('no_daemonize'):
-        flags.add('no_daemonize')
-    if module.params.get('no_op'):
-        flags.add('no_op')
-    if module.params.get('onetime'):
-        flags.add('onetime')
-    if test:
-        flags.add('test')
-    if module.params.get('verbose'):
-        flags.add('verbose')
+    # check optional params
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine puppet command
-    command: list[str] = puppet.cmd(action='agent', flags=flags, args=args)
+    command: list[str] = puppet.cmd(action='agent', flags=flags_args[0], args=flags_args[1])
 
     # exit early for check mode
     if module.check_mode:

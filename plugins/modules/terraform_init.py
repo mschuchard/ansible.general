@@ -95,7 +95,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import terraform
+from mschuchard.general.plugins.module_utils import terraform, universal
 
 
 def main() -> None:
@@ -117,23 +117,18 @@ def main() -> None:
     # initialize
     changed: bool = False
     backend_config: list[(Path, dict[str, str])] = module.params.get('backend_config')
-    config_dir: Path = Path(module.params.get('config_dir'))
+    config_dir: Path = Path(module.params.pop('config_dir'))
     plugin_dir: list[Path] = module.params.get('plugin_dir')
+    backend: bool = module.params.pop('backend')
 
     # check flags
-    flags: set[str] = set()
-    if module.params.get('force_copy'):
-        flags.add('force_copy')
-    if module.params.get('migrate_state'):
-        flags.add('migrate_state')
-    if module.params.get('upgrade'):
-        flags.add('upgrade')
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # check args
     args: dict = {}
     # reminder: the flag that must be argued instead
     # ruff complains so default should protect against falsey with None
-    if module.params.get('backend') is False:
+    if backend is False:
         args.update({'backend': 'false'})
     if backend_config:
         args.update({'backend_config': backend_config})
@@ -144,7 +139,7 @@ def main() -> None:
     args = terraform.ansible_to_terraform(args)
 
     # determine terraform command
-    command: list[str] = terraform.cmd(action='init', flags=flags, args=args, target_dir=config_dir)
+    command: list[str] = terraform.cmd(action='init', flags=flags_args[0], args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:
