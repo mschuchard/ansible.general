@@ -178,7 +178,7 @@ def ansible_to_terraform(args: dict) -> dict[str, str | list[str]]:
                             RuntimeWarning,
                         )
 
-            # list[str] to list[str] with "-plugin-dir=" prefixed
+            # list[Path] to list[str] with "-plugin-dir=" prefixed
             case 'plugin_dir':
                 # reset arg because file check does not allow generator pattern
                 args['plugin_dir'] = []

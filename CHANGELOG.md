@@ -1,7 +1,7 @@
 ### 1.3.2 (Next)
 - Miscellaneous minor Terraform module plugin fixes.
 - Minor documentation corrections.
-- Update GoSS `format` and Packer `on_error` validations.
+- Update GoSS `format`, Packer `on_error`, and Puppet `server_port` validations.
 - Add `choices` specification where appropriate.
 
 ### 1.3.1

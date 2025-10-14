@@ -58,6 +58,9 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}, m
         if arg in action_args_map:
             # server port arg requires int-->str
             if arg == 'server_port':
+                # validate server_port range
+                if arg_value < 1 or arg_value > 65535:
+                    raise ValueError(f'Puppet server_port value must be between 1 and 65535: {arg_value}')
                 arg_value = f'{arg_value}'
 
             # append the value interpolated with the arg name from the dict to the command

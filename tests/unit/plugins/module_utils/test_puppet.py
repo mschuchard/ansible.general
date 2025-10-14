@@ -30,6 +30,10 @@ def test_puppet_cmd_errors():
     with pytest.raises(FileNotFoundError, match='Puppet manifest is not a file or does not exist: /home'):
         puppet.cmd(action='apply', manifest=Path('/home'))
 
+    # test fails on invalid server_port
+    with pytest.raises(ValueError, match='Puppet server_port value must be between 1 and 65535: 0'):
+        puppet.cmd(action='agent', args={'server_port': 0})
+
 
 def test_puppet_cmd():
     """test various cmd returns"""
