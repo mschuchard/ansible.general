@@ -157,7 +157,7 @@ def main() -> None:
         args.update({'label': label})
 
     # convert ansible params to faas args
-    args = faas.ansible_to_faas(args)
+    faas.ansible_to_faas(args)
 
     # determine faas command
     command: list[str] = faas.cmd(action='deploy', flags=flags, args=args)

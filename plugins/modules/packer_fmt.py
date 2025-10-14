@@ -121,7 +121,7 @@ def main() -> None:
         changed = False
 
     # convert ansible params to packer args
-    args = packer.ansible_to_packer(args)
+    packer.ansible_to_packer(args)
 
     # determine packer command
     command: list[str] = packer.cmd(action='fmt', flags=flags, args=args, target_dir=config_dir)

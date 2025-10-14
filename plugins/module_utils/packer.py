@@ -88,7 +88,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[s
     raise RuntimeError(f'Targeted directory or file does not exist: {target_dir}')
 
 
-def ansible_to_packer(args: dict) -> dict[str, str | list[str]]:
+def ansible_to_packer(args: dict) -> None:
     """converts ansible types and syntax to packer types and formatting for arguments only"""
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
@@ -108,5 +108,3 @@ def ansible_to_packer(args: dict) -> dict[str, str | list[str]]:
             # int to str
             case 'parallel_builds':
                 args['parallel_builds'] = str(arg_value)
-
-    return args

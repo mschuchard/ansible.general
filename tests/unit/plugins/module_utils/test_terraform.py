@@ -86,9 +86,9 @@ def test_ansible_to_terraform_errors():
 
     # test warns on backend config list element with improper type
     with pytest.warns(RuntimeWarning, match="backend_config element value '7' is not a valid type; must be string for file path, or dict for key-value pair"):
-        assert terraform.ansible_to_terraform(args={'backend_config': [7, 'galaxy.yml', {'foo': 'bar'}]}) == {
-            'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"]
-        }
+        args: dict = {'backend_config': [7, 'galaxy.yml', {'foo': 'bar'}]}
+        terraform.ansible_to_terraform(args=args)
+        assert args == {'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"]}
 
     # test fails on nonexistent plugin_dir directory argument value
     with pytest.raises(FileNotFoundError, match='Plugin directory does not exist: /1234567890'):
@@ -98,19 +98,19 @@ def test_ansible_to_terraform_errors():
 def test_ansible_to_terraform():
     """test various ansible_to_terraform returns"""
     # test all possible args with multiple values
-    assert terraform.ansible_to_terraform(
-        args={
-            'backend_config': ['galaxy.yml', {'foo': 'bar'}],
-            'filter': ['machine.tf', 'network.tf'],
-            'plugin_dir': ['/tmp', '/home'],
-            'replace': ['random.foo', 'local.bar'],
-            # 'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
-            'resource': {'resource.name': 'resource.id'},
-            'target': ['random.foo', 'local.bar'],
-            'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
-            'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
-        }
-    ) == {
+    args: dict = {
+        'backend_config': ['galaxy.yml', {'foo': 'bar'}],
+        'filter': ['machine.tf', 'network.tf'],
+        'plugin_dir': ['/tmp', '/home'],
+        'replace': ['random.foo', 'local.bar'],
+        # 'resources': {'resource.name':'resource.id', 'aws_instance.this':'i-1234567890'},
+        'resource': {'resource.name': 'resource.id'},
+        'target': ['random.foo', 'local.bar'],
+        'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
+        'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
+    }
+    terraform.ansible_to_terraform(args=args)
+    assert args == {
         'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"],
         'filter': ['-filter=machine.tf', '-filter=network.tf'],
         'plugin_dir': ['-plugin-dir=/tmp', '-plugin-dir=/home'],

@@ -152,10 +152,10 @@ def main() -> None:
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # convert ansible params to packer args
-    args = packer.ansible_to_packer(flags_args[1])
+    packer.ansible_to_packer(flags_args[1])
 
     # determine packer command
-    command: list[str] = packer.cmd(action='build', flags=flags_args[0], args=args, target_dir=config_dir)
+    command: list[str] = packer.cmd(action='build', flags=flags_args[0], args=flags_args[1], target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

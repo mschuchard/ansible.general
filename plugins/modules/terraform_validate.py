@@ -86,10 +86,10 @@ def main() -> None:
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # convert ansible params to terraform args
-    args = terraform.ansible_to_terraform(flags_args[1])
+    terraform.ansible_to_terraform(flags_args[1])
 
     # determine terraform command
-    command: list[str] = terraform.cmd(action='validate', flags=flags_args[0], args=args, target_dir=config_dir)
+    command: list[str] = terraform.cmd(action='validate', flags=flags_args[0], args=flags_args[1], target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

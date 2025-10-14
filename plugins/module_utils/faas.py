@@ -114,7 +114,7 @@ def global_args_to_cmd(args: dict = {}) -> list[str]:
     return command
 
 
-def ansible_to_faas(args: dict) -> dict[str, list[str]]:
+def ansible_to_faas(args: dict) -> None:
     """converts ansible types and syntax to faas types and formatting for arguments only"""
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
@@ -123,5 +123,3 @@ def ansible_to_faas(args: dict) -> dict[str, list[str]]:
             # transform dict[str, str] to list of '--arg' 'key=value' '--arg' 'key2=value2' strings
             case 'annotation' | 'label':
                 args[arg] = ' '.join([f'--{arg} {key}={value}' for key, value in arg_value.items()]).split()
-
-    return args

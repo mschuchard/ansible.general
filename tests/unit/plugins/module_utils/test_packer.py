@@ -82,16 +82,16 @@ def test_ansible_to_packer_errors():
 def test_ansible_to_packer():
     """test various ansible_to_packer returns"""
     # test all possible args with multiple values
-    assert packer.ansible_to_packer(
-        args={
-            'excepts': ['foo', 'bar', 'baz'],
-            'only': ['foo', 'bar', 'baz'],
-            'on_error': 'cleanup',
-            'parallel_builds': 2,
-            'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
-            'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
-        }
-    ) == {
+    args: dict = {
+        'excepts': ['foo', 'bar', 'baz'],
+        'only': ['foo', 'bar', 'baz'],
+        'on_error': 'cleanup',
+        'parallel_builds': 2,
+        'var': {'var1': 'value1', 'var2': 'value2', 'var3': 'value3'},
+        'var_file': ['galaxy.yml', 'galaxy.yml', 'galaxy.yml'],
+    }
+    packer.ansible_to_packer(args=args)
+    assert args == {
         'excepts': 'foo,bar,baz',
         'only': 'foo,bar,baz',
         'on_error': 'cleanup',

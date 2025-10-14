@@ -149,7 +149,7 @@ def main() -> None:
             args.update({'var_file': var_file})
 
         # convert ansible params to terraform args
-        args = terraform.ansible_to_terraform(args)
+        terraform.ansible_to_terraform(args)
 
         # determine terraform command
         command: list[str] = terraform.cmd(action='apply', flags=flags, args=args, target_dir=config_dir)

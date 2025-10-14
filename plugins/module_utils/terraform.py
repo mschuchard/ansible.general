@@ -146,7 +146,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str] | 
     return command
 
 
-def ansible_to_terraform(args: dict) -> dict[str, str | list[str]]:
+def ansible_to_terraform(args: dict) -> None:
     """converts ansible types and syntax to terraform types and formatting for arguments only"""
     # in this function args dict is mutable pseudo-reference and also returned
     # iterate through ansible module argument
@@ -209,5 +209,3 @@ def ansible_to_terraform(args: dict) -> dict[str, str | list[str]]:
             case 'var_file':
                 # assign converted value to var_file key
                 args['var_file'] = universal.var_files_converter(arg_value)
-
-    return args

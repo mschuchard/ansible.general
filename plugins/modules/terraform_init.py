@@ -136,7 +136,7 @@ def main() -> None:
         args.update({'plugin_dir': plugin_dir})
 
     # convert ansible params to terraform args
-    args = terraform.ansible_to_terraform(args)
+    terraform.ansible_to_terraform(args)
 
     # determine terraform command
     command: list[str] = terraform.cmd(action='init', flags=flags_args[0], args=args, target_dir=config_dir)
