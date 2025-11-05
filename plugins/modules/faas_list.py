@@ -72,7 +72,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import faas
+from mschuchard.general.plugins.module_utils import faas, universal
 
 
 def main() -> None:
@@ -96,9 +96,7 @@ def main() -> None:
     sort: str = module.params.get('sort')
 
     # check on optional flags
-    flags: set[str] = set()
-    if module.params.get('verbose'):
-        flags.add('verbose')
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # check args
     args: dict = {}
@@ -112,7 +110,7 @@ def main() -> None:
         args.update({'sort': sort})
 
     # determine faas command
-    command: list[str] = faas.cmd(action='list', flags=flags, args=args)
+    command: list[str] = faas.cmd(action='list', flags=flags_args[0], args=args)
 
     # exit early for check mode
     if module.check_mode:
