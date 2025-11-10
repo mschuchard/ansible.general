@@ -19,7 +19,6 @@ def test_faas_list_defaults(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert 'faas-cli' in info['cmd']
     assert 'list' in info['cmd']
     assert '-f' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']

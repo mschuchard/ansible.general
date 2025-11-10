@@ -25,7 +25,6 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
         'list': {'verbose': '-v'},
         'logs': {
             'instance': '--instance',
-            'name': '--name',
         },
     }
 )
@@ -40,6 +39,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'name': '--name',
         },
         'list': {'sort': '--sort'},
+        'logs': {'name': ''},
         'login': {
             'username': '-u',
             'password': '-p',
@@ -70,10 +70,12 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
         if arg in action_args_map:
             if arg == 'sort' and arg_value not in ['name', 'invocations']:
                 raise ValueError('The "sort" parameter must be either "name" or "invocations"')
-
             # annotation and label have properly formatted value of type list[str] and so need to be extended directly
             if arg in ['annotation', 'label']:
                 command.extend(arg_value)
+            # name arg is actually positional, and so just append the value
+            elif action == 'logs' and arg == 'name':
+                command.append(arg_value)
             # append the value interpolated with the arg name from the dict to the command
             else:
                 command.extend([action_args_map[arg], arg_value])
