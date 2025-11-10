@@ -99,7 +99,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import faas
+from mschuchard.general.plugins.module_utils import faas, universal
 
 
 def main() -> None:
@@ -123,12 +123,6 @@ def main() -> None:
         supports_check_mode=True,
     )
 
-    # initialize
-    filter: str = module.params.get('filter')
-    name: str = module.params.get('name')
-    regex: str = module.params.get('regex')
-    config_file: Path = module.params.get('config_file')
-
     # check on optional debug param
     flags: set[str] = set()
     if module.params.get('stack_pull') is False:
@@ -145,18 +139,10 @@ def main() -> None:
         flags.add('shrinkwrap')
 
     # check args
-    args: dict = {}
-    if filter:
-        args.update({'filter': filter})
-    if name:
-        args.update({'name': name})
-    elif config_file:
-        args.update({'config_file': Path(config_file)})
-    if regex:
-        args.update({'regex': regex})
+    flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine faas command
-    command: list[str] = faas.cmd(action='build', flags=flags, args=args)
+    command: list[str] = faas.cmd(action='build', flags=flags, args=flags_args[1])
 
     # exit early for check mode
     if module.check_mode:
