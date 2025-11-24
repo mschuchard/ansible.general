@@ -57,6 +57,21 @@ def test_faas_cmd():
         'myfunction',
     }
 
+    # test appends name positional arg for logs action
+    assert faas.cmd(action='logs', args={'name': 'myfunction'}) == [
+        'faas-cli',
+        'logs',
+        'myfunction',
+    ]
+
+    # test converts parallel arg from int to str for push action
+    assert faas.cmd(action='push', args={'parallel': 5}) == [
+        'faas-cli',
+        'push',
+        '--parallel',
+        '5',
+    ]
+
 
 def test_ansible_to_faas_errors():
     """test various ansible_to_faas errors"""

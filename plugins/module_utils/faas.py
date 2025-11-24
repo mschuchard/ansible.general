@@ -80,6 +80,9 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
             # name arg is actually positional, and so just append the value
             elif action == 'logs' and arg == 'name':
                 command.append(arg_value)
+            # convert parallel argument from int-->str
+            elif action == 'push' and arg == 'parallel':
+                command.extend([action_args_map[arg], f'{arg_value}'])
             # append the value interpolated with the arg name from the dict to the command
             else:
                 command.extend([action_args_map[arg], arg_value])
