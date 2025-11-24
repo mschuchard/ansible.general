@@ -89,28 +89,11 @@ def main() -> None:
         supports_check_mode=True,
     )
 
-    # initialize
-    filter: str = module.params.get('filter')
-    regex: str = module.params.get('regex')
-    config_file: Path = module.params.get('config_file')
-    sort: str = module.params.get('sort')
-
     # check on optional flags
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
-    # check args
-    args: dict = {}
-    if filter:
-        args.update({'filter': filter})
-    if regex:
-        args.update({'regex': regex})
-    if config_file:
-        args.update({'config_file': Path(config_file)})
-    if sort != 'name':
-        args.update({'sort': sort})
-
     # determine faas command
-    command: list[str] = faas.cmd(action='list', flags=flags_args[0], args=args)
+    command: list[str] = faas.cmd(action='list', flags=flags_args[0], args=flags_args[1])
 
     # exit early for check mode
     if module.check_mode:
