@@ -83,7 +83,7 @@ def main() -> None:
             'config_file': {'type': 'path', 'required': False},
             'filter': {'type': 'str', 'required': False},
             'regex': {'type': 'str', 'required': False},
-            'sort': {'type': 'str', 'required': False, 'default': 'name', 'choices': ['name', 'invocations']},
+            'sort': {'type': 'str', 'required': False, 'choices': ['name', 'invocations']},
             'verbose': {'type': 'bool', 'required': False, 'default': False},
         },
         supports_check_mode=True,

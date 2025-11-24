@@ -26,6 +26,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
         'logs': {
             'instance': '--instance',
         },
+        'push': {'env_subst': '--envsubst=false'},
     }
 )
 
@@ -44,7 +45,10 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'username': '-u',
             'password': '-p',
         },
-        'push': {'parellel': '--parallel'},
+        'push': {
+            'parallel': '--parallel',
+            'tag': '--tag',
+        },
         'remove': {},
     }
 )
