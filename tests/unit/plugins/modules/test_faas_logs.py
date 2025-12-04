@@ -57,5 +57,5 @@ def test_faas_logs_name_instance(capfd):
     info = json.loads(stdout)
     print(info)
     assert '--instance' in info['cmd']
-    assert 'my-function' in info['cmd']
+    assert 'my-function' == info['cmd'][-1]
     assert 'Cannot connect to OpenFaaS on URL: http://127.0.0.1:8080\n' == info['stdout']

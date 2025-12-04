@@ -1,3 +1,6 @@
+### 1.4.0 (Next)
+- Finish adding OpenFaaS modules.
+
 ### 1.3.2
 - Miscellaneous minor Terraform module plugin fixes.
 - Minor documentation corrections.

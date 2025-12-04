@@ -49,7 +49,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'parallel': '--parallel',
             'tag': '--tag',
         },
-        'remove': {},
+        'remove': {'name': ''},
     }
 )
 
