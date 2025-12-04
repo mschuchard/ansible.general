@@ -27,9 +27,7 @@ def test_faas_deploy_defaults(capfd):
 
 def test_faas_deploy_replace_update_globals(capfd):
     """test faas deploy with replace, no update, and globals"""
-    utils.set_module_args(
-        {'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'replace': True, 'update': False, 'filter': '*gif*', 'regex': 'fn[0-9]_.*'}
-    )
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'strategy': 'replace', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 

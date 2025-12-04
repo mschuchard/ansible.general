@@ -1,5 +1,6 @@
 ### 1.4.0 (Next)
 - Finish adding OpenFaaS modules.
+- Deprecate `replace` and `update` params for `faas_deploy`.
 
 ### 1.3.2
 - Miscellaneous minor Terraform module plugin fixes.
