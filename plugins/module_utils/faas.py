@@ -78,7 +78,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
             if arg in ['annotation', 'label']:
                 command.extend(arg_value)
             # name arg is actually positional, and so just append the value
-            elif action == 'logs' and arg == 'name':
+            elif action in ['logs', 'remove'] and arg == 'name':
                 command.append(arg_value)
             # convert parallel argument from int-->str
             elif action == 'push' and arg == 'parallel':
