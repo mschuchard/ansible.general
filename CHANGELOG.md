@@ -1,4 +1,4 @@
-### 1.4.0 (Next)
+### 1.4.0
 - Finish adding OpenFaaS modules.
 - Deprecate `replace` and `update` params for `faas_deploy`.
 

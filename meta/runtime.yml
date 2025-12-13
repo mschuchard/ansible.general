@@ -5,6 +5,11 @@ action_groups:
   faas:
   - faas_build
   - faas_deploy
+  - faas_list
+  - faas_login
+  - faas_logs
+  - faas_push
+  - faas_remove
   goss:
   - goss_render
   - goss_serve
