@@ -13,10 +13,14 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
         'agent': {
             'debug': '-d',
+            'enable': '--enable',
+            'evaltrace': '--evaltrace',
+            'fingerprint': '--fingerprint',
             'no_daemonize': '--no-daemonize',
             'no_op': '--noop',
             'onetime': '--onetime',
             'test': '-t',
+            'trace': '--trace',
             'verbose': '-v',
         },
         'apply': {
@@ -33,7 +37,13 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
         'agent': {
             'certname': '--certname',
+            'digest': '--digest',
+            'disable': '--disable',
+            'job_id': '--job-id',
+            'logdest': '--logdest',
             'server_port': '--serverport',
+            'sourceaddress': '--sourceaddress',
+            'waitforcert': '--waitforcert',
         },
     }
 )
@@ -56,11 +66,14 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}, m
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
-            # server port arg requires int-->str
+            # server port arg requires int-->str and validation
             if arg == 'server_port':
                 # validate server_port range
                 if arg_value < 1 or arg_value > 65535:
                     raise ValueError(f'Puppet server_port value must be between 1 and 65535: {arg_value}')
+                arg_value = f'{arg_value}'
+            # waitforcert arg requires int-->str
+            elif arg == 'waitforcert':
                 arg_value = f'{arg_value}'
 
             # append the value interpolated with the arg name from the dict to the command

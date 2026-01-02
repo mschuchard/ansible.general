@@ -44,11 +44,13 @@ def test_puppet_cmd():
     assert set(puppet.cmd(action='apply', flags={'test', 'no_op'}, manifest=Path('/etc/group'))) == {'puppet', 'apply', '-t', '--noop', '/etc/group'}
 
     # test agent with certname and serverport
-    assert puppet.cmd(action='agent', args={'certname': 'example.domain', 'server_port': 1234}) == [
+    assert puppet.cmd(action='agent', args={'certname': 'example.domain', 'server_port': 1234, 'waitforcert': 60}) == [
         'puppet',
         'agent',
         '--certname',
         'example.domain',
         '--serverport',
         '1234',
+        '--waitforcert',
+        '60',
     ]
