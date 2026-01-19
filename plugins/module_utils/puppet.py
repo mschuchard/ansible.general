@@ -25,9 +25,12 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
         },
         'apply': {
             'debug': '-d',
+            'detailed_exitcodes': '--detailed-exitcodes',
+            'loadclasses': '-L',
             'no_op': '--noop',
             'test': '-t',
             'verbose': '-v',
+            'write_catalog_summary': '--write-catalog-summary',
         },
     }
 )
@@ -45,11 +48,23 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'sourceaddress': '--sourceaddress',
             'waitforcert': '--waitforcert',
         },
+        'apply': {
+            'catalog': '--catalog',
+            'execute': '-e',
+            'logdest': '-l',
+        },
     }
 )
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}, manifest: Path = Path.cwd()) -> list[str]:
+def cmd(
+    action: str,
+    flags: set[str] = set(),
+    args: dict[str, str | int] = {},
+    manifest: Path = None,
+    catalog: Path = None,
+    execute: str = None,
+) -> list[str]:
     """constructs a list representing the puppet command to execute"""
     # verify command
     if action not in FLAGS_MAP:
@@ -84,10 +99,28 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}, m
 
     # return the command with the manifest appended if the action is 'apply'
     if action == 'apply':
-        if Path(manifest).is_file():
-            return command + [str(manifest)]
+        # handle execute option
+        if execute:
+            command.extend(['-e', execute])
+        # handle catalog option
+        elif catalog:
+            # validate catalog file exists
+            if Path(catalog).is_file() and universal.validate_json_yaml_file(catalog):
+                command.extend(['--catalog', str(catalog)])
+            # otherwise error if it does not exist
+            else:
+                raise FileNotFoundError(f'Puppet catalog file does not exist or is invalid: {catalog}')
+        # handle manifest option
+        elif manifest:
+            # validate manifest file exists
+            if Path(manifest).is_file():
+                command.extend([str(manifest)])
 
-        # otherwise error if it does not exist
-        raise FileNotFoundError(f'Puppet manifest is not a file or does not exist: {manifest}')
+            # otherwise error if it does not exist
+            else:
+                raise FileNotFoundError(f'Puppet manifest is not a file or does not exist: {manifest}')
+        # one of these options must be provided (typically caught before this point)
+        else:
+            raise RuntimeError('One of manifest, execute, or catalog must be provided for apply action')
 
     return command
