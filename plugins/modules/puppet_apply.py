@@ -18,15 +18,42 @@ version_added: "1.0.0"
 description: The standalone Puppet execution tool used to apply individual manifests.
 
 options:
+    catalog:
+        description: Apply a JSON catalog (such as one generated with 'puppet master --compile'). Path to JSON file.
+        required: false
+        type: path
+        new_in_version: "1.4.1"
     debug:
         description: Enable full debugging.
         required: false
         default: false
         type: bool
+    detailed_exitcodes:
+        description: Provide extra information about the run via exit codes. If enabled, 'puppet apply' will use specific exit codes for different outcomes.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.1"
+    execute:
+        description: Execute a specific piece of Puppet code.
+        required: false
+        type: str
+        new_in_version: "1.4.1"
+    loadclasses:
+        description: Load any stored classes. 'puppet agent' caches configured classes (usually at /etc/puppetlabs/puppet/classes.txt), and setting this option causes all of those classes to be set in your puppet manifest.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.1"
+    logdest:
+        description: Where to send log messages. Choose between 'syslog' (the POSIX syslog service), 'eventlog' (the Windows Event Log), 'console', or the path to a log file. Multiple destinations can be comma-separated.
+        required: false
+        type: str
+        new_in_version: "1.4.1"
     manifest:
         description: The path to the Puppet manifest file to apply.
-        required: true
-        type: str
+        required: false
+        type: path
     no_op:
         description: Use 'noop' mode where Puppet runs in a no-op or dry-run mode. This is useful for seeing what changes Puppet will make without actually executing the changes.
         required: false
@@ -42,6 +69,12 @@ options:
         required: false
         default: false
         type: bool
+    write_catalog_summary:
+        description: After compiling the catalog saves the resource list and classes list to the node in the state directory named classes.txt and resources.txt.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.1"
 
 requirements:
     - puppet >= 5.5.0
@@ -63,6 +96,30 @@ EXAMPLES = r"""
     manifest: manifest.pp
     no_op: true
     verbose: true
+
+# execute inline puppet code
+- name: Execute inline puppet code
+  mschuchard.general.puppet_apply:
+    execute: 'notify { "hello world": }'
+
+# apply a JSON catalog
+- name: Apply a JSON catalog
+  mschuchard.general.puppet_apply:
+    catalog: /path/to/catalog.json
+
+# apply manifest with detailed exit codes and log to file
+- name: Apply manifest with detailed exit codes and log to file
+  mschuchard.general.puppet_apply:
+    manifest: manifest.pp
+    detailed_exitcodes: true
+    logdest: /var/log/puppet/apply.log
+
+# apply manifest with loadclasses and write catalog summary
+- name: Apply manifest with loadclasses and write catalog summary
+  mschuchard.general.puppet_apply:
+    manifest: manifest.pp
+    loadclasses: true
+    write_catalog_summary: true
 """
 
 RETURN = r"""
@@ -86,25 +143,35 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
+            'catalog': {'type': 'path', 'required': False, 'new_in_version': '1.4.1'},
             'debug': {'type': 'bool', 'required': False},
-            'manifest': {'type': 'path', 'required': True},
+            'detailed_exitcodes': {'type': 'bool', 'required': False, 'new_in_version': '1.4.1'},
+            'execute': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'loadclasses': {'type': 'bool', 'required': False, 'new_in_version': '1.4.1'},
+            'logdest': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'manifest': {'type': 'path', 'required': False},
             'no_op': {'type': 'bool', 'required': False},
             'test': {'type': 'bool', 'required': False},
             'verbose': {'type': 'bool', 'required': False},
+            'write_catalog_summary': {'type': 'bool', 'required': False, 'new_in_version': '1.4.1'},
         },
+        mutually_exclusive=[('manifest', 'execute', 'catalog')],
+        required_one_of=[('manifest', 'execute', 'catalog')],
         supports_check_mode=True,
     )
 
     # initialize
     changed: bool = False
-    manifest: Path = Path(module.params.get('manifest'))
+    manifest: Path = Path(module.params.pop('manifest', None))
+    catalog: Path = Path(module.params.pop('catalog', None))
+    execute: str = module.params.pop('execute', None)
     test: bool = module.params.get('test')
 
     # check on optional params
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine puppet command
-    command: list[str] = puppet.cmd(action='apply', flags=flags_args[0], manifest=manifest)
+    command: list[str] = puppet.cmd(action='apply', flags=flags_args[0], args=flags_args[1], manifest=manifest, catalog=catalog, execute=execute)
 
     # exit early for check mode
     if module.check_mode:
@@ -117,7 +184,7 @@ def main() -> None:
     return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
 
     # check idempotence
-    if test and return_code in {2, 4, 6}:
+    if (test or module.params.get('detailed_exitcodes')) and return_code in {2, 4, 6}:
         changed = True
 
     # post-process
