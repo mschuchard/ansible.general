@@ -1,3 +1,7 @@
+### 1.4.1 (Next)
+- Add new parameters for `puppet` plugin modules.
+- Add new parameters for `faas` plugin modules.
+
 ### 1.4.0
 - Finish adding OpenFaaS modules.
 - Deprecate `replace` and `update` params for `faas_deploy`.

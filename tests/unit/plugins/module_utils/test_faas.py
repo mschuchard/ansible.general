@@ -80,6 +80,19 @@ def test_ansible_to_faas_errors():
 
 def test_ansible_to_faas():
     """test various ansible_to_faas returns"""
+    # test label conversion
     args: dict = {'label': {'foo': 'bar', 'baz': 'bat'}}
     faas.ansible_to_faas(args=args)
     assert args == {'label': ['--label', 'foo=bar', '--label', 'baz=bat']}
+
+    # test multiple conversions at once
+    from pathlib import Path
+
+    args = {'build_arg': {'KEY': 'value'}, 'build_label': {'label': 'val'}, 'build_option': ['dev'], 'copy_extra': [Path('/extra')]}
+    faas.ansible_to_faas(args=args)
+    assert args == {
+        'build_arg': ['--build-arg', 'KEY=value'],
+        'build_label': ['--build-label', 'label=val'],
+        'build_option': ['--build-option', 'dev'],
+        'copy_extra': ['--copy-extra', '/extra'],
+    }
