@@ -17,6 +17,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'pull': '--pull',
             'quiet': '--quiet',
             'shrinkwrap': '--shrinkwrap',
+            'squash': '--squash',
         },
         'deploy': {
             'replace': '--replace',
@@ -33,7 +34,18 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 # dictionary that maps input args to terraform args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
-        'build': {'name': '--name'},
+        'build': {
+            'build_arg': '',
+            'build_label': '',
+            'build_option': '',
+            'copy_extra': '',
+            'handler': '--handler',
+            'image': '--image',
+            'lang': '--lang',
+            'name': '--name',
+            'parallel': '--parallel',
+            'tag': '--tag',
+        },
         'deploy': {
             'annotation': '',
             'label': '',
@@ -74,14 +86,14 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
         if arg in action_args_map:
             if arg == 'sort' and arg_value not in ['name', 'invocations']:
                 raise ValueError('The "sort" parameter must be either "name" or "invocations"')
-            # annotation and label have properly formatted value of type list[str] and so need to be extended directly
-            if arg in ['annotation', 'label']:
+            # annotation, label, build_arg, build_label, build_option, and copy_extra have properly formatted value of type list[str] and so need to be extended directly
+            if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra']:
                 command.extend(arg_value)
-            # name arg is actually positional, and so just append the value
+            # name arg is actually positional for logs and remove, and so just append the value
             elif action in ['logs', 'remove'] and arg == 'name':
                 command.append(arg_value)
             # convert parallel argument from int-->str
-            elif action == 'push' and arg == 'parallel':
+            elif arg == 'parallel':
                 command.extend([action_args_map[arg], f'{arg_value}'])
             # append the value interpolated with the arg name from the dict to the command
             else:
@@ -130,5 +142,11 @@ def ansible_to_faas(args: dict) -> None:
     for arg, arg_value in args.items():
         match arg:
             # transform dict[str, str] to list of '--arg' 'key=value' '--arg' 'key2=value2' strings
-            case 'annotation' | 'label':
-                args[arg] = ' '.join([f'--{arg} {key}={value}' for key, value in arg_value.items()]).split()
+            case 'annotation' | 'label' | 'build_arg' | 'build_label':
+                args[arg] = ' '.join([f'--{arg.replace("_", "-")} {key}={value}' for key, value in arg_value.items()]).split()
+            # transform list[str] to list of '--build-option' 'value1' '--build-option' 'value2' strings
+            case 'build_option':
+                args[arg] = ' '.join([f'--build-option {value}' for value in arg_value]).split()
+            # transform list[Path] to list of '--copy-extra' 'path1' '--copy-extra' 'path2' strings
+            case 'copy_extra':
+                args[arg] = ' '.join([f'--copy-extra {str(path)}' for path in arg_value]).split()

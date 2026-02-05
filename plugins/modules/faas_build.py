@@ -18,6 +18,22 @@ version_added: "1.3.0"
 description: Builds OpenFaaS function containers either via the supplied YAML config, or via parameters.
 
 options:
+    build_arg:
+        description: Add build arguments for Docker (KEY=VALUE pairs)
+        required: false
+        type: dict
+        new_in_version: "1.5.0"
+    build_label:
+        description: Add labels for Docker image (LABEL=VALUE pairs)
+        required: false
+        type: dict
+        new_in_version: "1.5.0"
+    build_option:
+        description: Set build options (e.g. dev)
+        required: false
+        type: list
+        elements: str
+        new_in_version: "1.5.0"
     cache:
         description: Use Docker's build cache
         required: false
@@ -27,6 +43,12 @@ options:
         description: Path to YAML file describing function(s)
         required: false
         type: path
+    copy_extra:
+        description: Extra paths that will be copied into the function build context
+        required: false
+        type: list
+        elements: path
+        new_in_version: "1.5.0"
     env_subst:
         description: Substitute environment variables in stack.yaml file
         required: false
@@ -36,10 +58,32 @@ options:
         description: Wildcard to match with function names in YAML file
         required: false
         type: str
+    handler:
+        description: Directory with handler for function (e.g. handler.js)
+        required: false
+        type: path
+        new_in_version: "1.5.0"
+    image:
+        description: Docker image name to build
+        required: false
+        type: str
+        new_in_version: "1.5.0"
+    lang:
+        description: Programming language template
+        required: false
+        type: str
+        choices: ['ruby', 'python', 'python3', 'node', 'csharp', 'dockerfile']
+        new_in_version: "1.5.0"
     name:
         description: Name of the deployed function
         required: false
         type: str
+    parallel:
+        description: Build in parallel to depth specified
+        required: false
+        default: 1
+        type: int
+        new_in_version: "1.5.0"
     pull:
         description: Force a re-pull of base images in template during build, useful for publishing images
         required: false
@@ -59,11 +103,24 @@ options:
         required: false
         default: false
         type: bool
+    squash:
+        description: Use Docker's squash flag for smaller images [experimental]
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.5.0"
     stack_pull:
         description: Enables the template configuration in the stack.yaml
         required: false
         default: true
         type: bool
+    tag:
+        description: Override latest tag on function Docker image
+        required: false
+        default: latest
+        type: str
+        choices: ['latest', 'digest', 'sha', 'branch', 'describe']
+        new_in_version: "1.5.0"
 
 requirements:
     - faas-cli >= 0.17.0
@@ -88,6 +145,50 @@ EXAMPLES = r"""
     env_subst: false
     pull: true
     shrinkwrap: true
+
+# build with build arguments and build labels
+- name: Build with build arguments and build labels
+  mschuchard.general.faas_build:
+    config_file: stack.yaml
+    build_arg:
+      NPM_VERSION: 0.2.2
+      NODE_ENV: production
+    build_label:
+      org.label-schema.version: 1.0.0
+      org.label-schema.name: my-function
+
+# build with build options and squash
+- name: Build with build options and squash
+  mschuchard.general.faas_build:
+    config_file: stack.yaml
+    build_option:
+    - dev
+    - verbose
+    squash: true
+
+# build with tag override
+- name: Build with SHA tag
+  mschuchard.general.faas_build:
+    config_file: stack.yaml
+    tag: sha
+
+# build directly with image, handler, and language
+- name: Build directly with image, handler, and language
+  mschuchard.general.faas_build:
+    image: my_image
+    lang: python
+    handler: /path/to/fn/
+    name: my_fn
+    squash: true
+
+# build with parallel depth and copy extra paths
+- name: Build with parallel depth and copy extra paths
+  mschuchard.general.faas_build:
+    config_file: stack.yaml
+    parallel: 4
+    copy_extra:
+    - /path/to/extra/files
+    - /another/path
 """
 
 RETURN = r"""
@@ -107,19 +208,36 @@ def main() -> None:
     # instantiate ansible module
     module: AnsibleModule = AnsibleModule(
         argument_spec={
+            'build_arg': {'type': 'dict', 'required': False, 'new_in_version': '1.5.0'},
+            'build_label': {'type': 'dict', 'required': False, 'new_in_version': '1.5.0'},
+            'build_option': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.5.0'},
             'cache': {'type': 'bool', 'required': False, 'default': True},
             'config_file': {'type': 'path', 'required': False},
+            'copy_extra': {'type': 'list', 'elements': 'path', 'required': False, 'new_in_version': '1.5.0'},
             'env_subst': {'type': 'bool', 'required': False, 'default': True},
             'filter': {'type': 'str', 'required': False},
+            'handler': {'type': 'path', 'required': False, 'new_in_version': '1.5.0'},
+            'image': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
+            'lang': {'type': 'str', 'required': False, 'choices': ['ruby', 'python', 'python3', 'node', 'csharp', 'dockerfile'], 'new_in_version': '1.5.0'},
             'name': {'type': 'str', 'required': False},
+            'parallel': {'type': 'int', 'required': False, 'default': 1, 'new_in_version': '1.5.0'},
             'pull': {'type': 'bool', 'required': False},
             'quiet': {'type': 'bool', 'required': False},
             'regex': {'type': 'str', 'required': False},
             'shrinkwrap': {'type': 'bool', 'required': False},
+            'squash': {'type': 'bool', 'required': False, 'new_in_version': '1.5.0'},
             'stack_pull': {'type': 'bool', 'required': False, 'default': True},
+            'tag': {
+                'type': 'str',
+                'required': False,
+                'default': 'latest',
+                'choices': ['latest', 'digest', 'sha', 'branch', 'describe'],
+                'new_in_version': '1.5.0',
+            },
         },
-        mutually_exclusive=[('config_file', 'name')],
-        required_one_of=[('config_file', 'name')],
+        mutually_exclusive=[('config_file', 'image'), ('config_file', 'handler'), ('config_file', 'lang')],
+        required_one_of=[('config_file', 'image')],
+        required_together=[('image', 'handler', 'name')],
         supports_check_mode=True,
     )
 
@@ -137,9 +255,14 @@ def main() -> None:
         flags.add('quiet')
     if module.params.get('shrinkwrap'):
         flags.add('shrinkwrap')
+    if module.params.get('squash'):
+        flags.add('squash')
 
     # check args
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
+
+    # convert ansible params to faas args
+    faas.ansible_to_faas(flags_args[1])
 
     # determine faas command
     command: list[str] = faas.cmd(action='build', flags=flags, args=flags_args[1])
