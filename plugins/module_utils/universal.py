@@ -108,7 +108,7 @@ def params_to_flags_args(params: dict, spec: dict[str, dict]) -> tuple[set[str],
                     flags.add(param)
                 # check if path type --> probably need type conversion
                 case 'path':
-                    args.update({param: Path(attribute)})
+                    args.update({param: str(Path(attribute))})
                 # otherwise generic argument
                 case _:
                     args.update({param: attribute})
