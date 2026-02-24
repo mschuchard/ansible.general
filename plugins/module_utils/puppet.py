@@ -61,9 +61,9 @@ def cmd(
     action: str,
     flags: set[str] = set(),
     args: dict[str, str | int] = {},
-    manifest: Path = None,
-    catalog: Path = None,
-    execute: str = None,
+    manifest: Path | None = None,
+    catalog: Path | None = None,
+    execute: str | None = None,
 ) -> list[str]:
     """constructs a list representing the puppet command to execute"""
     # verify command

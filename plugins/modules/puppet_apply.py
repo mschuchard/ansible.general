@@ -162,9 +162,9 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    manifest: Path = Path(module.params.pop('manifest', None))
-    catalog: Path = Path(module.params.pop('catalog', None))
-    execute: str = module.params.pop('execute', None)
+    manifest: Path | None = Path(module.params.pop('manifest', None))
+    catalog: Path | None = Path(module.params.pop('catalog', None))
+    execute: str | None = module.params.pop('execute', None)
     test: bool = module.params.get('test')
 
     # check on optional params
