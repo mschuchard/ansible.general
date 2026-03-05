@@ -31,7 +31,6 @@ options:
     digest:
         description: Change the certificate fingerprinting digest algorithm. Only used with fingerprint parameter.
         required: false
-        default: SHA256
         type: str
         choices: ['MD5', 'SHA1', 'SHA256']
         new_in_version: "1.4.1"
@@ -202,7 +201,7 @@ def main() -> None:
         argument_spec={
             'certname': {'type': 'str', 'required': False},
             'debug': {'type': 'bool', 'required': False},
-            'digest': {'type': 'str', 'required': False, 'default': 'SHA256', 'choices': ['MD5', 'SHA1', 'SHA256'], 'new_in_version': '1.4.1'},
+            'digest': {'type': 'str', 'required': False, 'choices': ['MD5', 'SHA1', 'SHA256'], 'new_in_version': '1.4.1'},
             'disable': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
             'enable': {'type': 'bool', 'required': False, 'new_in_version': '1.4.1'},
             'evaltrace': {'type': 'bool', 'required': False, 'new_in_version': '1.4.1'},
@@ -220,7 +219,7 @@ def main() -> None:
             'waitforcert': {'type': 'int', 'required': False, 'new_in_version': '1.4.1'},
         },
         mutually_exclusive=[('disable', 'enable'), ('disable', 'test'), ('disable', 'onetime'), ('enable', 'test'), ('enable', 'onetime')],
-        required_by={'job_id': ['onetime'], 'digest': ['fingerprint']},
+        required_by={'job_id': 'onetime', 'digest': 'fingerprint'},
         supports_check_mode=True,
     )
 

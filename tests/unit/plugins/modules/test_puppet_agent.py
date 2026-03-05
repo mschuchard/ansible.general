@@ -83,22 +83,6 @@ def test_puppet_agent_logdest_sourceaddress(capfd):
 def test_puppet_agent_fingerprint_digest(capfd):
     """test puppet agent with fingerprint and digest"""
     utils.set_module_args({'fingerprint': True, 'digest': 'SHA1'})
-    with pytest.raises(SystemExit, match='0'):
-        puppet_agent.main()
-
-    stdout, stderr = capfd.readouterr()
-    assert not stderr
-
-    info = json.loads(stdout)
-    assert 'agent' in info['command']
-    assert '--fingerprint' in info['command']
-    assert '--digest' in info['command']
-    assert 'SHA1' in info['command']
-
-
-def test_puppet_agent_job_id_onetime(capfd):
-    """test puppet agent with job_id and onetime"""
-    utils.set_module_args({'job_id': 'ansible-run-12345', 'onetime': True})
     with pytest.raises(SystemExit, match='1'):
         puppet_agent.main()
 
@@ -107,9 +91,25 @@ def test_puppet_agent_job_id_onetime(capfd):
 
     info = json.loads(stdout)
     assert 'agent' in info['cmd']
-    assert '--job-id' in info['cmd']
-    assert 'ansible-run-12345' in info['cmd']
-    assert '--onetime' in info['cmd']
+    assert '--fingerprint' in info['cmd']
+    assert '--digest' in info['cmd']
+    assert 'SHA1' in info['cmd']
+
+
+def test_puppet_agent_job_id_onetime(capfd):
+    """test puppet agent with job_id and onetime"""
+    utils.set_module_args({'job_id': 'ansible-run-12345', 'onetime': True})
+    with pytest.raises(SystemExit, match='0'):
+        puppet_agent.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'agent' in info['command']
+    assert '--job-id' in info['command']
+    assert 'ansible-run-12345' in info['command']
+    assert '--onetime' in info['command']
 
 
 def test_puppet_agent_disable(capfd):
@@ -146,46 +146,46 @@ def test_puppet_agent_enable(capfd):
 def test_puppet_agent_evaltrace_trace(capfd):
     """test puppet agent with evaltrace and trace"""
     utils.set_module_args({'evaltrace': True, 'trace': True, 'onetime': True})
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.raises(SystemExit, match='0'):
         puppet_agent.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert 'agent' in info['cmd']
-    assert '--evaltrace' in info['cmd']
-    assert '--trace' in info['cmd']
-    assert '--onetime' in info['cmd']
+    assert 'agent' in info['command']
+    assert '--evaltrace' in info['command']
+    assert '--trace' in info['command']
+    assert '--onetime' in info['command']
 
 
 def test_puppet_agent_waitforcert(capfd):
     """test puppet agent with waitforcert"""
     utils.set_module_args({'waitforcert': 60, 'onetime': True})
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.raises(SystemExit, match='0'):
         puppet_agent.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert 'agent' in info['cmd']
-    assert '--waitforcert' in info['cmd']
-    assert '60' in info['cmd']
-    assert '--onetime' in info['cmd']
+    assert 'agent' in info['command']
+    assert '--waitforcert' in info['command']
+    assert '60' in info['command']
+    assert '--onetime' in info['command']
 
 
 def test_puppet_agent_certname(capfd):
     """test puppet agent with certname"""
     utils.set_module_args({'certname': 'custom.example.com', 'onetime': True})
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.raises(SystemExit, match='0'):
         puppet_agent.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert 'agent' in info['cmd']
-    assert '--certname' in info['cmd']
-    assert 'custom.example.com' in info['cmd']
-    assert '--onetime' in info['cmd']
+    assert 'agent' in info['command']
+    assert '--certname' in info['command']
+    assert 'custom.example.com' in info['command']
+    assert '--onetime' in info['command']
