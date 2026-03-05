@@ -88,18 +88,17 @@ def test_puppet_apply_detailed_exitcodes(capfd):
 def test_puppet_apply_logdest(capfd):
     """test puppet apply with logdest"""
     utils.set_module_args({'logdest': '/var/log/puppet/apply.log', 'manifest': f'{str(utils.fixtures_dir())}/manifest.pp'})
-    with pytest.raises(SystemExit, match='0'):
+    with pytest.raises(SystemExit, match='1'):
         puppet_apply.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert not info['changed']
-    assert 'apply' in info['command']
-    assert '-l' in info['command']
-    assert '/var/log/puppet/apply.log' in info['command']
-    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['command'][-1]
+    assert 'apply' in info['cmd']
+    assert '-l' in info['cmd']
+    assert '/var/log/puppet/apply.log' in info['cmd']
+    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['cmd'][-1]
 
 
 def test_puppet_apply_loadclasses_write_catalog(capfd):

@@ -162,8 +162,8 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    manifest: Path | None = Path(module.params.pop('manifest', None))
-    catalog: Path | None = Path(module.params.pop('catalog', None))
+    manifest: Path | None = None if (m := module.params.pop('manifest', None)) is None else Path(m)
+    catalog: Path | None = None if (c := module.params.pop('catalog', None)) is None else Path(c)
     execute: str | None = module.params.pop('execute', None)
     test: bool = module.params.get('test')
 
