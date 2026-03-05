@@ -15,6 +15,9 @@ jobs:
         name: ruff
         command: ruff check .
     - run:
+        name: ty
+        command: ty check plugins
+    - run:
         name: pytest module utils
         command: pytest tests/unit/plugins/module_utils
 

@@ -27,6 +27,9 @@ jobs:
     - name: ruff
       run: ruff check .
       working-directory: ./mschuchard/general
+    - name: ty
+      run: ty check plugins
+      working-directory: ./mschuchard/general
     - name: pytest module utils
       run: pytest tests/unit/plugins/module_utils
       working-directory: ./mschuchard/general
