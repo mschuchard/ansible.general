@@ -4,9 +4,17 @@ __metaclass__ = type
 
 
 import json
+import shutil
 import pytest
 from mschuchard.general.plugins.modules import faas_build
 from mschuchard.general.tests.unit.plugins.modules import utils
+
+
+@pytest.fixture(scope='module', autouse=True)
+def cleanup_templates():
+    """remove the template directory created as a side effect by faas-cli build"""
+    yield
+    shutil.rmtree('template', ignore_errors=True)
 
 
 def test_faas_build_defaults(capfd):

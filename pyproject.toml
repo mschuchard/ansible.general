@@ -1,5 +1,5 @@
 [project]
-name = ["mschuchard.general"]
+name = "mschuchard.general"
 version = "1.4.0"
 dependencies = ["ansible"]
 requires-python = ">= 3.10"
