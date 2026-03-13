@@ -85,9 +85,9 @@ def test_ansible_to_faas():
     faas.ansible_to_faas(args=args)
     assert args == {'label': ['--label', 'foo=bar', '--label', 'baz=bat']}
 
-    # test multiple conversions at once
     from pathlib import Path
 
+    # test multiple conversions at once
     args = {'build_arg': {'KEY': 'value'}, 'build_label': {'label': 'val'}, 'build_option': ['dev'], 'copy_extra': [Path('/extra')]}
     faas.ansible_to_faas(args=args)
     assert args == {
@@ -95,4 +95,14 @@ def test_ansible_to_faas():
         'build_label': ['--build-label', 'label=val'],
         'build_option': ['--build-option', 'dev'],
         'copy_extra': ['--copy-extra', '/extra'],
+    }
+
+    # test multiple deploy conversions at once
+    args = {'env': {'KEY': 'val'}, 'constraint': ['node.role==worker'], 'secret': ['secret1'], 'label': {'app': 'myapp'}}
+    faas.ansible_to_faas(args=args)
+    assert args == {
+        'env': ['--env', 'KEY=val'],
+        'constraint': ['--constraint', 'node.role==worker'],
+        'secret': ['--secret', 'secret1'],
+        'label': ['--label', 'app=myapp'],
     }
