@@ -154,9 +154,9 @@ options:
         choices: ['latest', 'sha', 'branch', 'describe']
         new_in_version: "1.5.0"
     timeout:
-        description: Timeout for any HTTP calls made to the OpenFaaS API (in seconds)
+        description: Timeout for any HTTP calls made to the OpenFaaS API (duration string, e.g. '60s', '1m', '2m30s')
         required: false
-        type: int
+        type: str
         new_in_version: "1.5.0"
     tls_no_verify:
         description: Disable TLS validation
@@ -253,7 +253,7 @@ EXAMPLES = r"""
     gateway: https://faas.example.com:8080
     tls_no_verify: true
     token: my-jwt-token
-    timeout: 120
+    timeout: 2m
 """
 
 RETURN = r"""
@@ -299,7 +299,7 @@ def main() -> None:
             'secret': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.5.0'},
             'strategy': {'type': 'str', 'choices': ['replace', 'update'], 'default': 'update', 'required': False, 'new_in_version': '1.3.1'},
             'tag': {'type': 'str', 'required': False, 'default': 'latest', 'choices': ['latest', 'sha', 'branch', 'describe'], 'new_in_version': '1.5.0'},
-            'timeout': {'type': 'int', 'required': False, 'new_in_version': '1.5.0'},
+            'timeout': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
             'tls_no_verify': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.5.0'},
             'token': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
             'update': {'type': 'bool', 'required': False, 'default': True, 'removed_in_version': '1.4.0'},

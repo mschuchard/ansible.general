@@ -190,7 +190,7 @@ def test_faas_deploy_tls_token_timeout(capfd):
             'gateway': 'https://faas.example.com:8080',
             'tls_no_verify': True,
             'token': 'my-jwt-token',
-            'timeout': 120,
+            'timeout': '2m',
         }
     )
     with pytest.raises(SystemExit, match='1'):
@@ -206,7 +206,7 @@ def test_faas_deploy_tls_token_timeout(capfd):
     assert '--token' in info['cmd']
     assert 'my-jwt-token' in info['cmd']
     assert '--timeout' in info['cmd']
-    assert '120' in info['cmd']
+    assert '2m' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 

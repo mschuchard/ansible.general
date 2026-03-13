@@ -110,12 +110,12 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
             # annotation, label, build_arg, build_label, build_option, copy_extra, constraint, env, and secret have properly formatted value of type list[str] and so need to be extended directly
             if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret']:
                 command.extend(arg_value)
+            # convert parallel argument from int-->str
+            elif arg == 'parallel':
+                command.extend([action_args_map[arg], f'{arg_value}'])
             # name arg is actually positional for logs and remove, and so just append the value
             elif action in ['logs', 'remove'] and arg == 'name':
                 command.append(arg_value)
-            # convert parallel and timeout arguments from int-->str
-            elif arg in ['parallel', 'timeout']:
-                command.extend([action_args_map[arg], f'{arg_value}'])
             # append the value interpolated with the arg name from the dict to the command
             else:
                 command.extend([action_args_map[arg], arg_value])
