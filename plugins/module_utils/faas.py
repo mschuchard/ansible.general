@@ -20,7 +20,11 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'squash': '--squash',
         },
         'deploy': {
+            'env_subst': '--envsubst=false',
+            'read_template': '--read-template=false',
+            'readonly': '--readonly',
             'replace': '--replace',
+            'tls_no_verify': '--tls-no-verify',
             'update': '--update=false',
         },
         'list': {'verbose': '-v'},
@@ -48,8 +52,25 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
         },
         'deploy': {
             'annotation': '',
+            'constraint': '',
+            'cpu_limit': '--cpu-limit',
+            'cpu_request': '--cpu-request',
+            'env': '',
+            'fprocess': '--fprocess',
+            'gateway': '--gateway',
+            'handler': '--handler',
+            'image': '--image',
             'label': '',
+            'lang': '--lang',
+            'memory_limit': '--memory-limit',
+            'memory_request': '--memory-request',
             'name': '--name',
+            'namespace': '--namespace',
+            'network': '--network',
+            'secret': '',
+            'tag': '--tag',
+            'timeout': '--timeout',
+            'token': '--token',
         },
         'list': {'sort': '--sort'},
         'logs': {'name': ''},
@@ -86,14 +107,14 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
         if arg in action_args_map:
             if arg == 'sort' and arg_value not in ['name', 'invocations']:
                 raise ValueError('The "sort" parameter must be either "name" or "invocations"')
-            # annotation, label, build_arg, build_label, build_option, and copy_extra have properly formatted value of type list[str] and so need to be extended directly
-            if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra']:
+            # annotation, label, build_arg, build_label, build_option, copy_extra, constraint, env, and secret have properly formatted value of type list[str] and so need to be extended directly
+            if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret']:
                 command.extend(arg_value)
             # name arg is actually positional for logs and remove, and so just append the value
             elif action in ['logs', 'remove'] and arg == 'name':
                 command.append(arg_value)
-            # convert parallel argument from int-->str
-            elif arg == 'parallel':
+            # convert parallel and timeout arguments from int-->str
+            elif arg in ['parallel', 'timeout']:
                 command.extend([action_args_map[arg], f'{arg_value}'])
             # append the value interpolated with the arg name from the dict to the command
             else:
@@ -142,7 +163,7 @@ def ansible_to_faas(args: dict) -> None:
     for arg, arg_value in args.items():
         match arg:
             # transform dict[str, str] to list of '--arg' 'key=value' '--arg' 'key2=value2' strings
-            case 'annotation' | 'label' | 'build_arg' | 'build_label':
+            case 'annotation' | 'label' | 'build_arg' | 'build_label' | 'env':
                 args[arg] = ' '.join([f'--{arg.replace("_", "-")} {key}={value}' for key, value in arg_value.items()]).split()
             # transform list[str] to list of '--build-option' 'value1' '--build-option' 'value2' strings
             case 'build_option':
@@ -150,3 +171,9 @@ def ansible_to_faas(args: dict) -> None:
             # transform list[Path] to list of '--copy-extra' 'path1' '--copy-extra' 'path2' strings
             case 'copy_extra':
                 args[arg] = ' '.join([f'--copy-extra {str(path)}' for path in arg_value]).split()
+            # transform list[str] to list of '--constraint' 'value1' '--constraint' 'value2' strings
+            case 'constraint':
+                args[arg] = ' '.join([f'--constraint {value}' for value in arg_value]).split()
+            # transform list[str] to list of '--secret' 'value1' '--secret' 'value2' strings
+            case 'secret':
+                args[arg] = ' '.join([f'--secret {value}' for value in arg_value]).split()
