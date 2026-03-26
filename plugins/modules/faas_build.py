@@ -22,18 +22,18 @@ options:
         description: Add build arguments for Docker (KEY=VALUE pairs)
         required: false
         type: dict
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     build_label:
         description: Add labels for Docker image (LABEL=VALUE pairs)
         required: false
         type: dict
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     build_option:
         description: Set build options (e.g. dev)
         required: false
         type: list
         elements: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     cache:
         description: Use Docker's build cache
         required: false
@@ -48,7 +48,7 @@ options:
         required: false
         type: list
         elements: path
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     env_subst:
         description: Substitute environment variables in stack.yaml file
         required: false
@@ -62,18 +62,18 @@ options:
         description: Directory with handler for function (e.g. handler.js)
         required: false
         type: path
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     image:
         description: Docker image name to build
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     lang:
         description: Programming language template
         required: false
         type: str
         choices: ['ruby', 'python', 'python3', 'node', 'csharp', 'dockerfile']
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     name:
         description: Name of the deployed function
         required: false
@@ -83,7 +83,7 @@ options:
         required: false
         default: 1
         type: int
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     pull:
         description: Force a re-pull of base images in template during build, useful for publishing images
         required: false
@@ -108,7 +108,7 @@ options:
         required: false
         default: false
         type: bool
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     stack_pull:
         description: Enables the template configuration in the stack.yaml
         required: false
@@ -120,7 +120,7 @@ options:
         default: latest
         type: str
         choices: ['latest', 'digest', 'sha', 'branch', 'describe']
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
 
 requirements:
     - faas-cli >= 0.17.0
@@ -208,31 +208,31 @@ def main() -> None:
     # instantiate ansible module
     module: AnsibleModule = AnsibleModule(
         argument_spec={
-            'build_arg': {'type': 'dict', 'required': False, 'new_in_version': '1.5.0'},
-            'build_label': {'type': 'dict', 'required': False, 'new_in_version': '1.5.0'},
-            'build_option': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.5.0'},
+            'build_arg': {'type': 'dict', 'required': False, 'new_in_version': '1.4.1'},
+            'build_label': {'type': 'dict', 'required': False, 'new_in_version': '1.4.1'},
+            'build_option': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.4.1'},
             'cache': {'type': 'bool', 'required': False, 'default': True},
             'config_file': {'type': 'path', 'required': False},
-            'copy_extra': {'type': 'list', 'elements': 'path', 'required': False, 'new_in_version': '1.5.0'},
+            'copy_extra': {'type': 'list', 'elements': 'path', 'required': False, 'new_in_version': '1.4.1'},
             'env_subst': {'type': 'bool', 'required': False, 'default': True},
             'filter': {'type': 'str', 'required': False},
-            'handler': {'type': 'path', 'required': False, 'new_in_version': '1.5.0'},
-            'image': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'lang': {'type': 'str', 'required': False, 'choices': ['ruby', 'python', 'python3', 'node', 'csharp', 'dockerfile'], 'new_in_version': '1.5.0'},
+            'handler': {'type': 'path', 'required': False, 'new_in_version': '1.4.1'},
+            'image': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'lang': {'type': 'str', 'required': False, 'choices': ['ruby', 'python', 'python3', 'node', 'csharp', 'dockerfile'], 'new_in_version': '1.4.1'},
             'name': {'type': 'str', 'required': False},
-            'parallel': {'type': 'int', 'required': False, 'default': 1, 'new_in_version': '1.5.0'},
+            'parallel': {'type': 'int', 'required': False, 'default': 1, 'new_in_version': '1.4.1'},
             'pull': {'type': 'bool', 'required': False},
             'quiet': {'type': 'bool', 'required': False},
             'regex': {'type': 'str', 'required': False},
             'shrinkwrap': {'type': 'bool', 'required': False},
-            'squash': {'type': 'bool', 'required': False, 'new_in_version': '1.5.0'},
+            'squash': {'type': 'bool', 'required': False, 'new_in_version': '1.4.1'},
             'stack_pull': {'type': 'bool', 'required': False, 'default': True},
             'tag': {
                 'type': 'str',
                 'required': False,
                 'default': 'latest',
                 'choices': ['latest', 'digest', 'sha', 'branch', 'describe'],
-                'new_in_version': '1.5.0',
+                'new_in_version': '1.4.1',
             },
         },
         mutually_exclusive=[('config_file', 'image'), ('config_file', 'handler'), ('config_file', 'lang')],

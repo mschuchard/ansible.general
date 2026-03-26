@@ -27,7 +27,12 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'tls_no_verify': '--tls-no-verify',
             'update': '--update=false',
         },
-        'list': {'verbose': '-v'},
+        'list': {
+            'env_subst': '--envsubst=false',
+            'quiet': '-q',
+            'tls_no_verify': '--tls-no-verify',
+            'verbose': '-v',
+        },
         'logs': {
             'instance': '--instance',
         },
@@ -72,7 +77,12 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'timeout': '--timeout',
             'token': '--token',
         },
-        'list': {'sort': '--sort'},
+        'list': {
+            'gateway': '--gateway',
+            'namespace': '--namespace',
+            'sort': '--sort',
+            'token': '--token',
+        },
         'logs': {'name': ''},
         'login': {
             'username': '-u',
@@ -87,7 +97,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}) -> list[str]:
     """constructs a list representing the openfaas command to execute"""
     # verify command
     if action not in FLAGS_MAP | ARGS_MAP:
@@ -109,10 +119,10 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
                 raise ValueError('The "sort" parameter must be either "name" or "invocations"')
             # annotation, label, build_arg, build_label, build_option, copy_extra, constraint, env, and secret have properly formatted value of type list[str] and so need to be extended directly
             if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret']:
-                command.extend(arg_value)
+                command.extend(str(arg_value))
             # name arg is actually positional for logs and remove, and so just append the value
             elif action in ['logs', 'remove'] and arg == 'name':
-                command.append(arg_value)
+                command.append(str(arg_value))
             # append the value interpolated with the arg name from the dict to the command
             else:
                 command.extend([action_args_map[arg], str(arg_value)])

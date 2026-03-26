@@ -31,28 +31,28 @@ options:
         required: false
         type: list
         elements: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     cpu_limit:
         description: Supply the CPU limit for the function in Mi (when not using a YAML file)
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     cpu_request:
         description: Supply the CPU request for the function in Mi (when not using a YAML file)
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     env:
         description: Set one or more environment variables (ENVVAR=VALUE)
         required: false
         type: dict
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     env_subst:
         description: Substitute environment variables in stack.yaml file
         required: false
         default: true
         type: bool
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     filter:
         description: Wildcard to match with function names in YAML file
         required: false
@@ -61,22 +61,22 @@ options:
         description: fprocess value to be run as a serverless function by the watchdog
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     gateway:
         description: Gateway URL starting with http(s)://
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     handler:
         description: Directory with handler for function (e.g. handler.js)
         required: false
         type: path
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     image:
         description: Docker image name to deploy
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     label:
         description: Set one or more labels (LABEL=VALUE)
         required: false
@@ -86,17 +86,17 @@ options:
         required: false
         type: str
         choices: ['ruby', 'python', 'node', 'csharp']
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     memory_limit:
         description: Supply the memory limit for the function in Mi (when not using a YAML file)
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     memory_request:
         description: Supply the memory request for the function in Mi (when not using a YAML file)
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     name:
         description: Name of the deployed function
         required: false
@@ -105,24 +105,24 @@ options:
         description: Namespace of the function
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     network:
         description: Name of the network
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     read_template:
         description: Read the function's template
         required: false
         default: true
         type: bool
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     readonly:
         description: Force the root container filesystem to be read only
         required: false
         default: false
         type: bool
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     regex:
         description: Regex to match with function names in YAML file
         required: false
@@ -138,7 +138,7 @@ options:
         required: false
         type: list
         elements: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     strategy:
         description: Whether to perform rolling update, or remove and re-create, one or more existing functions. This will deprecate the `replace` and `update` parameters in version 1.4.0.
         choices: [replace, update]
@@ -152,23 +152,23 @@ options:
         default: latest
         type: str
         choices: ['latest', 'sha', 'branch', 'describe']
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     timeout:
         description: Timeout for any HTTP calls made to the OpenFaaS API (duration string, e.g. '60s', '1m', '2m30s')
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     tls_no_verify:
         description: Disable TLS validation
         required: false
         default: false
         type: bool
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     token:
         description: Pass a JWT token to use instead of basic auth
         required: false
         type: str
-        new_in_version: "1.5.0"
+        new_in_version: "1.4.1"
     update:
         description: Perform rolling update on one or more existing functions
         required: false
@@ -275,33 +275,33 @@ def main() -> None:
         argument_spec={
             'annotation': {'type': 'dict', 'required': False},
             'config_file': {'type': 'path', 'required': False},
-            'constraint': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'cpu_limit': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'cpu_request': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'env': {'type': 'dict', 'required': False, 'new_in_version': '1.5.0'},
-            'env_subst': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.5.0'},
+            'constraint': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'cpu_limit': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'cpu_request': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'env': {'type': 'dict', 'required': False, 'new_in_version': '1.4.1'},
+            'env_subst': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.4.1'},
             'filter': {'type': 'str', 'required': False},
-            'fprocess': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'gateway': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'handler': {'type': 'path', 'required': False, 'new_in_version': '1.5.0'},
-            'image': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
+            'fprocess': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'gateway': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'handler': {'type': 'path', 'required': False, 'new_in_version': '1.4.1'},
+            'image': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
             'label': {'type': 'dict', 'required': False},
-            'lang': {'type': 'str', 'required': False, 'choices': ['ruby', 'python', 'node', 'csharp'], 'new_in_version': '1.5.0'},
-            'memory_limit': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'memory_request': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
+            'lang': {'type': 'str', 'required': False, 'choices': ['ruby', 'python', 'node', 'csharp'], 'new_in_version': '1.4.1'},
+            'memory_limit': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'memory_request': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
             'name': {'type': 'str', 'required': False},
-            'namespace': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'network': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'read_template': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.5.0'},
-            'readonly': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.5.0'},
+            'namespace': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'network': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'read_template': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.4.1'},
+            'readonly': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.4.1'},
             'regex': {'type': 'str', 'required': False},
             'replace': {'type': 'bool', 'required': False, 'removed_in_version': '1.4.0'},
-            'secret': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.5.0'},
+            'secret': {'type': 'list', 'elements': 'str', 'required': False, 'new_in_version': '1.4.1'},
             'strategy': {'type': 'str', 'choices': ['replace', 'update'], 'default': 'update', 'required': False, 'new_in_version': '1.3.1'},
-            'tag': {'type': 'str', 'required': False, 'default': 'latest', 'choices': ['latest', 'sha', 'branch', 'describe'], 'new_in_version': '1.5.0'},
-            'timeout': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
-            'tls_no_verify': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.5.0'},
-            'token': {'type': 'str', 'required': False, 'new_in_version': '1.5.0'},
+            'tag': {'type': 'str', 'required': False, 'default': 'latest', 'choices': ['latest', 'sha', 'branch', 'describe'], 'new_in_version': '1.4.1'},
+            'timeout': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
+            'tls_no_verify': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.4.1'},
+            'token': {'type': 'str', 'required': False, 'new_in_version': '1.4.1'},
             'update': {'type': 'bool', 'required': False, 'default': True, 'removed_in_version': '1.4.0'},
         },
         mutually_exclusive=[('config_file', 'image'), ('strategy', 'replace'), ('strategy', 'update')],
