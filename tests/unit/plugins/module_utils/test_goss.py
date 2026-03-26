@@ -81,7 +81,7 @@ def test_goss_cmd():
         '-s',
         '5m',
         '--max-concurrent',
-        100,
+        '100',
     ]
 
     # test serve with no flags, no global args, and action args

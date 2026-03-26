@@ -101,7 +101,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
 
     # construct list of faas args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
-    action_args_map: dict = ARGS_MAP.get(action, {})
+    action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
@@ -110,15 +110,12 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str] = {}) -> list
             # annotation, label, build_arg, build_label, build_option, copy_extra, constraint, env, and secret have properly formatted value of type list[str] and so need to be extended directly
             if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret']:
                 command.extend(arg_value)
-            # convert parallel argument from int-->str
-            elif arg == 'parallel':
-                command.extend([action_args_map[arg], f'{arg_value}'])
             # name arg is actually positional for logs and remove, and so just append the value
             elif action in ['logs', 'remove'] and arg == 'name':
                 command.append(arg_value)
             # append the value interpolated with the arg name from the dict to the command
             else:
-                command.extend([action_args_map[arg], arg_value])
+                command.extend([action_args_map[arg], str(arg_value)])
         else:
             # unsupported arg specified
             warnings.warn(f'Unsupported FaaS arg specified: {arg}', RuntimeWarning)

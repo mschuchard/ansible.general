@@ -77,22 +77,18 @@ def cmd(
     universal.action_flags_command(command, flags, FLAGS_MAP.get(action, {}))
 
     # construct list of puppet args
-    action_args_map: dict = ARGS_MAP.get(action, {})
+    action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
             # server port arg requires int-->str and validation
             if arg == 'server_port':
                 # validate server_port range
-                if arg_value < 1 or arg_value > 65535:
+                if int(arg_value) < 1 or int(arg_value) > 65535:
                     raise ValueError(f'Puppet server_port value must be between 1 and 65535: {arg_value}')
-                arg_value = f'{arg_value}'
-            # waitforcert arg requires int-->str
-            elif arg == 'waitforcert':
-                arg_value = f'{arg_value}'
 
             # append the value interpolated with the arg name from the dict to the command
-            command.extend([action_args_map[arg], arg_value])
+            command.extend([action_args_map[arg], str(arg_value)])
         else:
             # unsupported arg specified
             warnings.warn(f'Unsupported Puppet arg specified: {arg}', RuntimeWarning)

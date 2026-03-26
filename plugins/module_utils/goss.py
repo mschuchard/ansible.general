@@ -58,7 +58,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] 
 
     # construct list of goss args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
-    action_args_map: dict = ARGS_MAP.get(action, {})
+    action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
@@ -81,7 +81,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] 
                 raise ValueError('The "format_opts" parameter value must be one of: perfdata, pretty, or verbose.')
 
             # append the value interpolated with the arg name from the dict to the command
-            command.extend([action_args_map[arg], arg_value])
+            command.extend([action_args_map[arg], str(arg_value)])
         else:
             # unsupported arg specified
             warnings.warn(f'Unsupported GoSS arg specified: {arg}', RuntimeWarning)
