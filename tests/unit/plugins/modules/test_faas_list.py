@@ -63,3 +63,87 @@ def test_faas_list_sort_invocations_verbose(capfd):
     assert '-v' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
+
+
+def test_faas_list_gateway_tls_token(capfd):
+    """test faas list with remote gateway, TLS, and token"""
+    utils.set_module_args({'gateway': 'https://faas.example.com:8080', 'tls_no_verify': True, 'token': 'my-jwt-token'})
+    with pytest.raises(SystemExit, match='1'):
+        faas_list.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'list' in info['cmd']
+    assert '--gateway' in info['cmd']
+    assert 'https://faas.example.com:8080' in info['cmd']
+    assert '--tls-no-verify' in info['cmd']
+    assert '--token' in info['cmd']
+    assert 'my-jwt-token' in info['cmd']
+
+
+def test_faas_list_namespace_quiet(capfd):
+    """test faas list with namespace and quiet mode"""
+    utils.set_module_args({'namespace': 'openfaas-fn', 'quiet': True})
+    with pytest.raises(SystemExit, match='1'):
+        faas_list.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'list' in info['cmd']
+    assert '--namespace' in info['cmd']
+    assert 'openfaas-fn' in info['cmd']
+    assert '-q' in info['cmd']
+
+
+def test_faas_list_env_subst_disabled(capfd):
+    """test faas list without environment substitution"""
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'env_subst': False})
+    with pytest.raises(SystemExit, match='1'):
+        faas_list.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'list' in info['cmd']
+    assert '--envsubst=false' in info['cmd']
+    assert '-f' in info['cmd']
+    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+
+
+def test_faas_list_all_new_params(capfd):
+    """test faas list with all new parameters combined"""
+    utils.set_module_args(
+        {
+            'gateway': 'https://faas.example.com:8080',
+            'namespace': 'openfaas-fn',
+            'quiet': True,
+            'tls_no_verify': True,
+            'token': 'my-token',
+            'sort': 'invocations',
+            'env_subst': False,
+        }
+    )
+    with pytest.raises(SystemExit, match='1'):
+        faas_list.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'list' in info['cmd']
+    assert '--gateway' in info['cmd']
+    assert 'https://faas.example.com:8080' in info['cmd']
+    assert '--namespace' in info['cmd']
+    assert 'openfaas-fn' in info['cmd']
+    assert '-q' in info['cmd']
+    assert '--tls-no-verify' in info['cmd']
+    assert '--token' in info['cmd']
+    assert 'my-token' in info['cmd']
+    assert '--sort' in info['cmd']
+    assert 'invocations' in info['cmd']
+    assert '--envsubst=false' in info['cmd']

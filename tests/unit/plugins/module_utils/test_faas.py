@@ -88,9 +88,16 @@ def test_ansible_to_faas():
     from pathlib import Path
 
     # test multiple conversions at once
-    args = {'build_arg': {'KEY': 'value'}, 'build_label': {'label': 'val'}, 'build_option': ['dev'], 'copy_extra': [Path('/extra')]}
+    args = {
+        'annotation': {'key1': 'val1', 'key2': 'val2'},
+        'build_arg': {'KEY': 'value'},
+        'build_label': {'label': 'val'},
+        'build_option': ['dev'],
+        'copy_extra': [Path('/extra')],
+    }
     faas.ansible_to_faas(args=args)
     assert args == {
+        'annotation': ['--annotation', 'key1=val1', '--annotation', 'key2=val2'],
         'build_arg': ['--build-arg', 'KEY=value'],
         'build_label': ['--build-label', 'label=val'],
         'build_option': ['--build-option', 'dev'],
