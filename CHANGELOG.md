@@ -1,6 +1,6 @@
 ### 1.4.1 (Next)
 - Add new parameters for `puppet` plugin modules.
-- Add new parameters for `faas` plugin modules.
+- Add new parameters for first half of `faas` plugin modules.
 - Use `str` from `Path` type conversion in params converter for modern Ansible JSON serialization.
 
 ### 1.4.0
