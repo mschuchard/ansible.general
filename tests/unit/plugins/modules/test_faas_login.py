@@ -71,3 +71,41 @@ def test_faas_login_config_file_globals(capfd):
         'Cannot connect to OpenFaaS on URL: http://127.0.0.1:8080. Get "http://127.0.0.1:8080/system/functions": dial tcp 127.0.0.1:8080: connect: connection refused'
         == info['stdout'].splitlines()[-1]
     )
+
+
+def test_faas_login_gateway_tls_timeout(capfd):
+    """test faas login with gateway, tls_no_verify, and timeout"""
+    utils.set_module_args({'password': 'mypassword', 'gateway': 'http://127.0.0.1:8080', 'tls_no_verify': True, 'timeout': '30s'})
+    with pytest.raises(SystemExit, match='1'):
+        faas_login.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'login' in info['cmd']
+    assert '-g' in info['cmd']
+    assert 'http://127.0.0.1:8080' in info['cmd']
+    assert '--tls-no-verify' in info['cmd']
+    assert '--timeout' in info['cmd']
+    assert '30s' in info['cmd']
+    assert '-p' in info['cmd']
+    assert (
+        'Cannot connect to OpenFaaS on URL: http://127.0.0.1:8080. Get "http://127.0.0.1:8080/system/functions": dial tcp 127.0.0.1:8080: connect: connection refused'
+        == info['stdout'].splitlines()[-1]
+    )
+
+
+def test_faas_login_password_stdin(capfd):
+    """test faas login with password_stdin flag"""
+    utils.set_module_args({'password_stdin': True, '_ansible_check_mode': True})
+    with pytest.raises(SystemExit, match='0'):
+        faas_login.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'login' in info['command']
+    assert '-s' in info['command']
+    assert '-p' not in info['command']
