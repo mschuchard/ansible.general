@@ -33,6 +33,10 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'tls_no_verify': '--tls-no-verify',
             'verbose': '-v',
         },
+        'login': {
+            'password_stdin': '-s',
+            'tls_no_verify': '--tls-no-verify',
+        },
         'logs': {
             'instance': '--instance',
         },
@@ -85,8 +89,10 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
         },
         'logs': {'name': ''},
         'login': {
-            'username': '-u',
+            'gateway': '-g',
             'password': '-p',
+            'timeout': '--timeout',
+            'username': '-u',
         },
         'push': {
             'parallel': '--parallel',

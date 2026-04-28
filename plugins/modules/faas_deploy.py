@@ -140,7 +140,7 @@ options:
         elements: str
         new_in_version: "1.4.1"
     strategy:
-        description: Whether to perform rolling update, or remove and re-create, one or more existing functions. This will deprecate the `replace` and `update` parameters in version 1.4.0.
+        description: Whether to perform rolling update, or remove and re-create, one or more existing functions.
         choices: [replace, update]
         required: false
         default: update

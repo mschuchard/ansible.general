@@ -26,15 +26,38 @@ options:
         description: Wildcard to match with function names in YAML file
         required: false
         type: str
+    gateway:
+        description: Gateway URL starting with http(s)://
+        required: false
+        default: http://127.0.0.1:8080
+        type: str
+        new_in_version: "1.4.2"
     password:
         description: Gateway password
-        required: true
+        required: false
         type: str
         no_log: true
+    password_stdin:
+        description: Reads the gateway password from stdin
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.2"
     regex:
         description: Regex to match with function names in YAML file
         required: false
         type: str
+    timeout:
+        description: Override the timeout for this API call (duration string, e.g. '60s', '1m', '2m30s')
+        required: false
+        type: str
+        new_in_version: "1.4.2"
+    tls_no_verify:
+        description: Disable TLS validation
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.2"
     username:
         description: Gateway username
         required: false
@@ -54,12 +77,25 @@ EXAMPLES = r"""
     username: customuser
     password: mypassword
 
+# log in to OpenFaaS gateway reading password from stdin
+- name: Log in to OpenFaaS gateway reading password from stdin
+  mschuchard.general.faas_login:
+    password_stdin: true
+
 # log in to OpenFaaS gateway with default username, and from a stack.yaml file with filter and regex
 - name: Log in to OpenFaaS gateway with default username, and from a stack.yaml file with filter and regex
   mschuchard.general.faas_login:
     config_file: stack.yaml
     filter: '*gif*'
     regex: 'fn[0-9]_.*'
+
+# log in to a remote OpenFaaS gateway with TLS disabled and a custom timeout
+- name: Log in to a remote OpenFaaS gateway with TLS disabled and a custom timeout
+  mschuchard.general.faas_login:
+    gateway: https://openfaas.mydomain.com
+    password: mypassword
+    tls_no_verify: true
+    timeout: 30s
 """
 
 RETURN = r"""
@@ -81,14 +117,20 @@ def main() -> None:
         argument_spec={
             'config_file': {'type': 'path', 'required': False},
             'filter': {'type': 'str', 'required': False},
-            'password': {'type': 'str', 'required': True, 'no_log': True},
+            'gateway': {'type': 'str', 'required': False, 'new_in_version': '1.4.2'},
+            'password': {'type': 'str', 'required': False, 'no_log': True},
+            'password_stdin': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.4.2'},
             'regex': {'type': 'str', 'required': False},
+            'timeout': {'type': 'str', 'required': False, 'new_in_version': '1.4.2'},
+            'tls_no_verify': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.4.2'},
             'username': {'type': 'str', 'required': False, 'default': 'admin'},
         },
+        mutually_exclusive=[('password', 'password_stdin')],
+        required_one_of=[('password', 'password_stdin')],
         supports_check_mode=True,
     )
 
-    # check args
+    # check flags and args
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine faas command
