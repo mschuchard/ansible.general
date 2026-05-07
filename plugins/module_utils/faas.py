@@ -69,7 +69,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'cpu_request': '--cpu-request',
             'env': '',
             'fprocess': '--fprocess',
-            'gateway': '-g',
+            'gateway': '--gateway',
             'handler': '--handler',
             'image': '--image',
             'label': '',
@@ -77,18 +77,18 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'memory_limit': '--memory-limit',
             'memory_request': '--memory-request',
             'name': '--name',
-            'namespace': '-n',
+            'namespace': '--namespace',
             'network': '--network',
             'secret': '',
             'tag': '--tag',
             'timeout': '--timeout',
-            'token': '-k',
+            'token': '--token',
         },
         'list': {
-            'gateway': '-g',
-            'namespace': '-n',
+            'gateway': '--gateway',
+            'namespace': '--namespace',
             'sort': '--sort',
-            'token': '-k',
+            'token': '--token',
         },
         'logs': {
             'gateway': '-g',
@@ -131,6 +131,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}) -
     # construct list of faas args
     # not all actions have args, so return empty dict by default to shortcut to RuntimeError for unsupported arg if arg specified for action without args
     action_args_map: dict[str, str] = ARGS_MAP.get(action, {})
+    positional_arg: str | None = None
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
@@ -139,15 +140,19 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}) -
             # annotation, label, build_arg, build_label, build_option, copy_extra, constraint, env, and secret have properly formatted value of type list[str] and so need to be extended directly
             if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret']:
                 command.extend(str(arg_value))
-            # name arg is actually positional for logs and remove, and so just append the value
+            # name arg is actually positional for logs and remove; defer until after all other args
             elif action in ['logs', 'remove'] and arg == 'name':
-                command.append(str(arg_value))
+                positional_arg = str(arg_value)
             # append the value interpolated with the arg name from the dict to the command
             else:
                 command.extend([action_args_map[arg], str(arg_value)])
         else:
             # unsupported arg specified
             warnings.warn(f'Unsupported FaaS arg specified: {arg}', RuntimeWarning)
+
+    # append positional arg last so it is always the final element of the command
+    if positional_arg is not None:
+        command.append(positional_arg)
 
     return command
 
