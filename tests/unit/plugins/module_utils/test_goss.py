@@ -2,7 +2,7 @@
 
 import pytest
 from pathlib import Path
-from mschuchard.general.plugins.module_utils import goss
+from ansible_collections.mschuchard.general.plugins.module_utils import goss
 
 
 def test_goss_cmd_errors():

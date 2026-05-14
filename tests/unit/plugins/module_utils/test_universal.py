@@ -2,7 +2,7 @@
 
 import pytest
 from pathlib import Path
-from mschuchard.general.plugins.module_utils import universal
+from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 
 def test_validate_json_yaml_file():

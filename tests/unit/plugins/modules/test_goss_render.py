@@ -5,8 +5,8 @@ __metaclass__ = type
 
 import json
 import pytest
-from mschuchard.general.plugins.modules import goss_render
-from mschuchard.general.tests.unit.plugins.modules import utils
+from ansible_collections.mschuchard.general.plugins.modules import goss_render
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_goss_render_gossfile(capfd):

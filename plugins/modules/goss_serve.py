@@ -111,7 +111,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import goss
+from ansible_collections.mschuchard.general.plugins.module_utils import goss
 
 
 def main() -> None:

@@ -5,8 +5,8 @@ __metaclass__ = type
 
 import json
 import pytest
-from mschuchard.general.plugins.modules import goss_validate
-from mschuchard.general.tests.unit.plugins.modules import utils
+from ansible_collections.mschuchard.general.plugins.modules import goss_validate
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_goss_validate_gossfile(capfd):

@@ -2,8 +2,8 @@
 
 import pytest
 from pathlib import Path
-from mschuchard.general.plugins.module_utils import terraform
-from mschuchard.general.tests.unit.plugins.modules import utils
+from ansible_collections.mschuchard.general.plugins.module_utils import terraform
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_terraform_cmd_errors():

@@ -5,8 +5,8 @@ __metaclass__ = type
 
 import json
 import pytest
-from mschuchard.general.plugins.modules import packer_init
-from mschuchard.general.tests.unit.plugins.modules import utils
+from ansible_collections.mschuchard.general.plugins.modules import packer_init
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_packer_init_defaults(capfd):

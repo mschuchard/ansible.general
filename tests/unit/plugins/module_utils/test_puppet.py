@@ -2,7 +2,7 @@
 
 import pytest
 from pathlib import Path
-from mschuchard.general.plugins.module_utils import puppet
+from ansible_collections.mschuchard.general.plugins.module_utils import puppet
 
 
 def test_puppet_cmd_errors():

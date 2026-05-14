@@ -5,7 +5,7 @@ __metaclass__ = type
 import warnings
 from typing import Final
 from pathlib import Path
-from mschuchard.general.plugins.module_utils import universal
+from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 # dictionary that maps input args to terraform flags
 FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(

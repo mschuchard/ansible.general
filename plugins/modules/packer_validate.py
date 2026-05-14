@@ -107,7 +107,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import packer, universal
+from ansible_collections.mschuchard.general.plugins.module_utils import packer, universal
 
 
 def main() -> None:

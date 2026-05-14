@@ -79,7 +79,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import packer
+from ansible_collections.mschuchard.general.plugins.module_utils import packer
 
 
 def main() -> None:

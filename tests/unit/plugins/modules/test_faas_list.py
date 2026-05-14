@@ -5,8 +5,8 @@ __metaclass__ = type
 
 import json
 import pytest
-from mschuchard.general.tests.unit.plugins.modules import utils
-from mschuchard.general.plugins.modules import faas_list
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
+from ansible_collections.mschuchard.general.plugins.modules import faas_list
 
 
 def test_faas_list_defaults(capfd):

@@ -64,7 +64,7 @@ command:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import faas, universal
+from ansible_collections.mschuchard.general.plugins.module_utils import faas, universal
 
 
 def main() -> None:

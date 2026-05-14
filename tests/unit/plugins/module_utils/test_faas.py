@@ -1,7 +1,7 @@
 """unit test for faas module util"""
 
 import pytest
-from mschuchard.general.plugins.module_utils import faas
+from ansible_collections.mschuchard.general.plugins.module_utils import faas
 
 
 def test_faas_cmd_errors():

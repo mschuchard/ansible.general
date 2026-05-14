@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import pytest
-from mschuchard.general.plugins.module_utils import packer
+from ansible_collections.mschuchard.general.plugins.module_utils import packer
 
 
 def test_packer_cmd_errors():

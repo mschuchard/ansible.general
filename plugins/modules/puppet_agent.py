@@ -191,7 +191,7 @@ return_code:
 
 from pathlib import Path
 from ansible.module_utils.basic import AnsibleModule
-from mschuchard.general.plugins.module_utils import puppet, universal
+from ansible_collections.mschuchard.general.plugins.module_utils import puppet, universal
 
 
 def main() -> None:

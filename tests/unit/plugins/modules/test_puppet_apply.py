@@ -5,8 +5,8 @@ __metaclass__ = type
 
 import json
 import pytest
-from mschuchard.general.plugins.modules import puppet_apply
-from mschuchard.general.tests.unit.plugins.modules import utils
+from ansible_collections.mschuchard.general.plugins.modules import puppet_apply
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_puppet_apply_test(capfd):
