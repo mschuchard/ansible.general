@@ -13,8 +13,6 @@ on:
 
 jobs:
   ansible-module-ci:
-    env:
-      PYTHONPATH: ${{ github.workspace }}
     runs-on: ubuntu-latest
     container: matthewschuchard/ansible-module
     steps:

@@ -3,8 +3,6 @@ version: 2.1
 
 jobs:
   test:
-    environment:
-      PYTHONPATH: /tmp/project
     working_directory: /tmp/project/ansible_collections/mschuchard/general
     docker:
     - image: matthewschuchard/ansible-module
