@@ -8,3 +8,6 @@ maintainers = [{name = "Matthew Schuchard"}]
 description = "General collection of Ansible plugins for common tools associated with \"DevOps\"."
 readme = "README.md"
 license = {file = "LICENSE"}
+
+[tool.pytest.ini_options]
+pythonpath = ["../../.."] # ansible_collections/mschuchard/general

@@ -19,17 +19,17 @@ jobs:
     container: matthewschuchard/ansible-module
     steps:
     - name: setup ansible collection namespace dir structure
-      run: mkdir mschuchard
+      run: mkdir -p ansible_collections/mschuchard
     - name: checkout
       uses: actions/checkout@v4
       with:
-        path: mschuchard/general
+        path: ansible_collections/mschuchard/general
     - name: ruff
       run: ruff check .
-      working-directory: ./mschuchard/general
+      working-directory: ./ansible_collections/mschuchard/general
     - name: ty
       run: ty check plugins
-      working-directory: ./mschuchard/general
+      working-directory: ./ansible_collections/mschuchard/general
     - name: pytest module utils
       run: pytest tests/unit/plugins/module_utils
-      working-directory: ./mschuchard/general
+      working-directory: ./ansible_collections/mschuchard/general

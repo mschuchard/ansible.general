@@ -5,7 +5,7 @@ jobs:
   test:
     environment:
       PYTHONPATH: /tmp/project
-    working_directory: /tmp/project/mschuchard/general
+    working_directory: /tmp/project/ansible_collections/mschuchard/general
     docker:
     - image: matthewschuchard/ansible-module
     resource_class: small
