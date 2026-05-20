@@ -145,9 +145,12 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[s
             # name arg is actually positional for logs and remove; defer until after all other args
             elif action in ['logs', 'remove'] and arg == 'name':
                 positional_arg = str(arg_value)
-            # append the value interpolated with the arg name from the dict to the command
+            # append the value interpolated with the arg name from the dict to the command (iterable)
             elif isinstance(arg_value, list):
                 command.extend([action_args_map[arg]] + arg_value)
+            # append the value interpolated with the arg name from the dict to the command (non-iterable)
+            elif isinstance(arg_value, (str, int)):
+                command.extend([action_args_map[arg], str(arg_value)])
             # an invalid arg value and type combination was specified
             else:
                 raise ValueError(f'The specified parameter value and type for {arg} is not acceptable for the FaaS module plugin')

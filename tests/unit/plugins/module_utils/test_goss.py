@@ -31,7 +31,7 @@ def test_goss_cmd_errors():
     with (
         pytest.warns(
             SyntaxWarning,
-            match="The vars_inline parameter values <module 'mschuchard.general.plugins.module_utils.goss' from '.+/mschuchard/general/plugins/module_utils/goss.py'> could not be encoded to a JSON format string",
+            match="The vars_inline parameter values <module 'ansible_collections.mschuchard.general.plugins.module_utils.goss' from '.+/mschuchard/general/plugins/module_utils/goss.py'> could not be encoded to a JSON format string",
         ),
         pytest.raises(TypeError),
     ):
