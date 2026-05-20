@@ -116,7 +116,7 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[str]] = {}) -> list[str]:
     """constructs a list representing the openfaas command to execute"""
     # verify command
     if action not in FLAGS_MAP | ARGS_MAP:
@@ -138,14 +138,19 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int] = {}) -
             if arg == 'sort' and arg_value not in ['name', 'invocations']:
                 raise ValueError('The "sort" parameter must be either "name" or "invocations"')
             # annotation, label, build_arg, build_label, build_option, copy_extra, constraint, env, and secret have properly formatted value of type list[str] and so need to be extended directly
-            if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret']:
-                command.extend(str(arg_value))
+            if arg in ['annotation', 'label', 'build_arg', 'build_label', 'build_option', 'copy_extra', 'constraint', 'env', 'secret'] and isinstance(
+                arg_value, list
+            ):
+                command.extend(arg_value)
             # name arg is actually positional for logs and remove; defer until after all other args
             elif action in ['logs', 'remove'] and arg == 'name':
                 positional_arg = str(arg_value)
             # append the value interpolated with the arg name from the dict to the command
+            elif isinstance(arg_value, list):
+                command.extend([action_args_map[arg]] + arg_value)
+            # an invalid arg value and type combination was specified
             else:
-                command.extend([action_args_map[arg], str(arg_value)])
+                raise ValueError(f'The specified parameter value and type for {arg} is not acceptable for the FaaS module plugin')
         else:
             # unsupported arg specified
             warnings.warn(f'Unsupported FaaS arg specified: {arg}', RuntimeWarning)
