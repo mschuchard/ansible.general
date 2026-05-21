@@ -43,7 +43,10 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'tail': '--tail=false',
             'tls_no_verify': '--tls-no-verify',
         },
-        'push': {'env_subst': '--envsubst=false'},
+        'push': {
+            'env_subst': '--envsubst=false',
+            'quiet': '--quiet',
+        },
     }
 )
 

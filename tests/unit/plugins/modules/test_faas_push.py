@@ -62,3 +62,20 @@ def test_faas_push_parallel_tag_no_env_subst(capfd):
     assert '-f' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
+
+
+def test_faas_push_quiet(capfd):
+    """test faas push with quiet flag"""
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'quiet': True})
+    with pytest.raises(SystemExit, match='1'):
+        faas_push.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'push' in info['cmd']
+    assert '--quiet' in info['cmd']
+    assert '-f' in info['cmd']
+    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']

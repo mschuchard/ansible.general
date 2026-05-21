@@ -36,6 +36,11 @@ options:
         required: false
         default: 1
         type: int
+    quiet:
+        description: Perform a quiet build, without showing output from Docker
+        required: false
+        default: false
+        type: bool
     regex:
         description: Regex to match with function names in YAML file
         required: false
@@ -68,6 +73,12 @@ EXAMPLES = r"""
     parallel: 4
     tag: sha
     env_subst: false
+
+# push functions from a stack.yaml file quietly
+- name: Push functions from a stack.yaml file quietly
+  mschuchard.general.faas_push:
+    config_file: stack.yaml
+    quiet: true
 """
 
 RETURN = r"""
@@ -91,6 +102,7 @@ def main() -> None:
             'env_subst': {'type': 'bool', 'required': False, 'default': True},
             'filter': {'type': 'str', 'required': False},
             'parallel': {'type': 'int', 'required': False},
+            'quiet': {'type': 'bool', 'required': False, 'default': False},
             'regex': {'type': 'str', 'required': False},
             'tag': {'type': 'str', 'required': False, 'choices': ['latest', 'digest', 'sha', 'branch', 'describe']},
         },
@@ -101,6 +113,8 @@ def main() -> None:
     flags: set[str] = set()
     if module.params.get('env_subst') is False:
         flags.add('env_subst')
+    if module.params.get('quiet'):
+        flags.add('quiet')
 
     # check args
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
