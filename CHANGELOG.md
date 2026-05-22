@@ -1,8 +1,6 @@
-### 1.4.2 (Next)
+### 1.4.2
 - Add new parameters for remaining `faas` plugin modules.
 - Update `import` pattern to new Ansible collection structure.
-add faas_remove
-review to ensure #1 is fixed
 
 ### 1.4.1
 - Add new parameters for `puppet` plugin modules.

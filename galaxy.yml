@@ -1,7 +1,7 @@
 ---
 namespace: mschuchard
 name: general
-version: 1.4.1
+version: 1.4.2
 readme: README.md
 authors:
 - Matthew Schuchard <example@domain.com>
@@ -13,6 +13,9 @@ tags:
 - packer
 - puppet
 - terraform
+- application
+- infrastructure
+- tools
 dependencies: {}
 repository: https://github.com/mschuchard/ansible.general
 documentation: https://galaxy.ansible.com/ui/repo/published/mschuchard/general/docs
@@ -22,12 +25,12 @@ build_ignore:
 - .git
 - .circleci
 - .github
+- .ansible
 - '__pycache__'
 - .ruff_cache
 - .pytest_cache
 - .gitignore
 - galaxy.yml
 - pyproject.toml
-- ruff.toml
 - '*.tar.gz'
 - CHANGELOG.md
