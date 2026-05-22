@@ -41,6 +41,7 @@ options:
         required: false
         default: false
         type: bool
+        new_in_version: "1.4.2"
     regex:
         description: Regex to match with function names in YAML file
         required: false
@@ -102,7 +103,7 @@ def main() -> None:
             'env_subst': {'type': 'bool', 'required': False, 'default': True},
             'filter': {'type': 'str', 'required': False},
             'parallel': {'type': 'int', 'required': False},
-            'quiet': {'type': 'bool', 'required': False, 'default': False},
+            'quiet': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.4.2'},
             'regex': {'type': 'str', 'required': False},
             'tag': {'type': 'str', 'required': False, 'choices': ['latest', 'digest', 'sha', 'branch', 'describe']},
         },

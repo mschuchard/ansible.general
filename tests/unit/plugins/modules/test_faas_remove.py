@@ -56,3 +56,86 @@ def test_faas_remove_config_file_globals(capfd):
     assert '-f' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
+
+
+def test_faas_remove_gateway_tls_token(capfd):
+    """test faas remove with gateway, tls_no_verify, and token"""
+    utils.set_module_args({'name': 'url-ping', 'gateway': 'https://faas.example.com:8080', 'tls_no_verify': True, 'token': 'my-jwt-token'})
+    with pytest.raises(SystemExit, match='1'):
+        faas_remove.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'remove' in info['cmd']
+    assert '-g' in info['cmd']
+    assert 'https://faas.example.com:8080' in info['cmd']
+    assert '--tls-no-verify' in info['cmd']
+    assert '-k' in info['cmd']
+    assert 'my-jwt-token' in info['cmd']
+    assert 'url-ping' == info['cmd'][-1]
+
+
+def test_faas_remove_namespace(capfd):
+    """test faas remove with namespace"""
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'namespace': 'openfaas-fn'})
+    with pytest.raises(SystemExit, match='1'):
+        faas_remove.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'remove' in info['cmd']
+    assert '-n' in info['cmd']
+    assert 'openfaas-fn' in info['cmd']
+    assert '-f' in info['cmd']
+    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+
+
+def test_faas_remove_env_subst_disabled(capfd):
+    """test faas remove without environment substitution"""
+    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'env_subst': False})
+    with pytest.raises(SystemExit, match='1'):
+        faas_remove.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'remove' in info['cmd']
+    assert '--envsubst=false' in info['cmd']
+    assert '-f' in info['cmd']
+    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+
+
+def test_faas_remove_all_new_params(capfd):
+    """test faas remove with all new parameters combined"""
+    utils.set_module_args(
+        {
+            'name': 'url-ping',
+            'gateway': 'https://faas.example.com:8080',
+            'namespace': 'openfaas-fn',
+            'tls_no_verify': True,
+            'token': 'my-jwt-token',
+            'env_subst': False,
+        }
+    )
+    with pytest.raises(SystemExit, match='1'):
+        faas_remove.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert 'remove' in info['cmd']
+    assert '-g' in info['cmd']
+    assert 'https://faas.example.com:8080' in info['cmd']
+    assert '-n' in info['cmd']
+    assert 'openfaas-fn' in info['cmd']
+    assert '--tls-no-verify' in info['cmd']
+    assert '-k' in info['cmd']
+    assert 'my-jwt-token' in info['cmd']
+    assert '--envsubst=false' in info['cmd']
+    assert 'url-ping' == info['cmd'][-1]

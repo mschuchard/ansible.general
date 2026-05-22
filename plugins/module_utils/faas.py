@@ -47,6 +47,10 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'env_subst': '--envsubst=false',
             'quiet': '--quiet',
         },
+        'remove': {
+            'env_subst': '--envsubst=false',
+            'tls_no_verify': '--tls-no-verify',
+        },
     }
 )
 
@@ -114,7 +118,12 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
             'parallel': '--parallel',
             'tag': '--tag',
         },
-        'remove': {'name': ''},
+        'remove': {
+            'gateway': '-g',
+            'name': '',
+            'namespace': '-n',
+            'token': '-k',
+        },
     }
 )
 

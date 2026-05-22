@@ -22,18 +22,46 @@ options:
         description: Path to YAML file describing function(s)
         required: false
         type: path
+    env_subst:
+        description: Substitute environment variables in stack.yaml file
+        required: false
+        default: true
+        type: bool
+        new_in_version: "1.4.2"
     filter:
         description: Wildcard to match with function names in YAML file
         required: false
         type: str
+    gateway:
+        description: Gateway URL starting with http(s)://
+        required: false
+        default: http://127.0.0.1:8080
+        type: str
+        new_in_version: "1.4.2"
     name:
         description: Name of the function to remove
         required: false
         type: str
+    namespace:
+        description: Namespace of the function
+        required: false
+        type: str
+        new_in_version: "1.4.2"
     regex:
         description: Regex to match with function names in YAML file
         required: false
         type: str
+    tls_no_verify:
+        description: Disable TLS validation
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.2"
+    token:
+        description: Pass a JWT token to use instead of basic auth
+        required: false
+        type: str
+        new_in_version: "1.4.2"
 
 requirements:
     - faas-cli >= 0.17.0
@@ -53,6 +81,21 @@ EXAMPLES = r"""
 - name: Remove a specific function by name
   mschuchard.general.faas_remove:
     name: url-ping
+
+# remove a function from a remote gateway with TLS disabled and a JWT token
+- name: Remove a function from a remote gateway with TLS disabled and a JWT token
+  mschuchard.general.faas_remove:
+    name: url-ping
+    gateway: https://faas.example.com:8080
+    tls_no_verify: true
+    token: my-jwt-token
+
+# remove a function from a specific namespace without environment substitution
+- name: Remove a function from a specific namespace without environment substitution
+  mschuchard.general.faas_remove:
+    config_file: stack.yaml
+    namespace: openfaas-fn
+    env_subst: false
 """
 
 RETURN = r"""
@@ -73,20 +116,32 @@ def main() -> None:
     module: AnsibleModule = AnsibleModule(
         argument_spec={
             'config_file': {'type': 'path', 'required': False},
+            'env_subst': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.4.2'},
             'filter': {'type': 'str', 'required': False},
+            'gateway': {'type': 'str', 'required': False, 'new_in_version': '1.4.2'},
             'name': {'type': 'str', 'required': False},
+            'namespace': {'type': 'str', 'required': False, 'new_in_version': '1.4.2'},
             'regex': {'type': 'str', 'required': False},
+            'tls_no_verify': {'type': 'bool', 'required': False, 'default': False, 'new_in_version': '1.4.2'},
+            'token': {'type': 'str', 'required': False, 'new_in_version': '1.4.2'},
         },
         mutually_exclusive=[('config_file', 'name')],
         required_one_of=[('config_file', 'name')],
         supports_check_mode=True,
     )
 
+    # check on optional flags
+    flags: set[str] = set()
+    if module.params.get('env_subst') is False:
+        flags.add('env_subst')
+    if module.params.get('tls_no_verify'):
+        flags.add('tls_no_verify')
+
     # check args
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
 
     # determine faas command
-    command: list[str] = faas.cmd(action='remove', args=flags_args[1])
+    command: list[str] = faas.cmd(action='remove', flags=flags, args=flags_args[1])
 
     # exit early for check mode
     if module.check_mode:
