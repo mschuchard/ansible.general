@@ -1,19 +1,29 @@
 [project]
 name = "mschuchard.general"
 version = "1.4.2"
-dependencies = ["ansible"]
+description = "General collection of Ansible plugins for common tools associated with \"DevOps\"."
+readme = "README.md"
 requires-python = ">= 3.10"
 authors = [{name = "Matthew Schuchard"}]
 maintainers = [{name = "Matthew Schuchard"}]
-description = "General collection of Ansible plugins for common tools associated with \"DevOps\"."
-readme = "README.md"
 license = {file = "LICENSE"}
+keywords = ["ansible", "collection", "devops", "plugins", "goss", "packer", "puppet", "terraform", "faas"]
+dependencies = ["ansible"]
+
+[project.urls]
+Repository = "https://github.com/mschuchard/ansible_collections-general"
+Documentation = "https://galaxy.ansible.com/ui/repo/published/mschuchard/general/docs"
+Issues = "https://github.com/mschuchard/ansible_collections-general/issues"
 
 [tool.pytest.ini_options]
 pythonpath = ["../../.."] # ansible_collections/mschuchard/general
+testpaths = ["tests"]
 
 [tool.ruff.lint.per-file-ignores]
 "plugins/modules/*" = ["E402"]
+
+[dependency-groups]
+dev = ["pytest>=9.0.0,<10.0.0"]
 
 [tool.ty.environment]
 extra-paths = ["../../.."] # ansible_collections/mschuchard/general
