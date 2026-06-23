@@ -1,3 +1,6 @@
+### 1.4.3 (Next)
+- Prevent import to existing state address in `terraform_import` module.
+
 ### 1.4.2
 - Add new parameters for remaining `faas` plugin modules.
 - Update `import` pattern to new Ansible collection structure.

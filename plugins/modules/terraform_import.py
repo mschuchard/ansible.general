@@ -118,14 +118,26 @@ def main() -> None:
     # determine terraform command
     command: list[str] = terraform.cmd(action='import', args=args, target_dir=config_dir)
 
+    # check if resource already exists in state
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(
+        ['terraform', f'-chdir={config_dir}', 'state', 'show', '-no-color', address],
+        cwd=config_dir,
+        environ_update={'TF_IN_AUTOMATION': 'true'},
+    )
+
+    # resource already exists in state, and so we should not import it
+    if return_code == 0 and len(stdout) > 0:
+        module.warn(f'Resource {address} already exists in Terraform state; skipping import')
+        module.exit_json(changed=False, stdout=stdout, stderr=stderr, command=command)
+
     # exit early for check mode
     if module.check_mode:
         module.exit_json(changed=changed, command=command)
 
     # execute terraform
-    return_code: int
-    stdout: str
-    stderr: str
     return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION': 'true'})
 
     # check idempotence
