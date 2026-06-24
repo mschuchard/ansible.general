@@ -1,6 +1,7 @@
 """unit test for faas module util"""
 
 import pytest
+import shutil
 from ansible_collections.mschuchard.general.plugins.module_utils import faas
 
 
@@ -113,3 +114,11 @@ def test_ansible_to_faas():
         'secret': ['--secret', 'secret1'],
         'label': ['--label', 'app=myapp'],
     }
+
+
+@pytest.mark.skipif(shutil.which('faas-cli') is None, reason='faas-cli not installed')
+def test_faas_is_deployed():
+    """test various is_deployed returns"""
+    # test function is not deployed during connection error and warns
+    with pytest.warns(RuntimeWarning, match='faas-cli list failed to verify deployment status'):
+        assert faas.is_deployed(set(), {}) is False
