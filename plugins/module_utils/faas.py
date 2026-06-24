@@ -5,6 +5,7 @@ __metaclass__ = type
 import warnings
 from typing import Final
 from pathlib import Path
+from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 # dictionary that maps input args to terraform flags
@@ -228,3 +229,25 @@ def ansible_to_faas(args: dict) -> None:
             # transform list[str] to list of '--secret' 'value1' '--secret' 'value2' strings
             case 'secret':
                 args[arg] = ' '.join([f'--secret {value}' for value in arg_value]).split()
+
+
+def is_deployed(module: AnsibleModule, flags: set[str], args: dict) -> bool | None:
+    """determine if one or more faas functions are currently deployed
+    returns True if all functions are deployed, False if none are, and None if partial deployment detected
+    flags and args should already be resolved from the calling module params"""
+    # construct list command reusing existing flag and arg resolution from module plugin
+    list_command: list[str] = cmd(action='list', flags=flags, args=args.copy())
+
+    return_code: int
+    stdout: str
+    stderr: str
+    return_code, stdout, stderr = module.run_command(list_command)
+
+    # list command failure, warn, and permit the caller to proceed and surface the real error
+    if return_code != 0:
+        module.warn(f'faas-cli list failed during deployment check; proceeding: {stderr.rstrip()}')
+        # safer to assume function not deployed than is deployed
+        return False
+
+    # determine if list returned deployed functions based on stdout
+    return len(stdout.splitlines()) > 1
