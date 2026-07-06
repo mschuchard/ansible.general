@@ -147,6 +147,10 @@ def main() -> None:
     if module.check_mode:
         module.exit_json(changed=False, command=command)
 
+    # check if function is currently deployed and exit early if not
+    if faas.is_deployed(flags=flags, args=flags_args[1]) is False:
+        module.exit_json(changed=False, command=command)
+
     # execute faas
     return_code: int
     stdout: str

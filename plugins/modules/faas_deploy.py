@@ -339,6 +339,11 @@ def main() -> None:
     if module.check_mode:
         module.exit_json(changed=False, command=command)
 
+    # check if function is already deployed
+    if module.params.get('name'):
+        if faas.is_deployed(flags=flags, args=flags_args[1]):
+            module.exit_json(changed=False, command=command)
+
     # execute faas
     return_code: int
     stdout: str
