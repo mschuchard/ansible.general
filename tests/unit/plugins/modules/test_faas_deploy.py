@@ -6,6 +6,7 @@ __metaclass__ = type
 import json
 import pytest
 from ansible_collections.mschuchard.general.plugins.modules import faas_deploy
+from ansible_collections.mschuchard.general.plugins.module_utils import faas
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
@@ -308,3 +309,19 @@ def test_faas_deploy_all_new_params(capfd):
     assert '--tls-no-verify' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
+
+
+def test_faas_deploy_already_deployed_skip(capfd, monkeypatch):
+    """test faas deploy skips execution when the named function is already confirmed deployed"""
+    monkeypatch.setattr(faas, 'is_deployed', lambda flags, args: True)
+    utils.set_module_args({'image': 'alexellis/faas-url-ping', 'name': 'url-ping'})
+    with pytest.raises(SystemExit, match='0'):
+        faas_deploy.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert not info['changed']
+    assert '--image' in info['command']
+    assert 'alexellis/faas-url-ping' in info['command']

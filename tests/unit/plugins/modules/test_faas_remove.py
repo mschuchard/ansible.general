@@ -6,6 +6,7 @@ __metaclass__ = type
 import json
 import pytest
 from ansible_collections.mschuchard.general.plugins.modules import faas_remove
+from ansible_collections.mschuchard.general.plugins.module_utils import faas
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
@@ -139,3 +140,18 @@ def test_faas_remove_all_new_params(capfd):
     assert 'my-jwt-token' in info['cmd']
     assert '--envsubst=false' in info['cmd']
     assert 'url-ping' == info['cmd'][-1]
+
+
+def test_faas_remove_not_deployed_skip(capfd, monkeypatch):
+    """test faas remove skips execution when nothing matching is confirmed deployed"""
+    monkeypatch.setattr(faas, 'is_deployed', lambda flags, args: False)
+    utils.set_module_args({'name': 'url-ping'})
+    with pytest.raises(SystemExit, match='0'):
+        faas_remove.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert not info['changed']
+    assert 'url-ping' == info['command'][-1]
