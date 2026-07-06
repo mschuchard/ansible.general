@@ -231,9 +231,9 @@ def ansible_to_faas(args: dict) -> None:
                 args[arg] = ' '.join([f'--secret {value}' for value in arg_value]).split()
 
 
-def is_deployed(flags: set[str], args: dict) -> bool:
+def is_deployed(flags: set[str], args: dict) -> bool | None:
     """determine if one or more faas functions are currently deployed
-    returns True if all functions are deployed or False if not all are deployed
+    returns True if all functions are deployed, False if not all are deployed, or None if the command failed
     flags and args should already be resolved from the calling module params"""
     # construct list command reusing existing flag and arg resolution from module plugin
     list_command: list[str] = cmd(action='list', flags=flags, args=args.copy())
@@ -244,7 +244,7 @@ def is_deployed(flags: set[str], args: dict) -> bool:
     if result.returncode != 0:
         warnings.warn(f'faas-cli list failed to verify deployment status: {(result.stderr or result.stdout).rstrip()}', RuntimeWarning)
         # safer to assume function not deployed than is deployed
-        return False
+        return None
 
     # determine if list returned deployed functions based on stdout
     return len(result.stdout.splitlines()) > 1
