@@ -121,4 +121,4 @@ def test_faas_is_deployed():
     """test various is_deployed returns"""
     # test function is not deployed during connection error and warns
     with pytest.warns(RuntimeWarning, match='faas-cli list failed to verify deployment status'):
-        assert faas.is_deployed(set(), {}) is None
+        assert faas.is_deployed(set(), {}, name='') is None

@@ -231,7 +231,7 @@ def ansible_to_faas(args: dict) -> None:
                 args[arg] = ' '.join([f'--secret {value}' for value in arg_value]).split()
 
 
-def is_deployed(flags: set[str], args: dict) -> bool | None:
+def is_deployed(flags: set[str], args: dict, name: str) -> bool | None:
     """determine if one or more faas functions are currently deployed
     returns True if all functions are deployed, False if not all are deployed, or None if the command failed
     flags and args should already be resolved from the calling module params"""
@@ -247,4 +247,4 @@ def is_deployed(flags: set[str], args: dict) -> bool | None:
         return None
 
     # determine if list returned deployed functions based on stdout
-    return len(result.stdout.splitlines()) > 1
+    return any(name in line for line in result.stdout.splitlines())
