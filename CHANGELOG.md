@@ -1,6 +1,6 @@
 ### 1.4.3 (Next)
 - Prevent import to existing state address in `terraform_import` module.
-- Validate `faas` function existence in `deploy` and `remove` modules.
+- Validate `faas` function existence in `remove` module.
 
 ### 1.4.2
 - Add new parameters for remaining `faas` plugin modules.

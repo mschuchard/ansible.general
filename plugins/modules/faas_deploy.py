@@ -339,12 +339,6 @@ def main() -> None:
     if module.check_mode:
         module.exit_json(changed=False, command=command)
 
-    # check if function is already deployed and exit early if it is
-    if function_name := module.params.get('name'):
-        if faas.is_deployed(flags=flags, args=flags_args[1], name=function_name):
-            module.log(msg=f'Function {function_name} is already deployed, skipping deployment')
-            module.exit_json(changed=False, command=command)
-
     # execute faas
     return_code: int
     stdout: str
