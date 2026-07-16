@@ -148,8 +148,10 @@ def main() -> None:
         module.exit_json(changed=False, command=command)
 
     # check if function is currently deployed and exit early if not
-    if faas.is_deployed(flags=flags, args=flags_args[1]) is False:
-        module.exit_json(changed=False, command=command)
+    if function_name := module.params.get('name'):
+        if faas.is_deployed(flags=flags, args=flags_args[1], name=function_name) is False:
+            module.log(msg=f'Function {function_name} is not deployed, skipping removal')
+            module.exit_json(changed=False, command=command)
 
     # execute faas
     return_code: int
