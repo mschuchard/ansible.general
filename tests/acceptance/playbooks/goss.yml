@@ -13,4 +13,4 @@
 
   - name: Validate a system with a gossfile at /path/to/my_gossfile.yaml
     mschuchard.general.goss_validate:
-      gossfile: /path/to/my_gossfile.yaml
+      gossfile: tests/unit/plugins/modules/fixtures/goss.yaml

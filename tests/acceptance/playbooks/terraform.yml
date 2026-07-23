@@ -1,0 +1,39 @@
+---
+- name: Acceptance test Terraform modules
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Destroy infrastructure defined within /path/to/terraform_config_dir
+    mschuchard.general.terraform_apply:
+      config_dir: tests/unit/plugins/modules/fixtures
+      destroy: true
+
+  - name: Format terraform config files in /path/to/terraform_config_dir, display diffs, and do not write to source files
+    mschuchard.general.terraform_fmt:
+      config_dir: tests/unit/plugins/modules/fixtures
+      diff: true
+      write: false
+
+  - name: Import resource using provider configuration in /path/to/terraform_config_dir
+    mschuchard.general.terraform_import:
+      config_dir: tests/unit/plugins/modules/fixtures
+      address: aws_instance.this
+      id: i-1234567890
+
+  - name: Initialize terraform directory in /path/to/terraform_config_dir
+    mschuchard.general.terraform_init:
+      config_dir: tests/unit/plugins/modules/fixtures
+
+  - name: Produce destroy plan for /path/to/terraform_config_dir
+    mschuchard.general.terraform_plan:
+      config_dir: tests/unit/plugins/modules/fixtures
+      destroy: true
+
+  - name: Execute tests in /path/to/terraform_config_dir/my_tests
+    mschuchard.general.terraform_test:
+      config_dir: tests/unit/plugins/modules/fixtures
+      test_dir: my_tests
+
+  - name: Execute validation in /path/to/terraform_config_dir
+    mschuchard.general.terraform_validate:
+      config_dir: tests/unit/plugins/modules/fixtures

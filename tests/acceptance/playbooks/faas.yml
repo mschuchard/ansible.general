@@ -1,0 +1,38 @@
+---
+- name: Acceptance test FaaS modules
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Build with SHA tag
+    mschuchard.general.faas_build:
+      config_file: tests/unit/plugins/modules/fixtures/stack.yaml
+      tag: sha
+
+  - name: Deploy with SHA tag
+    mschuchard.general.faas_deploy:
+      config_file: tests/unit/plugins/modules/fixtures/stack.yaml
+      tag: sha
+
+  - name: List functions sorted by invocations with verbose output
+    mschuchard.general.faas_list:
+      sort: invocations
+      verbose: true
+
+  - name: Log in to OpenFaaS gateway with custom username
+    mschuchard.general.faas_login:
+      username: customuser
+      password: mypassword
+
+  - name: Fetch logs with instance and function names
+    mschuchard.general.faas_logs:
+      name: my-function
+      instance: true
+
+  - name: Push functions from a stack.yaml file quietly
+    mschuchard.general.faas_push:
+      config_file: tests/unit/plugins/modules/fixtures/stack.yaml
+      quiet: true
+
+  - name: Remove a specific function by name
+    mschuchard.general.faas_remove:
+      name: url-ping
