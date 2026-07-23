@@ -18,6 +18,9 @@ jobs:
     - run:
         name: pytest module utils
         command: pytest tests/unit/plugins/module_utils
+    - run:
+        name: ansible acceptance tests
+        command: /bin/sh tests/acceptance/test.sh
 
 workflows:
   execute_tests:

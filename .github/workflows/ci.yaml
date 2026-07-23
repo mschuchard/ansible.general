@@ -31,3 +31,6 @@ jobs:
     - name: pytest module utils
       run: pytest tests/unit/plugins/module_utils
       working-directory: ./ansible_collections/mschuchard/general
+    - name: ansible acceptance tests
+      run: /bin/sh tests/acceptance/test.sh
+      working-directory: ./ansible_collections/mschuchard/general
