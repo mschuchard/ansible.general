@@ -1,0 +1,16 @@
+---
+- name: Acceptance test GoSS modules
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Render a gossfile
+    mschuchard.general.goss_render:
+      gossfile: tests/unit/plugins/modules/fixtures/goss.yaml
+
+  - name: Serve a health endpoint with a gossfile at /path/to/my_gossfile.yaml
+    mschuchard.general.goss_serve:
+      gossfile: tests/unit/plugins/modules/fixtures/goss.yaml
+
+  - name: Validate a system with a gossfile at /path/to/my_gossfile.yaml
+    mschuchard.general.goss_validate:
+      gossfile: /path/to/my_gossfile.yaml

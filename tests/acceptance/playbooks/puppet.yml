@@ -1,0 +1,13 @@
+---
+- name: Acceptance test Puppet modules
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Initiate the puppet agent with test options and server port 8234
+    mschuchard.general.puppet_agent:
+      server_port: 8234
+      test: true
+
+  - name: Execute inline puppet code
+    mschuchard.general.puppet_apply:
+      execute: 'notify { "hello world": }'

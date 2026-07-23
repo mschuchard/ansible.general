@@ -1,0 +1,23 @@
+---
+- name: Acceptance test Packer modules
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Build packer templates and configs in /path/to/packer_dir
+    mschuchard.general.packer_build:
+      config_dir: tests/unit/plugins/modules/fixtures
+
+  - name: Verify canonical formatting of packer files in /path/to/packer_dir
+    mschuchard.general.packer_fmt:
+      config_dir: tests/unit/plugins/modules/fixtures
+      check: true
+
+  - name: Initialize packer directory in /path/to/packer_config_dir
+    mschuchard.general.packer_init:
+      config_dir: tests/unit/plugins/modules/fixtures
+
+  - name: Validate packer files without warning on undeclared variables, and while evaluating datasources
+    mschuchard.general.packer_validate:
+      config_dir: tests/unit/plugins/modules/fixtures
+      evaluate_datasources: true
+      warn_undeclared_var: false
