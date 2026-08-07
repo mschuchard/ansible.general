@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # THIS SHOULD ONLY EVER BE EXECUTED FROM WITHIN THIS REPOSITORY'S CI
-ansible-galaxy collection build "${REPO_ROOT}"
-ansible-galaxy collection install "${TARBALL}"
+ansible-galaxy collection build .
+ansible-galaxy collection install mschuchard-general-*.tar.gz
 
 export ANSIBLE_HOST_KEY_CHECKING=False
 
