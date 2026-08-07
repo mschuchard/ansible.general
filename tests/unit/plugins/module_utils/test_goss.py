@@ -91,8 +91,10 @@ def test_goss_cmd():
     assert goss.cmd(action='serve', args={'format_opts': 'perfdata', 'cache': '1h'}) == ['goss', 'serve', '-o', 'perfdata', '-c', '1h']
 
     # test serve with default gossfile, no flags, endpoint and port args
-    assert goss.cmd(action='serve', args={'endpoint': 'https://example.com/goss', 'port': 8765}) == [
+    assert goss.cmd(action='serve', args={'log_level': 'info', 'endpoint': 'https://example.com/goss', 'port': 8765}) == [
         'goss',
+        '-L',
+        'INFO',
         'serve',
         '-e',
         'https://example.com/goss',

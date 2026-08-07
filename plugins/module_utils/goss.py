@@ -96,7 +96,7 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
 
     # check if log_level is specified
     if 'log_level' in args:
-        command.extend([GLOBAL_ARGS_MAP['log_level'], str(args['log_level'])])
+        command.extend([GLOBAL_ARGS_MAP['log_level'], str(args['log_level']).upper()])
         # remove log_level from args to avoid doublecheck with action args
         del args['log_level']
 
