@@ -34,6 +34,12 @@ options:
         required: false
         default: goss.yaml
         type: path
+    log_level:
+        description: GoSS log verbosity level.
+        required: false
+        default: INFO
+        type: str
+        new_in_version: "1.4.3"
     max_concur:
         description: Max number of tests to run concurrently
         required: false
@@ -120,6 +126,7 @@ def main() -> None:
             },
             'format_opts': {'type': 'str', 'required': False, 'choices': ['perfdata', 'pretty', 'verbose']},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'log_level': {'type': 'str', 'required': False, 'new_in_version': '1.4.3'},
             'max_concur': {'type': 'int', 'required': False},
             'package': {'type': 'str', 'required': False},
             'retry_timeout': {'type': 'str', 'required': False},
@@ -134,10 +141,11 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    the_format: str = module.params.get('format')
+    format: str = module.params.get('format')
     format_opts: str = module.params.get('format_opts')
-    the_vars: Path = module.params.get('vars')
+    vars: Path = module.params.get('vars')
     vars_inline: dict = module.params.get('vars_inline')
+    loglevel: str = module.params.get('log_level')
     max_concur: int = module.params.get('max_concur')
     package: str = module.params.get('package')
     retry_timeout: str = module.params.get('retry_timeout')
@@ -147,10 +155,12 @@ def main() -> None:
 
     # check args
     args: dict = {}
-    if the_format:
-        args.update({'format': the_format})
+    if format:
+        args.update({'format': format})
     if format_opts:
         args.update({'format_opts': format_opts})
+    if loglevel:
+        args.update({'log_level': loglevel})
     if max_concur:
         args.update({'max_concur': max_concur})
     if package:
@@ -159,8 +169,8 @@ def main() -> None:
         args.update({'retry_timeout': retry_timeout})
     if sleep:
         args.update({'sleep': sleep})
-    if the_vars:
-        args.update({'vars': Path(the_vars)})
+    if vars:
+        args.update({'vars': Path(vars)})
     elif vars_inline:
         args.update({'vars_inline': vars_inline})
 

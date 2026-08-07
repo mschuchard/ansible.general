@@ -28,6 +28,12 @@ options:
         required: false
         default: goss.yaml
         type: path
+    log_level:
+        description: GoSS log verbosity level.
+        required: false
+        default: INFO
+        type: str
+        new_in_version: "1.4.3"
     package:
         description: The package type to use.
         required: false
@@ -85,6 +91,7 @@ def main() -> None:
         argument_spec={
             'debug': {'type': 'bool', 'required': False},
             'gossfile': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'log_level': {'type': 'str', 'required': False, 'new_in_version': '1.4.3'},
             'package': {'type': 'str', 'required': False},
             'vars': {'type': 'path', 'required': False},
             'vars_inline': {'type': 'dict', 'required': False},
@@ -95,9 +102,10 @@ def main() -> None:
 
     # initialize
     changed: bool = False
-    the_vars: Path = module.params.get('vars')
+    vars: Path = module.params.get('vars')
     vars_inline: dict = module.params.get('vars_inline')
     package: str = module.params.get('package')
+    loglevel: str = module.params.get('log_level')
     gossfile: Path = Path(module.params.get('gossfile'))
     cwd: Path = Path.cwd() if gossfile == Path.cwd() else gossfile.parent
 
@@ -108,8 +116,10 @@ def main() -> None:
     args: dict = {}
     if package:
         args.update({'package': package})
-    if the_vars:
-        args.update({'vars': Path(the_vars)})
+    if loglevel:
+        args.update({'log_level': loglevel})
+    if vars:
+        args.update({'vars': Path(vars)})
     elif vars_inline:
         args.update({'vars_inline': vars_inline})
 

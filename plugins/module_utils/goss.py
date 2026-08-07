@@ -17,7 +17,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
 )
 
 # dictionary that maps input args to goss args
-GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({'package': '--package', 'vars': '--vars', 'vars_inline': '--vars-inline'})
+GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({'log_level': '-L', 'package': '--package', 'vars': '--vars', 'vars_inline': '--vars-inline'})
 ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
     {
         'serve': {
@@ -93,6 +93,12 @@ def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str
     """converts goss global arguments into a list of strings suitable for extending to a command"""
     # initialize command to return
     command: list[str] = []
+
+    # check if log_level is specified
+    if 'log_level' in args:
+        command.extend([GLOBAL_ARGS_MAP['log_level'], str(args['log_level'])])
+        # remove log_level from args to avoid doublecheck with action args
+        del args['log_level']
 
     # check if vars is specified
     if 'vars' in args:
