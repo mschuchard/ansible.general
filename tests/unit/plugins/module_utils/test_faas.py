@@ -76,7 +76,6 @@ def test_faas_cmd():
 
 def test_ansible_to_faas_errors():
     """test various ansible_to_faas errors"""
-    pass
 
 
 def test_ansible_to_faas():

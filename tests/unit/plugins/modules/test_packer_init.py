@@ -1,8 +1,5 @@
 """unit test for packer init module"""
 
-__metaclass__ = type
-
-
 import json
 import pytest
 from ansible_collections.mschuchard.general.plugins.modules import packer_init

@@ -1,8 +1,5 @@
 """unit test for packer fmt module"""
 
-__metaclass__ = type
-
-
 import json
 import pytest
 from ansible_collections.mschuchard.general.plugins.modules import packer_fmt

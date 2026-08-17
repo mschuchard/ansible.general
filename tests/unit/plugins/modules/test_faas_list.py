@@ -1,8 +1,5 @@
 """unit test for faas list module"""
 
-__metaclass__ = type
-
-
 import json
 import pytest
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils

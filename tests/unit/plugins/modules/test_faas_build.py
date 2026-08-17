@@ -1,8 +1,5 @@
 """unit test for faas build module"""
 
-__metaclass__ = type
-
-
 import json
 import shutil
 import pytest

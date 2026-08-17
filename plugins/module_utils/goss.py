@@ -1,7 +1,5 @@
 """goss module utilities"""
 
-__metaclass__ = type
-
 import json
 import warnings
 from typing import Final
@@ -10,33 +8,29 @@ from ansible_collections.mschuchard.general.plugins.module_utils import universa
 
 
 # dictionary that maps input args to goss flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'render': {'debug': '--debug'},
-    }
-)
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'render': {'debug': '--debug'},
+}
 
 # dictionary that maps input args to goss args
-GLOBAL_ARGS_MAP: Final[dict[str, str]] = dict({'log_level': '-L', 'package': '--package', 'vars': '--vars', 'vars_inline': '--vars-inline'})
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'serve': {
-            'cache': '-c',
-            'endpoint': '-e',
-            'format': '-f',
-            'format_opts': '-o',
-            'max_concur': '--max-concurrent',
-            'port': '-l',
-        },
-        'validate': {
-            'format': '-f',
-            'format_opts': '-o',
-            'max_concur': '--max-concurrent',
-            'retry_timeout': '-r',
-            'sleep': '-s',
-        },
-    }
-)
+GLOBAL_ARGS_MAP: Final[dict[str, str]] = {'log_level': '-L', 'package': '--package', 'vars': '--vars', 'vars_inline': '--vars-inline'}
+ARGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'serve': {
+        'cache': '-c',
+        'endpoint': '-e',
+        'format': '-f',
+        'format_opts': '-o',
+        'max_concur': '--max-concurrent',
+        'port': '-l',
+    },
+    'validate': {
+        'format': '-f',
+        'format_opts': '-o',
+        'max_concur': '--max-concurrent',
+        'retry_timeout': '-r',
+        'sleep': '-s',
+    },
+}
 
 
 def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] = {}, gossfile: Path = Path.cwd()) -> list[str]:

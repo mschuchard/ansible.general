@@ -5,8 +5,6 @@
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for faas deploy"""
 
-__metaclass__ = type
-
 DOCUMENTATION = r"""
 ---
 module: faas_deploy

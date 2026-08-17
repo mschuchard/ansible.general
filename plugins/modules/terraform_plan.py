@@ -5,8 +5,6 @@
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for terraform plan"""
 
-__metaclass__ = type
-
 DOCUMENTATION = r"""
 ---
 module: terraform_plan

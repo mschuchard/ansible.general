@@ -1,7 +1,5 @@
 """puppet agent module utilities"""
 
-__metaclass__ = type
-
 import warnings
 from typing import Final
 from pathlib import Path
@@ -9,52 +7,48 @@ from ansible_collections.mschuchard.general.plugins.module_utils import universa
 
 
 # dictionary that maps input args to puppet flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'agent': {
-            'debug': '-d',
-            'enable': '--enable',
-            'evaltrace': '--evaltrace',
-            'fingerprint': '--fingerprint',
-            'no_daemonize': '--no-daemonize',
-            'no_op': '--noop',
-            'onetime': '--onetime',
-            'test': '-t',
-            'trace': '--trace',
-            'verbose': '-v',
-        },
-        'apply': {
-            'debug': '-d',
-            'detailed_exitcodes': '--detailed-exitcodes',
-            'loadclasses': '-L',
-            'no_op': '--noop',
-            'test': '-t',
-            'verbose': '-v',
-            'write_catalog_summary': '--write-catalog-summary',
-        },
-    }
-)
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'agent': {
+        'debug': '-d',
+        'enable': '--enable',
+        'evaltrace': '--evaltrace',
+        'fingerprint': '--fingerprint',
+        'no_daemonize': '--no-daemonize',
+        'no_op': '--noop',
+        'onetime': '--onetime',
+        'test': '-t',
+        'trace': '--trace',
+        'verbose': '-v',
+    },
+    'apply': {
+        'debug': '-d',
+        'detailed_exitcodes': '--detailed-exitcodes',
+        'loadclasses': '-L',
+        'no_op': '--noop',
+        'test': '-t',
+        'verbose': '-v',
+        'write_catalog_summary': '--write-catalog-summary',
+    },
+}
 
 # dictionary that maps input args to puppet args
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'agent': {
-            'certname': '--certname',
-            'digest': '--digest',
-            'disable': '--disable',
-            'job_id': '--job-id',
-            'logdest': '--logdest',
-            'server_port': '--serverport',
-            'sourceaddress': '--sourceaddress',
-            'waitforcert': '--waitforcert',
-        },
-        'apply': {
-            'catalog': '--catalog',
-            'execute': '-e',
-            'logdest': '-l',
-        },
-    }
-)
+ARGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'agent': {
+        'certname': '--certname',
+        'digest': '--digest',
+        'disable': '--disable',
+        'job_id': '--job-id',
+        'logdest': '--logdest',
+        'server_port': '--serverport',
+        'sourceaddress': '--sourceaddress',
+        'waitforcert': '--waitforcert',
+    },
+    'apply': {
+        'catalog': '--catalog',
+        'execute': '-e',
+        'logdest': '-l',
+    },
+}
 
 
 def cmd(
@@ -81,11 +75,9 @@ def cmd(
     for arg, arg_value in args.items():
         # verify this is a valid action argument
         if arg in action_args_map:
-            # server port arg requires int-->str and validation
-            if arg == 'server_port':
-                # validate server_port range
-                if int(arg_value) < 1 or int(arg_value) > 65535:
-                    raise ValueError(f'Puppet server_port value must be between 1 and 65535: {arg_value}')
+            # validate server port range
+            if arg == 'server_port' and (int(arg_value) < 1 or int(arg_value) > 65535):
+                raise ValueError(f'Puppet server_port value must be between 1 and 65535: {arg_value}')
 
             # append the value interpolated with the arg name from the dict to the command
             command.extend([action_args_map[arg], str(arg_value)])

@@ -1,7 +1,5 @@
 """universal module utilities"""
 
-__metaclass__ = type
-
 import json
 import warnings
 from pathlib import Path
@@ -33,18 +31,12 @@ def validate_json_yaml_file(file: Path) -> bool:
 
     try:
         # verify its decoded json contents
-        if json.loads(content) is not None:
-            return True
-
-        return False
+        return json.loads(content) is not None
     # it is not json
     except ValueError:
         try:
             # verify its decoded yaml contents
-            if isinstance(yaml.safe_load(content), object):
-                return True
-
-            return False
+            return isinstance(yaml.safe_load(content), object)
 
         # raise error for file with invalid yaml/json contents
         except yaml.YAMLError as exc:
@@ -60,7 +52,7 @@ def vars_converter(var_pairs: dict[str, list | dict | str]) -> list[str]:
     # iterate through var names and values within pairs
     for var, values in var_pairs.items():
         # if the value is a complex type then encode to compact JSON for cli parsing
-        if isinstance(values, list) or isinstance(values, dict):
+        if isinstance(values, (list, dict)):
             var_strings.append(f"{var}='{json.dumps(values, separators=(',', ':'))}'")
         # if the value is a primitive type then handle normally
         else:

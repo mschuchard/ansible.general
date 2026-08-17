@@ -5,8 +5,6 @@
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for goss validate"""
 
-__metaclass__ = type
-
 DOCUMENTATION = r"""
 ---
 module: goss_validate

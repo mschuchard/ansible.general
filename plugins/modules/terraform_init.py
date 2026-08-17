@@ -5,8 +5,6 @@
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for terraform init"""
 
-__metaclass__ = type
-
 DOCUMENTATION = r"""
 ---
 module: terraform_init

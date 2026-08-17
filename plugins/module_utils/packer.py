@@ -1,7 +1,5 @@
 """packer module utilities"""
 
-__metaclass__ = type
-
 import warnings
 from typing import Final
 from pathlib import Path
@@ -9,37 +7,33 @@ from ansible_collections.mschuchard.general.plugins.module_utils import universa
 
 
 # dictionary that maps input args to packer flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'build': {
-            'debug': '-debug',
-            'force': '-force',
-            'timestamp_ui': '-timestamp-ui',
-        },
-        'fmt': {
-            'check': '-check',
-            'diff': '-diff',
-            'recursive': '-recursive',
-        },
-        'init': {'upgrade': '-upgrade'},
-        'validate': {
-            'evaluate_datasources': '-evaluate-datasources',
-            'syntax_only': '-syntax-only',
-            'no_warn_undeclared_var': '-no-warn-undeclared-var',
-        },
-    }
-)
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'build': {
+        'debug': '-debug',
+        'force': '-force',
+        'timestamp_ui': '-timestamp-ui',
+    },
+    'fmt': {
+        'check': '-check',
+        'diff': '-diff',
+        'recursive': '-recursive',
+    },
+    'init': {'upgrade': '-upgrade'},
+    'validate': {
+        'evaluate_datasources': '-evaluate-datasources',
+        'syntax_only': '-syntax-only',
+        'no_warn_undeclared_var': '-no-warn-undeclared-var',
+    },
+}
 
 # dictionary that maps input args to packer args
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'fmt': {
-            'write': '-write=',
-        },
-        'build': {'excepts': '-except=', 'only': '-only=', 'on_error': '-on-error=', 'parallel_builds': '-parallel-builds=', 'var': '', 'var_file': ''},
-        'validate': {'excepts': '-except=', 'only': '-only=', 'var': '', 'var_file': ''},
-    }
-)
+ARGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'fmt': {
+        'write': '-write=',
+    },
+    'build': {'excepts': '-except=', 'only': '-only=', 'on_error': '-on-error=', 'parallel_builds': '-parallel-builds=', 'var': '', 'var_file': ''},
+    'validate': {'excepts': '-except=', 'only': '-only=', 'var': '', 'var_file': ''},
+}
 
 
 def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:

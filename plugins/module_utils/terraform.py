@@ -1,7 +1,5 @@
 """terraform module utilities"""
 
-__metaclass__ = type
-
 import warnings
 from typing import Final
 from pathlib import Path
@@ -10,73 +8,69 @@ from ansible_collections.mschuchard.general.plugins.module_utils import universa
 
 
 # dictionary that maps input args to terraform flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'apply': {
-            'destroy': '-destroy',
-        },
-        'fmt': {
-            'check': '-check',
-            'diff': '-diff',
-            'recursive': '-recursive',
-        },
-        'init': {
-            'force_copy': '-force-copy',
-            'migrate_state': '-migrate-state',
-            'upgrade': '-upgrade',
-        },
-        'plan': {'destroy': '-destroy', 'refresh_only': '-refresh-only'},
-        'test': {
-            'json': '-json',
-        },
-        'validate': {
-            'json': '-json',
-        },
-    }
-)
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'apply': {
+        'destroy': '-destroy',
+    },
+    'fmt': {
+        'check': '-check',
+        'diff': '-diff',
+        'recursive': '-recursive',
+    },
+    'init': {
+        'force_copy': '-force-copy',
+        'migrate_state': '-migrate-state',
+        'upgrade': '-upgrade',
+    },
+    'plan': {'destroy': '-destroy', 'refresh_only': '-refresh-only'},
+    'test': {
+        'json': '-json',
+    },
+    'validate': {
+        'json': '-json',
+    },
+}
 
 # dictionary that maps input args to terraform args
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'apply': {
-            'replace': '',
-            'target': '',
-            'var': '',
-            'var_file': '',
-        },
-        'fmt': {
-            'write': '-write=',
-        },
-        'init': {
-            'backend': '-backend=',
-            'backend_config': '',
-            'plugin_dir': '',
-        },
-        'import': {
-            'resource': '',
-            'var': '',
-            'var_file': '',
-        },
-        'plan': {
-            'generate_config': '-generate-config-out=',
-            'out': '-out=',
-            'replace': '',
-            'target': '',
-            'var': '',
-            'var_file': '',
-        },
-        'test': {
-            'cloud_run': '-cloud-run=',
-            'filter': '',
-            'test_dir': '-test-directory=',
-            'var': '',
-            'var_file': '',
-        },
-        'validate': {
-            'test_dir': '-test-directory=',
-        },
-    }
-)
+ARGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'apply': {
+        'replace': '',
+        'target': '',
+        'var': '',
+        'var_file': '',
+    },
+    'fmt': {
+        'write': '-write=',
+    },
+    'init': {
+        'backend': '-backend=',
+        'backend_config': '',
+        'plugin_dir': '',
+    },
+    'import': {
+        'resource': '',
+        'var': '',
+        'var_file': '',
+    },
+    'plan': {
+        'generate_config': '-generate-config-out=',
+        'out': '-out=',
+        'replace': '',
+        'target': '',
+        'var': '',
+        'var_file': '',
+    },
+    'test': {
+        'cloud_run': '-cloud-run=',
+        'filter': '',
+        'test_dir': '-test-directory=',
+        'var': '',
+        'var_file': '',
+    },
+    'validate': {
+        'test_dir': '-test-directory=',
+    },
+}
 
 
 def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str] | int] = {}, target_dir: Path = Path.cwd()) -> list[str]:
@@ -127,7 +121,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str] | 
         if arg in action_args_map:
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str or bool, then append the value interpolated with the arg name from the dict to the command
-            if (isinstance(arg_value, str) or isinstance(arg_value, bool) or isinstance(arg_value, Path)) and len(action_args_map[arg]) > 0:
+            if isinstance(arg_value, (str, bool, Path)) and len(action_args_map[arg]) > 0:
                 command.append(f'{action_args_map[arg]}{arg_value}')
             # if the arg value is a list, then extend the command with the values because they are already formatted correctly
             elif isinstance(arg_value, list) and len(action_args_map[arg]) == 0:
@@ -161,7 +155,7 @@ def ansible_to_terraform(args: dict) -> None:
                     # append kv pair from dict
                     if isinstance(backend_config, dict):
                         # transform dict into str
-                        args['backend_config'].append(f"-backend-config='{list(backend_config.keys())[0]}={list(backend_config.values())[0]}'")
+                        args['backend_config'].append(f"-backend-config='{next(iter(backend_config.keys()))}={next(iter(backend_config.values()))}'")
                     # otherwise is a hcl file path
                     elif isinstance(backend_config, str):
                         # append path to hcl file

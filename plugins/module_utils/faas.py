@@ -1,7 +1,5 @@
 """faas module utilities"""
 
-__metaclass__ = type
-
 import warnings
 import subprocess
 from typing import Final
@@ -9,124 +7,120 @@ from pathlib import Path
 from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 # dictionary that maps input args to terraform flags
-FLAGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'build': {
-            'disable_stack_pull': '--disable-stack-pull',
-            'env_subst': '--envsubst=false',
-            'no_cache': '--no-cache',
-            'pull': '--pull',
-            'quiet': '--quiet',
-            'shrinkwrap': '--shrinkwrap',
-            'squash': '--squash',
-        },
-        'deploy': {
-            'env_subst': '--envsubst=false',
-            'read_template': '--read-template=false',
-            'readonly': '--readonly',
-            'replace': '--replace',
-            'tls_no_verify': '--tls-no-verify',
-            'update': '--update=false',
-        },
-        'list': {
-            'env_subst': '--envsubst=false',
-            'quiet': '-q',
-            'tls_no_verify': '--tls-no-verify',
-            'verbose': '-v',
-        },
-        'login': {
-            'password_stdin': '-s',
-            'tls_no_verify': '--tls-no-verify',
-        },
-        'logs': {
-            'instance': '--instance',
-            'print_name': '--name',
-            'tail': '--tail=false',
-            'tls_no_verify': '--tls-no-verify',
-        },
-        'push': {
-            'env_subst': '--envsubst=false',
-            'quiet': '--quiet',
-        },
-        'remove': {
-            'env_subst': '--envsubst=false',
-            'tls_no_verify': '--tls-no-verify',
-        },
-    }
-)
+FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'build': {
+        'disable_stack_pull': '--disable-stack-pull',
+        'env_subst': '--envsubst=false',
+        'no_cache': '--no-cache',
+        'pull': '--pull',
+        'quiet': '--quiet',
+        'shrinkwrap': '--shrinkwrap',
+        'squash': '--squash',
+    },
+    'deploy': {
+        'env_subst': '--envsubst=false',
+        'read_template': '--read-template=false',
+        'readonly': '--readonly',
+        'replace': '--replace',
+        'tls_no_verify': '--tls-no-verify',
+        'update': '--update=false',
+    },
+    'list': {
+        'env_subst': '--envsubst=false',
+        'quiet': '-q',
+        'tls_no_verify': '--tls-no-verify',
+        'verbose': '-v',
+    },
+    'login': {
+        'password_stdin': '-s',
+        'tls_no_verify': '--tls-no-verify',
+    },
+    'logs': {
+        'instance': '--instance',
+        'print_name': '--name',
+        'tail': '--tail=false',
+        'tls_no_verify': '--tls-no-verify',
+    },
+    'push': {
+        'env_subst': '--envsubst=false',
+        'quiet': '--quiet',
+    },
+    'remove': {
+        'env_subst': '--envsubst=false',
+        'tls_no_verify': '--tls-no-verify',
+    },
+}
 
 # dictionary that maps input args to terraform args
-ARGS_MAP: Final[dict[str, dict[str, str]]] = dict(
-    {
-        'build': {
-            'build_arg': '',
-            'build_label': '',
-            'build_option': '',
-            'copy_extra': '',
-            'handler': '--handler',
-            'image': '--image',
-            'lang': '--lang',
-            'name': '--name',
-            'parallel': '--parallel',
-            'tag': '--tag',
-        },
-        'deploy': {
-            'annotation': '',
-            'constraint': '',
-            'cpu_limit': '--cpu-limit',
-            'cpu_request': '--cpu-request',
-            'env': '',
-            'fprocess': '--fprocess',
-            'gateway': '-g',
-            'handler': '--handler',
-            'image': '--image',
-            'label': '',
-            'lang': '--lang',
-            'memory_limit': '--memory-limit',
-            'memory_request': '--memory-request',
-            'name': '--name',
-            'namespace': '-n',
-            'network': '--network',
-            'secret': '',
-            'tag': '--tag',
-            'timeout': '--timeout',
-            'token': '--token',
-        },
-        'list': {
-            'gateway': '-g',
-            'namespace': '-n',
-            'sort': '--sort',
-            'token': '--token',
-        },
-        'logs': {
-            'gateway': '-g',
-            'lines': '--lines',
-            'name': '',
-            'namespace': '-n',
-            'output': '-o',
-            'since': '--since',
-            'since_time': '--since-time',
-            'time_format': '--time-format',
-            'token': '-k',
-        },
-        'login': {
-            'gateway': '-g',
-            'password': '-p',
-            'timeout': '--timeout',
-            'username': '-u',
-        },
-        'push': {
-            'parallel': '--parallel',
-            'tag': '--tag',
-        },
-        'remove': {
-            'gateway': '-g',
-            'name': '',
-            'namespace': '-n',
-            'token': '-k',
-        },
-    }
-)
+ARGS_MAP: Final[dict[str, dict[str, str]]] = {
+    'build': {
+        'build_arg': '',
+        'build_label': '',
+        'build_option': '',
+        'copy_extra': '',
+        'handler': '--handler',
+        'image': '--image',
+        'lang': '--lang',
+        'name': '--name',
+        'parallel': '--parallel',
+        'tag': '--tag',
+    },
+    'deploy': {
+        'annotation': '',
+        'constraint': '',
+        'cpu_limit': '--cpu-limit',
+        'cpu_request': '--cpu-request',
+        'env': '',
+        'fprocess': '--fprocess',
+        'gateway': '-g',
+        'handler': '--handler',
+        'image': '--image',
+        'label': '',
+        'lang': '--lang',
+        'memory_limit': '--memory-limit',
+        'memory_request': '--memory-request',
+        'name': '--name',
+        'namespace': '-n',
+        'network': '--network',
+        'secret': '',
+        'tag': '--tag',
+        'timeout': '--timeout',
+        'token': '--token',
+    },
+    'list': {
+        'gateway': '-g',
+        'namespace': '-n',
+        'sort': '--sort',
+        'token': '--token',
+    },
+    'logs': {
+        'gateway': '-g',
+        'lines': '--lines',
+        'name': '',
+        'namespace': '-n',
+        'output': '-o',
+        'since': '--since',
+        'since_time': '--since-time',
+        'time_format': '--time-format',
+        'token': '-k',
+    },
+    'login': {
+        'gateway': '-g',
+        'password': '-p',
+        'timeout': '--timeout',
+        'username': '-u',
+    },
+    'push': {
+        'parallel': '--parallel',
+        'tag': '--tag',
+    },
+    'remove': {
+        'gateway': '-g',
+        'name': '',
+        'namespace': '-n',
+        'token': '-k',
+    },
+}
 
 
 def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[str]] = {}) -> list[str]:

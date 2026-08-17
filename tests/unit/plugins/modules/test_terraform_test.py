@@ -1,8 +1,5 @@
 """unit test for terraform test module"""
 
-__metaclass__ = type
-
-
 import json
 import pytest
 from ansible_collections.mschuchard.general.plugins.modules import terraform_test

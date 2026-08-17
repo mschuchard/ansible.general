@@ -5,8 +5,6 @@
 # MIT License (see LICENSE or https://opensource.org/license/mit)
 """ansible module for puppet agent"""
 
-__metaclass__ = type
-
 DOCUMENTATION = r"""
 ---
 module: puppet_agent
