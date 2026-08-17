@@ -73,7 +73,7 @@ def test_faas_list_gateway_tls_token(capfd):
 
     info = json.loads(stdout)
     assert 'list' in info['cmd']
-    assert '--gateway' in info['cmd']
+    assert '-g' in info['cmd']
     assert 'https://faas.example.com:8080' in info['cmd']
     assert '--tls-no-verify' in info['cmd']
     assert '--token' in info['cmd']
@@ -91,7 +91,7 @@ def test_faas_list_namespace_quiet(capfd):
 
     info = json.loads(stdout)
     assert 'list' in info['cmd']
-    assert '--namespace' in info['cmd']
+    assert '-n' in info['cmd']
     assert 'openfaas-fn' in info['cmd']
     assert '-q' in info['cmd']
 
@@ -133,9 +133,9 @@ def test_faas_list_all_new_params(capfd):
 
     info = json.loads(stdout)
     assert 'list' in info['cmd']
-    assert '--gateway' in info['cmd']
+    assert '-g' in info['cmd']
     assert 'https://faas.example.com:8080' in info['cmd']
-    assert '--namespace' in info['cmd']
+    assert '-n' in info['cmd']
     assert 'openfaas-fn' in info['cmd']
     assert '-q' in info['cmd']
     assert '--tls-no-verify' in info['cmd']

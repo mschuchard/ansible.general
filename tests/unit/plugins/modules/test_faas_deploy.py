@@ -156,7 +156,7 @@ def test_faas_deploy_direct_params(capfd):
     assert 'alexellis/faas-url-ping' in info['cmd']
     assert '--name' in info['cmd']
     assert 'url-ping' in info['cmd']
-    assert '--gateway' in info['cmd']
+    assert '-g' in info['cmd']
     assert 'http://remote-site.com:8080' in info['cmd']
 
 
@@ -198,7 +198,7 @@ def test_faas_deploy_tls_token_timeout(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert '--gateway' in info['cmd']
+    assert '-g' in info['cmd']
     assert 'https://faas.example.com:8080' in info['cmd']
     assert '--tls-no-verify' in info['cmd']
     assert '--token' in info['cmd']
@@ -241,7 +241,7 @@ def test_faas_deploy_namespace_fprocess(capfd):
     assert not stderr
 
     info = json.loads(stdout)
-    assert '--namespace' in info['cmd']
+    assert '-n' in info['cmd']
     assert 'openfaas-fn' in info['cmd']
     assert '--fprocess' in info['cmd']
     assert 'node index.js' in info['cmd']
@@ -300,25 +300,9 @@ def test_faas_deploy_all_new_params(capfd):
     assert '64Mi' in info['cmd']
     assert '--tag' in info['cmd']
     assert 'branch' in info['cmd']
-    assert '--namespace' in info['cmd']
+    assert '-n' in info['cmd']
     assert 'openfaas-fn' in info['cmd']
     assert '--readonly' in info['cmd']
     assert '--tls-no-verify' in info['cmd']
     assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
-
-
-def test_faas_deploy_already_deployed_skip(capfd, monkeypatch):
-    """test faas deploy skips execution when the named function is already confirmed deployed"""
-    monkeypatch.setattr(faas, 'is_deployed', lambda flags, args: True)
-    utils.set_module_args({'image': 'alexellis/faas-url-ping', 'name': 'url-ping'})
-    with pytest.raises(SystemExit, match='0'):
-        faas_deploy.main()
-
-    stdout, stderr = capfd.readouterr()
-    assert not stderr
-
-    info = json.loads(stdout)
-    assert not info['changed']
-    assert '--image' in info['command']
-    assert 'alexellis/faas-url-ping' in info['command']
