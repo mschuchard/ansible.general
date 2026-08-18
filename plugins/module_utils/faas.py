@@ -226,12 +226,17 @@ def ansible_to_faas(args: dict) -> None:
                 args[arg] = ' '.join([f'--secret {value}' for value in arg_value]).split()
 
 
-def is_deployed(flags: set[str], args: dict, name: str) -> bool | None:
+def is_deployed(flags: set[str], args: dict) -> bool | None:
     """determine if one or more faas functions are currently deployed
     returns True if all functions are deployed, False if not all are deployed, or None if the command failed
     flags and args should already be resolved from the calling module params"""
+    # copy args to avoid mutating the caller's args dict
+    args = args.copy()
+    # assign name and remove from args to avoid unsupported arg warning; this SHOULD error if the name key does not exist
+    name: str = args.pop('name')
+
     # construct list command reusing existing flag and arg resolution from module plugin
-    list_command: list[str] = cmd(action='list', flags=flags, args=args.copy())
+    list_command: list[str] = cmd(action='list', flags=flags, args=args)
 
     result: subprocess.CompletedProcess[str] = subprocess.run(list_command, capture_output=True, text=True, check=False)
 

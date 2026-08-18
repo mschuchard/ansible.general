@@ -143,7 +143,7 @@ def test_faas_remove_all_new_params(capfd):
 
 def test_faas_remove_not_deployed_skip(capfd, monkeypatch):
     """test faas remove skips execution when nothing matching is confirmed deployed"""
-    monkeypatch.setattr(faas, 'is_deployed', lambda flags, args, name: False)
+    monkeypatch.setattr(faas, 'is_deployed', lambda flags, args: False)
     utils.set_module_args({'name': 'url-ping'})
     with pytest.raises(SystemExit, match='0'):
         faas_remove.main()
