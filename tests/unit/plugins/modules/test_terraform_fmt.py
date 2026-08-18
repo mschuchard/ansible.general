@@ -27,7 +27,7 @@ def test_terraform_fmt_defaults(capfd):
 
 def test_terraform_fmt_config_diff_write(capfd):
     """test terraform fmt with config diff write"""
-    utils.set_module_args({'diff': True, 'write': False, 'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'diff': True, 'write': False, 'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         terraform_fmt.main()
 

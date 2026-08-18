@@ -26,7 +26,7 @@ def test_terraform_validate_defaults(capfd):
 
 def test_terraform_validate_config(capfd):
     """test terraform validate with config"""
-    utils.set_module_args({'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         terraform_validate.main()
 

@@ -24,7 +24,7 @@ def test_packer_init_defaults(capfd):
 
 def test_packer_init_config(capfd):
     """test packer init with config"""
-    utils.set_module_args({'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         packer_init.main()
 
@@ -33,13 +33,13 @@ def test_packer_init_config(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert utils.fixtures_dir() == info['command'][-1]
+    assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']
 
 
 def test_packer_init_upgrade(capfd):
     """test packer init with upgrade"""
-    utils.set_module_args({'upgrade': True, 'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'upgrade': True, 'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         packer_init.main()
 
@@ -49,5 +49,5 @@ def test_packer_init_upgrade(capfd):
     info = json.loads(stdout)
     assert not info['changed']
     assert '-upgrade' in info['command']
-    assert utils.fixtures_dir() == info['command'][-1]
+    assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']

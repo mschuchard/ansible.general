@@ -27,7 +27,7 @@ def test_terraform_init_defaults(capfd):
 
 def test_terraform_init_config(capfd):
     """test terraform init with config"""
-    utils.set_module_args({'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         terraform_init.main()
 
@@ -42,7 +42,7 @@ def test_terraform_init_config(capfd):
 
 def test_terraform_init_upgrade_backend(capfd):
     """test terraform init with upgrade"""
-    utils.set_module_args({'upgrade': True, 'backend': False, 'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'upgrade': True, 'backend': False, 'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         terraform_init.main()
 
@@ -62,7 +62,7 @@ def test_terraform_init_multiple_args(capfd):
         {
             'migrate_state': True,
             'backend_config': [f'{utils.fixtures_dir()}/config.tf', {'scheme': 'https'}],
-            'plugin_dir': [utils.fixtures_dir(), '/tmp'],
+            'plugin_dir': [str(utils.fixtures_dir()), '/tmp'],
         }
     )
     with pytest.raises(SystemExit, match='0'):

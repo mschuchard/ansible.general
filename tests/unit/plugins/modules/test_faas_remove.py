@@ -28,7 +28,7 @@ def test_faas_remove_defaults(capfd):
 def test_faas_remove_name(capfd):
     """test faas remove with function name"""
     utils.set_module_args({'name': 'url-ping'})
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.warns(RuntimeWarning, match='faas-cli list failed to verify deployment status'), pytest.raises(SystemExit, match='1'):
         faas_remove.main()
 
     stdout, stderr = capfd.readouterr()
@@ -61,7 +61,7 @@ def test_faas_remove_config_file_globals(capfd):
 def test_faas_remove_gateway_tls_token(capfd):
     """test faas remove with gateway, tls_no_verify, and token"""
     utils.set_module_args({'name': 'url-ping', 'gateway': 'https://faas.example.com:8080', 'tls_no_verify': True, 'token': 'my-jwt-token'})
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.warns(RuntimeWarning, match='faas-cli list failed to verify deployment status'), pytest.raises(SystemExit, match='1'):
         faas_remove.main()
 
     stdout, stderr = capfd.readouterr()
@@ -122,7 +122,7 @@ def test_faas_remove_all_new_params(capfd):
             'env_subst': False,
         }
     )
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.warns(RuntimeWarning, match='faas-cli list failed to verify deployment status'), pytest.raises(SystemExit, match='1'):
         faas_remove.main()
 
     stdout, stderr = capfd.readouterr()

@@ -26,7 +26,7 @@ def test_terraform_plan_defaults(capfd):
 
 def test_terraform_plan_config_destroy(capfd):
     """test terraform plan with config and destroy"""
-    utils.set_module_args({'config_dir': utils.fixtures_dir(), 'destroy': True})
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'destroy': True})
     with pytest.raises(SystemExit, match='0'):
         terraform_plan.main()
 
@@ -42,7 +42,7 @@ def test_terraform_plan_config_destroy(capfd):
 
 def test_terraform_plan_replace_out(capfd):
     """test terraform plan with replace and out"""
-    utils.set_module_args({'replace': ['aws_instance.this', 'local_file.that'], 'out': 'plan.tfplan', 'config_dir': utils.fixtures_dir()})
+    utils.set_module_args({'replace': ['aws_instance.this', 'local_file.that'], 'out': 'plan.tfplan', 'config_dir': str(utils.fixtures_dir())})
     with pytest.raises(SystemExit, match='0'):
         terraform_plan.main()
 
@@ -65,7 +65,7 @@ def test_terraform_plan_multiple_args(capfd):
             'refresh_only': True,
             'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
             'var_file': [f'{utils.fixtures_dir()}/foo.tfvars', f'{utils.fixtures_dir()}/foo.tfvars'],
-            'config_dir': utils.fixtures_dir(),
+            'config_dir': str(utils.fixtures_dir()),
         }
     )
     with pytest.raises(SystemExit, match='0'):

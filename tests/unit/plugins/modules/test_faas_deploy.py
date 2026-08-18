@@ -226,7 +226,7 @@ def test_faas_deploy_handler_lang_network(capfd):
     assert '--name' in info['cmd']
     assert 'my_fn' in info['cmd']
     assert '--handler' in info['cmd']
-    assert utils.fixtures_dir() in info['cmd']
+    assert str(utils.fixtures_dir()) in info['cmd']
     assert '--lang' in info['cmd']
     assert 'python' in info['cmd']
     assert '--network' in info['cmd']

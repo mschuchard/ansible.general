@@ -27,7 +27,7 @@ def test_terraform_apply_defaults(capfd):
 
 def test_terraform_apply_config_destroy(capfd):
     """test terraform apply with config and destroy"""
-    utils.set_module_args({'config_dir': utils.fixtures_dir(), 'destroy': True})
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'destroy': True})
     with pytest.raises(SystemExit, match='0'):
         terraform_apply.main()
 
@@ -62,7 +62,7 @@ def test_terraform_apply_multiple_args(capfd):
             'target': ['aws_instance.this', 'local_file.that'],
             'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
             'var_file': [f'{utils.fixtures_dir()}/foo.tfvars', f'{utils.fixtures_dir()}/foo.tfvars'],
-            'config_dir': utils.fixtures_dir(),
+            'config_dir': str(utils.fixtures_dir()),
         }
     )
     with pytest.raises(SystemExit, match='0'):

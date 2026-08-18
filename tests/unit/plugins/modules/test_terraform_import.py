@@ -29,7 +29,7 @@ def test_terraform_import_defaults(capfd):
 
 def test_terraform_import_config(capfd):
     """test terraform import with config"""
-    utils.set_module_args({'config_dir': utils.fixtures_dir(), 'address': 'aws_instance.this', 'id': 'i-1234567890'})
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'address': 'aws_instance.this', 'id': 'i-1234567890'})
     with pytest.raises(SystemExit, match='1'):
         terraform_import.main()
 
