@@ -1,7 +1,9 @@
 """unit test for faas deploy module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import faas_deploy
 from ansible_collections.mschuchard.general.plugins.module_utils import faas
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
@@ -9,7 +11,7 @@ from ansible_collections.mschuchard.general.tests.unit.plugins.modules import ut
 
 def test_faas_deploy_defaults(capfd):
     """test faas deploy with defaults"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml'})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 
@@ -19,13 +21,13 @@ def test_faas_deploy_defaults(capfd):
     info = json.loads(stdout)
     assert 'deploy' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_deploy_replace_update_globals(capfd):
     """test faas deploy with replace, no update, and globals"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'strategy': 'replace', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'strategy': 'replace', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 
@@ -40,7 +42,7 @@ def test_faas_deploy_replace_update_globals(capfd):
     assert '*gif*' in info['cmd']
     assert '--regex' in info['cmd']
     assert 'fn[0-9]_.*' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
@@ -48,7 +50,7 @@ def test_faas_deploy_annotation_label(capfd):
     """test faas deploy with annotation and label"""
     utils.set_module_args(
         {
-            'config_file': f'{str(utils.fixtures_dir())}/stack.yaml',
+            'config_file': f'{utils.fixtures_dir()}/stack.yaml',
             'annotation': {'imageregistry': 'docker.io', 'loadbalancer': 'mycloud'},
             'label': {'app': 'myapp', 'tier': 'backend'},
             'strategy': 'replace',
@@ -70,14 +72,14 @@ def test_faas_deploy_annotation_label(capfd):
     assert 'tier=backend' in info['cmd']
     assert '--replace' in info['cmd']
     assert '--update=false' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_deploy_env_secret(capfd):
     """test faas deploy with environment variables and secrets"""
     utils.set_module_args(
-        {'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'env': {'MYVAR': 'myval', 'DEBUG': 'true'}, 'secret': ['dockerhuborg', 'api-key']}
+        {'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'env': {'MYVAR': 'myval', 'DEBUG': 'true'}, 'secret': ['dockerhuborg', 'api-key']}
     )
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
@@ -92,7 +94,7 @@ def test_faas_deploy_env_secret(capfd):
     assert '--secret' in info['cmd']
     assert 'dockerhuborg' in info['cmd']
     assert 'api-key' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
@@ -100,7 +102,7 @@ def test_faas_deploy_resource_limits(capfd):
     """test faas deploy with resource limits and requests"""
     utils.set_module_args(
         {
-            'config_file': f'{str(utils.fixtures_dir())}/stack.yaml',
+            'config_file': f'{utils.fixtures_dir()}/stack.yaml',
             'cpu_limit': '200m',
             'cpu_request': '100m',
             'memory_limit': '256Mi',
@@ -122,13 +124,13 @@ def test_faas_deploy_resource_limits(capfd):
     assert '256Mi' in info['cmd']
     assert '--memory-request' in info['cmd']
     assert '128Mi' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_deploy_tag(capfd):
     """test faas deploy with tag override"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'tag': 'sha'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'tag': 'sha'})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 
@@ -138,7 +140,7 @@ def test_faas_deploy_tag(capfd):
     info = json.loads(stdout)
     assert '--tag' in info['cmd']
     assert 'sha' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
@@ -163,7 +165,7 @@ def test_faas_deploy_direct_params(capfd):
 def test_faas_deploy_constraint_readonly(capfd):
     """test faas deploy with constraints and readonly filesystem"""
     utils.set_module_args(
-        {'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'constraint': ['node.role==worker', 'node.platform.os==linux'], 'readonly': True}
+        {'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'constraint': ['node.role==worker', 'node.platform.os==linux'], 'readonly': True}
     )
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
@@ -176,7 +178,7 @@ def test_faas_deploy_constraint_readonly(capfd):
     assert 'node.role==worker' in info['cmd']
     assert 'node.platform.os==linux' in info['cmd']
     assert '--readonly' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
@@ -184,7 +186,7 @@ def test_faas_deploy_tls_token_timeout(capfd):
     """test faas deploy with custom gateway, TLS, token, and timeout"""
     utils.set_module_args(
         {
-            'config_file': f'{str(utils.fixtures_dir())}/stack.yaml',
+            'config_file': f'{utils.fixtures_dir()}/stack.yaml',
             'gateway': 'https://faas.example.com:8080',
             'tls_no_verify': True,
             'token': 'my-jwt-token',
@@ -205,13 +207,13 @@ def test_faas_deploy_tls_token_timeout(capfd):
     assert 'my-jwt-token' in info['cmd']
     assert '--timeout' in info['cmd']
     assert '2m' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_deploy_handler_lang_network(capfd):
     """test faas deploy with handler, language, and network"""
-    utils.set_module_args({'image': 'my_image', 'name': 'my_fn', 'handler': f'{str(utils.fixtures_dir())}', 'lang': 'python', 'network': 'func_functions'})
+    utils.set_module_args({'image': 'my_image', 'name': 'my_fn', 'handler': f'{utils.fixtures_dir()}', 'lang': 'python', 'network': 'func_functions'})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 
@@ -224,7 +226,7 @@ def test_faas_deploy_handler_lang_network(capfd):
     assert '--name' in info['cmd']
     assert 'my_fn' in info['cmd']
     assert '--handler' in info['cmd']
-    assert str(utils.fixtures_dir()) in info['cmd']
+    assert utils.fixtures_dir() in info['cmd']
     assert '--lang' in info['cmd']
     assert 'python' in info['cmd']
     assert '--network' in info['cmd']
@@ -233,7 +235,7 @@ def test_faas_deploy_handler_lang_network(capfd):
 
 def test_faas_deploy_namespace_fprocess(capfd):
     """test faas deploy with namespace and fprocess"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'namespace': 'openfaas-fn', 'fprocess': 'node index.js'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'namespace': 'openfaas-fn', 'fprocess': 'node index.js'})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 
@@ -245,13 +247,13 @@ def test_faas_deploy_namespace_fprocess(capfd):
     assert 'openfaas-fn' in info['cmd']
     assert '--fprocess' in info['cmd']
     assert 'node index.js' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_deploy_read_template_env_subst(capfd):
     """test faas deploy with read_template and env_subst disabled"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'read_template': False, 'env_subst': False})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'read_template': False, 'env_subst': False})
     with pytest.raises(SystemExit, match='1'):
         faas_deploy.main()
 
@@ -261,7 +263,7 @@ def test_faas_deploy_read_template_env_subst(capfd):
     info = json.loads(stdout)
     assert '--read-template=false' in info['cmd']
     assert '--envsubst=false' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
@@ -269,7 +271,7 @@ def test_faas_deploy_all_new_params(capfd):
     """test faas deploy with all new parameters combined"""
     utils.set_module_args(
         {
-            'config_file': f'{str(utils.fixtures_dir())}/stack.yaml',
+            'config_file': f'{utils.fixtures_dir()}/stack.yaml',
             'env': {'KEY': 'val'},
             'secret': ['my-secret'],
             'constraint': ['node.role==worker'],
@@ -304,5 +306,5 @@ def test_faas_deploy_all_new_params(capfd):
     assert 'openfaas-fn' in info['cmd']
     assert '--readonly' in info['cmd']
     assert '--tls-no-verify' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']

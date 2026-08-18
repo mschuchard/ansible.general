@@ -1,14 +1,16 @@
 """unit test for puppet apply module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import puppet_apply
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_puppet_apply_test(capfd):
     """test puppet apply with test"""
-    utils.set_module_args({'test': True, 'manifest': f'{str(utils.fixtures_dir())}/manifest.pp'})
+    utils.set_module_args({'test': True, 'manifest': f'{utils.fixtures_dir()}/manifest.pp'})
     with pytest.raises(SystemExit, match='0'):
         puppet_apply.main()
 
@@ -22,12 +24,12 @@ def test_puppet_apply_test(capfd):
     assert not info['stderr']
     assert 'apply' in info['command']
     assert '-t' in info['command']
-    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['command'][-1]
+    assert f'{utils.fixtures_dir()}/manifest.pp' == info['command'][-1]
 
 
 def test_puppet_apply_debug_noop_verbose(capfd):
     """test puppet apply with debug noop verbose"""
-    utils.set_module_args({'debug': True, 'manifest': f'{str(utils.fixtures_dir())}/manifest.pp', 'no_op': True, 'verbose': True})
+    utils.set_module_args({'debug': True, 'manifest': f'{utils.fixtures_dir()}/manifest.pp', 'no_op': True, 'verbose': True})
     with pytest.raises(SystemExit, match='0'):
         puppet_apply.main()
 
@@ -43,7 +45,7 @@ def test_puppet_apply_debug_noop_verbose(capfd):
     assert '-d' in info['command']
     assert '--noop' in info['command']
     assert '-v' in info['command']
-    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['command'][-1]
+    assert f'{utils.fixtures_dir()}/manifest.pp' == info['command'][-1]
 
 
 def test_puppet_apply_execute(capfd):
@@ -66,7 +68,7 @@ def test_puppet_apply_execute(capfd):
 
 def test_puppet_apply_detailed_exitcodes(capfd):
     """test puppet apply with detailed exitcodes"""
-    utils.set_module_args({'detailed_exitcodes': True, 'manifest': f'{str(utils.fixtures_dir())}/manifest.pp'})
+    utils.set_module_args({'detailed_exitcodes': True, 'manifest': f'{utils.fixtures_dir()}/manifest.pp'})
     with pytest.raises(SystemExit, match='0'):
         puppet_apply.main()
 
@@ -79,12 +81,12 @@ def test_puppet_apply_detailed_exitcodes(capfd):
     assert 'hello world' in info['stdout']
     assert 'apply' in info['command']
     assert '--detailed-exitcodes' in info['command']
-    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['command'][-1]
+    assert f'{utils.fixtures_dir()}/manifest.pp' == info['command'][-1]
 
 
 def test_puppet_apply_logdest(capfd):
     """test puppet apply with logdest"""
-    utils.set_module_args({'logdest': '/var/log/puppet/apply.log', 'manifest': f'{str(utils.fixtures_dir())}/manifest.pp'})
+    utils.set_module_args({'logdest': '/var/log/puppet/apply.log', 'manifest': f'{utils.fixtures_dir()}/manifest.pp'})
     with pytest.raises(SystemExit, match='1'):
         puppet_apply.main()
 
@@ -95,12 +97,12 @@ def test_puppet_apply_logdest(capfd):
     assert 'apply' in info['cmd']
     assert '-l' in info['cmd']
     assert '/var/log/puppet/apply.log' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['cmd'][-1]
+    assert f'{utils.fixtures_dir()}/manifest.pp' == info['cmd'][-1]
 
 
 def test_puppet_apply_loadclasses_write_catalog(capfd):
     """test puppet apply with loadclasses and write_catalog_summary"""
-    utils.set_module_args({'loadclasses': True, 'write_catalog_summary': True, 'manifest': f'{str(utils.fixtures_dir())}/manifest.pp'})
+    utils.set_module_args({'loadclasses': True, 'write_catalog_summary': True, 'manifest': f'{utils.fixtures_dir()}/manifest.pp'})
     with pytest.raises(SystemExit, match='0'):
         puppet_apply.main()
 
@@ -112,4 +114,4 @@ def test_puppet_apply_loadclasses_write_catalog(capfd):
     assert 'apply' in info['command']
     assert '-L' in info['command']
     assert '--write-catalog-summary' in info['command']
-    assert f'{str(utils.fixtures_dir())}/manifest.pp' == info['command'][-1]
+    assert f'{utils.fixtures_dir()}/manifest.pp' == info['command'][-1]

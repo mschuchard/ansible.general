@@ -2,7 +2,9 @@
 
 import json
 import shutil
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import faas_build
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 

@@ -1,7 +1,9 @@
 """unit test for faas login module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import faas_login
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
@@ -47,7 +49,7 @@ def test_faas_login_username(capfd):
 
 def test_faas_login_config_file_globals(capfd):
     """test faas login with config file and global parameters"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'password': 'mypassword', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'password': 'mypassword', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
     with pytest.raises(SystemExit, match='1'):
         faas_login.main()
 
@@ -60,7 +62,7 @@ def test_faas_login_config_file_globals(capfd):
     assert '--regex' in info['cmd']
     assert 'fn[0-9]_.*' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '-u' in info['cmd']
     assert 'admin' in info['cmd']
     assert '-p' in info['cmd']

@@ -1,8 +1,9 @@
 """packer module utilities"""
 
 import warnings
-from typing import Final
 from pathlib import Path
+from typing import Final
+
 from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 
@@ -58,7 +59,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[s
         if arg in action_args_map:
             # note for next two conditionals second logical tests for whether str or list is expected based on pseudo-schema in ARGS_MAP
             # if the arg value is a str, then append the value interpolated with the arg name from the dict to the command
-            if (isinstance(arg_value, str) or isinstance(arg_value, bool)) and len(action_args_map[arg]) > 0:
+            if (isinstance(arg_value, (str, bool))) and len(action_args_map[arg]) > 0:
                 # validate on_error arg value
                 if arg == 'on_error' and arg_value not in ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']:
                     raise RuntimeError(f'Unsupported on error argument value specified: {arg_value}')

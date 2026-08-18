@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
@@ -104,6 +103,7 @@ command:
 """
 
 from pathlib import Path
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.mschuchard.general.plugins.module_utils import faas, universal
 
@@ -146,10 +146,9 @@ def main() -> None:
         module.exit_json(changed=False, command=command)
 
     # check if function is currently deployed and exit early if not
-    if function_name := module.params.get('name'):
-        if faas.is_deployed(flags=flags, args=flags_args[1], name=function_name) is False:
-            module.debug(msg=f'Function {function_name} is not deployed, skipping removal')
-            module.exit_json(changed=False, command=command)
+    if (function_name := module.params.get('name')) and faas.is_deployed(flags=flags, args=flags_args[1], name=function_name) is False:
+        module.debug(msg=f'Function {function_name} is not deployed, skipping removal')
+        module.exit_json(changed=False, command=command)
 
     # execute faas
     return_code: int

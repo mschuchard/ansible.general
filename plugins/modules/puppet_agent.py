@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
@@ -188,6 +187,7 @@ return_code:
 """
 
 from pathlib import Path
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.mschuchard.general.plugins.module_utils import puppet, universal
 
@@ -240,11 +240,8 @@ def main() -> None:
     stderr: str
     return_code, stdout, stderr = module.run_command(command, cwd=str(Path.cwd()))
 
-    # check idempotence
-    if module.params.get('test') and return_code in {2, 4, 6}:
-        changed = True
-    # enable/disable always cause a change
-    elif module.params.get('enable') or module.params.get('disable'):
+    # check idempotence; enable/disable always causes a change
+    if (module.params.get('test') and return_code in {2, 4, 6}) or (module.params.get('enable') or module.params.get('disable')):
         changed = True
 
     # post-process

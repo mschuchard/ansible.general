@@ -1,7 +1,9 @@
 """unit test for puppet module util"""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from ansible_collections.mschuchard.general.plugins.module_utils import puppet
 
 

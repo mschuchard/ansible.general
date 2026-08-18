@@ -1,7 +1,9 @@
 """unit test for terraform import module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import terraform_import
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
@@ -27,14 +29,14 @@ def test_terraform_import_defaults(capfd):
 
 def test_terraform_import_config(capfd):
     """test terraform import with config"""
-    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'address': 'aws_instance.this', 'id': 'i-1234567890'})
+    utils.set_module_args({'config_dir': utils.fixtures_dir(), 'address': 'aws_instance.this', 'id': 'i-1234567890'})
     with pytest.raises(SystemExit, match='1'):
         terraform_import.main()
 
     stdout, stderr = capfd.readouterr()
 
     info = json.loads(stdout)
-    assert f'-chdir={str(utils.fixtures_dir())}' in info['cmd']
+    assert f'-chdir={utils.fixtures_dir()}' in info['cmd']
     assert 'aws_instance.this' in info['cmd']
     assert 'aws_instance.this' == info['cmd'][-2]
     assert 'i-1234567890' in info['cmd']
@@ -49,7 +51,7 @@ def test_terraform_import_vars(capfd):
             'address': 'local_file.this',
             'id': '/path/to/local_file',
             'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
-            'var_file': [f'{str(utils.fixtures_dir())}/foo.tfvars', f'{str(utils.fixtures_dir())}/foo.tfvars'],
+            'var_file': [f'{utils.fixtures_dir()}/foo.tfvars', f'{utils.fixtures_dir()}/foo.tfvars'],
         }
     )
     with pytest.raises(SystemExit, match='1'):
@@ -65,6 +67,6 @@ def test_terraform_import_vars(capfd):
     assert '-var' in info['cmd']
     assert "var_name='var_value'" in info['cmd']
     assert "var_name_other='var_value_other'" in info['cmd']
-    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['cmd']
-    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['cmd']
+    assert f'-var-file={utils.fixtures_dir()}/foo.tfvars' in info['cmd']
+    assert f'-var-file={utils.fixtures_dir()}/foo.tfvars' in info['cmd']
     assert 'No Terraform configuration files' in info['stderr']

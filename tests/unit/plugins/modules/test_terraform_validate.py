@@ -1,7 +1,9 @@
 """unit test for terraform validate module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import terraform_validate
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
@@ -24,7 +26,7 @@ def test_terraform_validate_defaults(capfd):
 
 def test_terraform_validate_config(capfd):
     """test terraform validate with config"""
-    utils.set_module_args({'config_dir': str(utils.fixtures_dir())})
+    utils.set_module_args({'config_dir': utils.fixtures_dir()})
     with pytest.raises(SystemExit, match='0'):
         terraform_validate.main()
 
@@ -33,7 +35,7 @@ def test_terraform_validate_config(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
+    assert f'-chdir={utils.fixtures_dir()}' in info['command']
     assert 'Success! The configuration is valid.' in info['stdout']
 
 

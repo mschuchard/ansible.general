@@ -1,7 +1,9 @@
 """unit test for packer module util"""
 
 from pathlib import Path
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.module_utils import packer
 
 

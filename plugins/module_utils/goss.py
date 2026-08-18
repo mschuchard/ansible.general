@@ -2,8 +2,9 @@
 
 import json
 import warnings
-from typing import Final
 from pathlib import Path
+from typing import Final
+
 from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 

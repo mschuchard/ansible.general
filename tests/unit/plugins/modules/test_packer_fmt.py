@@ -1,7 +1,9 @@
 """unit test for packer fmt module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import packer_fmt
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
@@ -23,7 +25,7 @@ def test_packer_fmt_defaults(capfd):
 
 def test_packer_fmt_config_diff_write(capfd):
     """test packer fmt with config diff write"""
-    utils.set_module_args({'diff': True, 'write': False, 'config_dir': str(utils.fixtures_dir())})
+    utils.set_module_args({'diff': True, 'write': False, 'config_dir': utils.fixtures_dir()})
     with pytest.raises(SystemExit, match='0'):
         packer_fmt.main()
 
@@ -32,7 +34,7 @@ def test_packer_fmt_config_diff_write(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert str(utils.fixtures_dir()) == info['command'][-1]
+    assert utils.fixtures_dir() == info['command'][-1]
     assert '-diff' in info['command']
     assert '-write=false' in info['command']
     assert '' == info['stdout']

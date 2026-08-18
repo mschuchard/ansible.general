@@ -1,9 +1,10 @@
 """faas module utilities"""
 
-import warnings
 import subprocess
-from typing import Final
+import warnings
 from pathlib import Path
+from typing import Final
+
 from ansible_collections.mschuchard.general.plugins.module_utils import universal
 
 # dictionary that maps input args to terraform flags
@@ -216,7 +217,7 @@ def ansible_to_faas(args: dict) -> None:
                 args[arg] = ' '.join([f'--build-option {value}' for value in arg_value]).split()
             # transform list[Path] to list of '--copy-extra' 'path1' '--copy-extra' 'path2' strings
             case 'copy_extra':
-                args[arg] = ' '.join([f'--copy-extra {str(path)}' for path in arg_value]).split()
+                args[arg] = ' '.join([f'--copy-extra {path}' for path in arg_value]).split()
             # transform list[str] to list of '--constraint' 'value1' '--constraint' 'value2' strings
             case 'constraint':
                 args[arg] = ' '.join([f'--constraint {value}' for value in arg_value]).split()
@@ -232,7 +233,7 @@ def is_deployed(flags: set[str], args: dict, name: str) -> bool | None:
     # construct list command reusing existing flag and arg resolution from module plugin
     list_command: list[str] = cmd(action='list', flags=flags, args=args.copy())
 
-    result: subprocess.CompletedProcess[str] = subprocess.run(list_command, capture_output=True, text=True)
+    result: subprocess.CompletedProcess[str] = subprocess.run(list_command, capture_output=True, text=True, check=False)
 
     # list command failure, warn, and permit the caller to proceed and surface the real error
     if result.returncode != 0:

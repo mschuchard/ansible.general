@@ -1,7 +1,9 @@
 """unit test for puppet agent module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import puppet_agent
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) Matthew Schuchard
 # MIT License (see LICENSE or https://opensource.org/license/mit)
@@ -73,6 +72,7 @@ command:
 """
 
 from pathlib import Path
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.mschuchard.general.plugins.module_utils import terraform
 

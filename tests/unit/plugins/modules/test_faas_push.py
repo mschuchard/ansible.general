@@ -1,14 +1,16 @@
 """unit test for faas push module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import faas_push
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_faas_push_defaults(capfd):
     """test faas push with defaults"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml'})
     with pytest.raises(SystemExit, match='1'):
         faas_push.main()
 
@@ -18,13 +20,13 @@ def test_faas_push_defaults(capfd):
     info = json.loads(stdout)
     assert 'push' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_push_globals(capfd):
     """test faas push with filter and regex"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
     with pytest.raises(SystemExit, match='1'):
         faas_push.main()
 
@@ -37,13 +39,13 @@ def test_faas_push_globals(capfd):
     assert '--regex' in info['cmd']
     assert 'fn[0-9]_.*' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_push_parallel_tag_no_env_subst(capfd):
     """test faas push with parallel, tag, and without environment substitution"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'parallel': 4, 'tag': 'sha', 'env_subst': False})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'parallel': 4, 'tag': 'sha', 'env_subst': False})
     with pytest.raises(SystemExit, match='1'):
         faas_push.main()
 
@@ -57,13 +59,13 @@ def test_faas_push_parallel_tag_no_env_subst(capfd):
     assert 'sha' in info['cmd']
     assert '--envsubst=false' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_push_quiet(capfd):
     """test faas push with quiet flag"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'quiet': True})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'quiet': True})
     with pytest.raises(SystemExit, match='1'):
         faas_push.main()
 
@@ -74,5 +76,5 @@ def test_faas_push_quiet(capfd):
     assert 'push' in info['cmd']
     assert '--quiet' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']

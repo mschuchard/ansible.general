@@ -1,7 +1,9 @@
 """unit test for terraform plan module"""
 
 import json
+
 import pytest
+
 from ansible_collections.mschuchard.general.plugins.modules import terraform_plan
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
@@ -24,7 +26,7 @@ def test_terraform_plan_defaults(capfd):
 
 def test_terraform_plan_config_destroy(capfd):
     """test terraform plan with config and destroy"""
-    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'destroy': True})
+    utils.set_module_args({'config_dir': utils.fixtures_dir(), 'destroy': True})
     with pytest.raises(SystemExit, match='0'):
         terraform_plan.main()
 
@@ -33,14 +35,14 @@ def test_terraform_plan_config_destroy(capfd):
 
     info = json.loads(stdout)
     assert not info['changed']
-    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
+    assert f'-chdir={utils.fixtures_dir()}' in info['command']
     assert '-destroy' in info['command']
     assert 'No changes.' in info['stdout']
 
 
 def test_terraform_plan_replace_out(capfd):
     """test terraform plan with replace and out"""
-    utils.set_module_args({'replace': ['aws_instance.this', 'local_file.that'], 'out': 'plan.tfplan', 'config_dir': str(utils.fixtures_dir())})
+    utils.set_module_args({'replace': ['aws_instance.this', 'local_file.that'], 'out': 'plan.tfplan', 'config_dir': utils.fixtures_dir()})
     with pytest.raises(SystemExit, match='0'):
         terraform_plan.main()
 
@@ -52,7 +54,7 @@ def test_terraform_plan_replace_out(capfd):
     assert '-replace=aws_instance.this' in info['command']
     assert '-replace=local_file.that' in info['command']
     assert '-out=plan.tfplan' in info['command']
-    assert f'-chdir={str(utils.fixtures_dir())}' in info['command']
+    assert f'-chdir={utils.fixtures_dir()}' in info['command']
     assert 'No changes.' in info['stdout']
 
 
@@ -62,8 +64,8 @@ def test_terraform_plan_multiple_args(capfd):
         {
             'refresh_only': True,
             'var': {'var_name': 'var_value', 'var_name_other': 'var_value_other'},
-            'var_file': [f'{str(utils.fixtures_dir())}/foo.tfvars', f'{str(utils.fixtures_dir())}/foo.tfvars'],
-            'config_dir': str(utils.fixtures_dir()),
+            'var_file': [f'{utils.fixtures_dir()}/foo.tfvars', f'{utils.fixtures_dir()}/foo.tfvars'],
+            'config_dir': utils.fixtures_dir(),
         }
     )
     with pytest.raises(SystemExit, match='0'):
@@ -78,6 +80,6 @@ def test_terraform_plan_multiple_args(capfd):
     assert '-var' in info['command']
     assert "var_name='var_value'" in info['command']
     assert "var_name_other='var_value_other'" in info['command']
-    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['command']
-    assert f'-var-file={str(utils.fixtures_dir())}/foo.tfvars' in info['command']
+    assert f'-var-file={utils.fixtures_dir()}/foo.tfvars' in info['command']
+    assert f'-var-file={utils.fixtures_dir()}/foo.tfvars' in info['command']
     assert 'No changes.' in info['stdout']

@@ -1,14 +1,16 @@
 """unit test for faas list module"""
 
 import json
+
 import pytest
-from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
+
 from ansible_collections.mschuchard.general.plugins.modules import faas_list
+from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 
 def test_faas_list_defaults(capfd):
     """test faas list with defaults"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml'})
     with pytest.raises(SystemExit, match='1'):
         faas_list.main()
 
@@ -18,13 +20,13 @@ def test_faas_list_defaults(capfd):
     info = json.loads(stdout)
     assert 'list' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_list_config_file(capfd):
     """test faas list with config file"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'filter': '*gif*', 'regex': 'fn[0-9]_.*'})
     with pytest.raises(SystemExit, match='1'):
         faas_list.main()
 
@@ -39,13 +41,13 @@ def test_faas_list_config_file(capfd):
     assert '*gif*' in info['cmd']
     assert '--regex' in info['cmd']
     assert 'fn[0-9]_.*' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
 def test_faas_list_sort_invocations_verbose(capfd):
     """test faas list sorted by invocations"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'sort': 'invocations', 'verbose': True})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'sort': 'invocations', 'verbose': True})
     with pytest.raises(SystemExit, match='1'):
         faas_list.main()
 
@@ -58,7 +60,7 @@ def test_faas_list_sort_invocations_verbose(capfd):
     assert '--sort' in info['cmd']
     assert 'invocations' in info['cmd']
     assert '-v' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
     assert '[\'openfaas\'] is the only valid "provider.name" for the OpenFaaS CLI, but you gave: \n' == info['stdout']
 
 
@@ -98,7 +100,7 @@ def test_faas_list_namespace_quiet(capfd):
 
 def test_faas_list_env_subst_disabled(capfd):
     """test faas list without environment substitution"""
-    utils.set_module_args({'config_file': f'{str(utils.fixtures_dir())}/stack.yaml', 'env_subst': False})
+    utils.set_module_args({'config_file': f'{utils.fixtures_dir()}/stack.yaml', 'env_subst': False})
     with pytest.raises(SystemExit, match='1'):
         faas_list.main()
 
@@ -109,7 +111,7 @@ def test_faas_list_env_subst_disabled(capfd):
     assert 'list' in info['cmd']
     assert '--envsubst=false' in info['cmd']
     assert '-f' in info['cmd']
-    assert f'{str(utils.fixtures_dir())}/stack.yaml' in info['cmd']
+    assert f'{utils.fixtures_dir()}/stack.yaml' in info['cmd']
 
 
 def test_faas_list_all_new_params(capfd):
