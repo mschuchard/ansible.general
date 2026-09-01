@@ -74,8 +74,11 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
 }
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str] | int] = {}, target_dir: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | list[str] | int] = {}, target_dir: Path | None = None) -> list[str]:
     """constructs a list representing the terraform command to execute"""
+    # default target_dir value
+    if target_dir is None:
+        target_dir: Path = Path.cwd()
 
     # verify command
     if action not in ARGS_MAP:

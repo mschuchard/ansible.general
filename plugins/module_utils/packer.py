@@ -37,8 +37,12 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
 }
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[str]] = {}, target_dir: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | list[str]] = {}, target_dir: Path | None = None) -> list[str]:
     """constructs a list representing the packer command to execute"""
+    # default target_dir value
+    if target_dir is None:
+        target_dir: Path = Path.cwd()
+
     # verify command
     if action not in FLAGS_MAP:
         raise RuntimeError(f'Unsupported Packer action attempted: {action}')

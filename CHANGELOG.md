@@ -2,6 +2,7 @@
 - Prevent import to existing state address in `terraform_import` module.
 - Validate `faas` function existence in `remove` module.
 - Add `log_level` parameter to `goss` modules.
+- Fix path parameter defaults for `goss`, `packer`, and `terraform` modules.
 
 ### 1.4.2
 - Add new parameters for remaining `faas` plugin modules.

@@ -34,15 +34,19 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
 }
 
 
-def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] = {}, gossfile: Path = Path.cwd()) -> list[str]:
+def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] = {}, gossfile: Path | None = None) -> list[str]:
     """constructs a list representing the goss command to execute"""
+    # default gossfile value
+    if gossfile is None:
+        gossfile: Path = Path.cwd()
+
     # verify command
     if action not in FLAGS_MAP | ARGS_MAP:
         raise RuntimeError(f'Unsupported GoSS action attempted: {action}')
 
     # initialize goss command with executable, global args, and action
     # IMPORTANT: global_args_to_cmd mutates the args reference by removing global argument entries
-    command: list[str] = ['goss'] + global_args_to_cmd(args=args, gossfile=gossfile) + [action]
+    command: list[str] = ['goss'] + global_args_to_cmd(gossfile=gossfile, args=args) + [action]
 
     # disable color if validate action
     if action == 'validate':
@@ -84,7 +88,7 @@ def cmd(action: str, flags: set[str] = set(), args: dict[str, str | int | dict] 
     return command
 
 
-def global_args_to_cmd(args: dict = {}, gossfile: Path = Path.cwd()) -> list[str]:
+def global_args_to_cmd(gossfile: Path, args: dict = {}) -> list[str]:
     """converts goss global arguments into a list of strings suitable for extending to a command"""
     # initialize command to return
     command: list[str] = []

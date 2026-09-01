@@ -19,6 +19,9 @@ Issues = "https://github.com/mschuchard/ansible_collections-general/issues"
 pythonpath = ["../../.."] # ansible_collections/mschuchard/general
 testpaths = ["tests"]
 
+[tool.ruff.lint]
+ignore = ["I001", "B006"]
+
 [tool.ruff.lint.per-file-ignores]
 "plugins/modules/*" = ["E402", "EXE001"]
 
