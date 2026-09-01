@@ -147,19 +147,19 @@ def test_faas_deploy_tag(capfd):
 def test_faas_deploy_direct_params(capfd):
     """test faas deploy with direct image and name parameters"""
     utils.set_module_args({'image': 'alexellis/faas-url-ping', 'name': 'url-ping', 'gateway': 'http://remote-site.com:8080'})
-    with pytest.raises(SystemExit, match='1'):
+    with pytest.raises(SystemExit, match='0'):
         faas_deploy.main()
 
     stdout, stderr = capfd.readouterr()
     assert not stderr
 
     info = json.loads(stdout)
-    assert '--image' in info['cmd']
-    assert 'alexellis/faas-url-ping' in info['cmd']
-    assert '--name' in info['cmd']
-    assert 'url-ping' in info['cmd']
-    assert '-g' in info['cmd']
-    assert 'http://remote-site.com:8080' in info['cmd']
+    assert '--image' in info['command']
+    assert 'alexellis/faas-url-ping' in info['command']
+    assert '--name' in info['command']
+    assert 'url-ping' in info['command']
+    assert '-g' in info['command']
+    assert 'http://remote-site.com:8080' in info['command']
 
 
 def test_faas_deploy_constraint_readonly(capfd):

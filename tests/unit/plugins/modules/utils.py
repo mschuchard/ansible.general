@@ -19,13 +19,9 @@ def set_module_args(args):
 class AnsibleExitJson(Exception):
     """Exception class to be raised by module.exit_json and caught by the test case"""
 
-    pass
-
 
 class AnsibleFailJson(Exception):
     """Exception class to be raised by module.fail_json and caught by the test case"""
-
-    pass
 
 
 def exit_json(*args, **kwargs):

@@ -1,6 +1,5 @@
 """unit test for faas module util"""
 
-import subprocess
 import pytest
 import shutil
 

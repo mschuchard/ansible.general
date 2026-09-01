@@ -14,7 +14,7 @@ def test_terraform_import_defaults(capfd):
     with pytest.raises(SystemExit, match='1'):
         terraform_import.main()
 
-    stdout, stderr = capfd.readouterr()
+    stdout, _ = capfd.readouterr()
 
     info = json.loads(stdout)
     assert 'import' in info['cmd']
@@ -33,7 +33,7 @@ def test_terraform_import_config(capfd):
     with pytest.raises(SystemExit, match='1'):
         terraform_import.main()
 
-    stdout, stderr = capfd.readouterr()
+    stdout, _ = capfd.readouterr()
 
     info = json.loads(stdout)
     assert f'-chdir={utils.fixtures_dir()}' in info['cmd']
@@ -57,7 +57,7 @@ def test_terraform_import_vars(capfd):
     with pytest.raises(SystemExit, match='1'):
         terraform_import.main()
 
-    stdout, stderr = capfd.readouterr()
+    stdout, _ = capfd.readouterr()
 
     info = json.loads(stdout)
     assert 'local_file.this' in info['cmd']

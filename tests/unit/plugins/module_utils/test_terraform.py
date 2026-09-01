@@ -70,13 +70,13 @@ def test_terraform_cmd():
     ) == {'terraform', '-chdir=/home', 'init', '-no-color', '-input=false', '-force-copy', '-migrate-state', '-plugin-dir=/tmp', '-plugin-dir=/home'}
 
     # test bare apply with plan file
-    assert terraform.cmd(action='apply', target_dir=Path(f'{str(utils.fixtures_dir())}/config.tf')) == [
+    assert terraform.cmd(action='apply', target_dir=Path(f'{utils.fixtures_dir()}/config.tf')) == [
         'terraform',
         'apply',
         '-no-color',
         '-input=false',
         '-auto-approve',
-        f'{str(utils.fixtures_dir())}/config.tf',
+        f'{utils.fixtures_dir()}/config.tf',
     ]
 
 
@@ -87,7 +87,7 @@ def test_ansible_to_terraform_errors():
         terraform.ansible_to_terraform(args={'backend_config': ['/1234567890']})
 
     # test warns on backend config list element with improper type
-    with pytest.warns(RuntimeWarning, match="backend_config element value '7' is not a valid type; must be string for file path, or dict for key-value pair"):
+    with pytest.warns(RuntimeWarning, match="backend_config element value '7' is not a valid type; must be string for file path, or dict for key-value pair"):  # noqa: PT031
         args: dict = {'backend_config': [7, 'galaxy.yml', {'foo': 'bar'}]}
         terraform.ansible_to_terraform(args=args)
         assert args == {'backend_config': ['-backend-config=galaxy.yml', "-backend-config='foo=bar'"]}
