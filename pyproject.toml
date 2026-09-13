@@ -1,6 +1,6 @@
 [project]
 name = "mschuchard.general"
-version = "1.4.2"
+version = "1.4.3"
 description = "General collection of Ansible plugins for common tools associated with \"DevOps\"."
 readme = "README.md"
 requires-python = ">= 3.10"

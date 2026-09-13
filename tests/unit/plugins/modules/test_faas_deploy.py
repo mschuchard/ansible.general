@@ -5,7 +5,6 @@ import json
 import pytest
 
 from ansible_collections.mschuchard.general.plugins.modules import faas_deploy
-from ansible_collections.mschuchard.general.plugins.module_utils import faas
 from ansible_collections.mschuchard.general.tests.unit.plugins.modules import utils
 
 

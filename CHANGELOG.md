@@ -1,4 +1,4 @@
-### 1.4.3 (Next)
+### 1.4.3
 - Prevent import to existing state address in `terraform_import` module.
 - Validate `faas` function existence in `remove` module.
 - Add `log_level` parameter to `goss` modules.
