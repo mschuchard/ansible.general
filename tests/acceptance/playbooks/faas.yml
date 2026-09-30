@@ -5,12 +5,12 @@
   tasks:
   - name: Build with SHA tag
     mschuchard.general.faas_build:
-      config_file: "{{ playbook_dir }}/../../tests/unit/plugins/modules/fixtures/stack.yaml"
+      config_file: "{{ playbook_dir }}/../../unit/plugins/modules/fixtures/stack.yaml"
       tag: sha
 
   - name: Deploy with SHA tag
     mschuchard.general.faas_deploy:
-      config_file: "{{ playbook_dir }}/../../tests/unit/plugins/modules/fixtures/stack.yaml"
+      config_file: "{{ playbook_dir }}/../../unit/plugins/modules/fixtures/stack.yaml"
       tag: sha
 
   - name: List functions sorted by invocations with verbose output
@@ -30,7 +30,7 @@
 
   - name: Push functions from a stack.yaml file quietly
     mschuchard.general.faas_push:
-      config_file: "{{ playbook_dir }}/../../tests/unit/plugins/modules/fixtures/stack.yaml"
+      config_file: "{{ playbook_dir }}/../../unit/plugins/modules/fixtures/stack.yaml"
       quiet: true
 
   - name: Remove a specific function by name

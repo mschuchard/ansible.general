@@ -5,12 +5,12 @@
   tasks:
   - name: Render a gossfile
     mschuchard.general.goss_render:
-      gossfile: "{{ playbook_dir }}/../../tests/unit/plugins/modules/fixtures/goss.yaml"
+      gossfile: "{{ playbook_dir }}/../../unit/plugins/modules/fixtures/goss.yaml"
 
   - name: Serve a health endpoint with a gossfile at /path/to/my_gossfile.yaml
     mschuchard.general.goss_serve:
-      gossfile: "{{ playbook_dir }}/../../tests/unit/plugins/modules/fixtures/goss.yaml"
+      gossfile: "{{ playbook_dir }}/../../unit/plugins/modules/fixtures/goss.yaml"
 
   - name: Validate a system with a gossfile at /path/to/my_gossfile.yaml
     mschuchard.general.goss_validate:
-      gossfile: "{{ playbook_dir }}/../../tests/unit/plugins/modules/fixtures/goss.yaml"
+      gossfile: "{{ playbook_dir }}/../../unit/plugins/modules/fixtures/goss.yaml"

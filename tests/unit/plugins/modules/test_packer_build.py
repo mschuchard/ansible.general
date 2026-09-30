@@ -78,3 +78,29 @@ def test_packer_build_var_varfile(capfd):
     assert f'-var-file={utils.fixtures_dir()}/foo.pkrvars.hcl' in info['cmd']
     assert f'-var-file={utils.fixtures_dir()}/foo.pkrvars.hcl' in info['cmd']
     assert 'ui,error,Error: Could not find any config file in' in info['stdout']
+
+
+def test_packer_build_others(capfd):
+    """test packer build with ignore_prerelease_plugins, skip_enforcement, use_sequential_evaluation, and warn_on_undeclared_var"""
+    utils.set_module_args(
+        {
+            'config_dir': '/tmp',
+            'ignore_prerelease_plugins': True,
+            'skip_enforcement': True,
+            'use_sequential_evaluation': True,
+            'warn_on_undeclared_var': True,
+        }
+    )
+    with pytest.raises(SystemExit, match='1'):
+        packer_build.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert '/tmp' == info['cmd'][-1]
+    assert '-ignore-prerelease-plugins' in info['cmd']
+    assert '-skip-enforcement' in info['cmd']
+    assert '-use-sequential-evaluation' in info['cmd']
+    assert '-warn-on-undeclared-var' in info['cmd']
+    assert 'ui,error,Error: Could not find any config file in /tmp' in info['stdout']
