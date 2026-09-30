@@ -35,6 +35,12 @@ options:
         required: false
         default: false
         type: bool
+    ignore_prerelease_plugins:
+        description: Disable the loading of prerelease plugin binaries (x.y.z-dev).
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     on_error:
         description: If the build fails do clean up (default), abort, ask, or run-cleanup-provisioner
         required: false
@@ -46,24 +52,42 @@ options:
         type: list
         elements: str
     parallel_builds:
-        description: Number of builds to run in parallel. 0 denotes "no limit".
+        description: Number of builds to run in parallel. 1 disables parallelization. 0 denotes "no limit".
         required: false
         default: 0
         type: int
+    skip_enforcement:
+        description: Skip injection of HCP Packer enforced provisioners.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     timestamp_ui:
         description: Enable prefixing of each ui output with an RFC3339 timestamp.
         required: false
         default: false
         type: bool
+    use_sequential_evaluation:
+        description: Fallback to using a sequential approach for local/datasource evaluation.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     var:
         description: Variables for templates.
         required: false
         type: dict
     var_file:
-        description: HCL2 files containing user variables.
+        description: JSON or HCL2 files containing user variables.
         required: false
         type: list
         elements: path
+    warn_on_undeclared_var:
+        description: Display warnings for user variable files containing undeclared variables.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
 
 requirements:
     - packer >= 1.7.0
@@ -107,6 +131,15 @@ EXAMPLES = r"""
     var_file:
     - one.pkrvars.hcl
     - two.pkrvars.hcl
+
+# build the packer template artifacts with sequential evaluation, without prerelease plugins or HCP Packer enforced provisioners, and with undeclared variable warnings
+- name: Build the packer template artifacts with sequential evaluation, without prerelease plugins or HCP Packer enforced provisioners, and with undeclared variable warnings
+  mschuchard.general.packer_build:
+    config_dir: /path/to/packer_dir
+    ignore_prerelease_plugins: true
+    skip_enforcement: true
+    use_sequential_evaluation: true
+    warn_on_undeclared_var: true
 """
 
 RETURN = r"""
@@ -131,12 +164,16 @@ def main() -> None:
             'debug': {'type': 'bool', 'required': False},
             'excepts': {'type': 'list', 'elements': 'str', 'required': False},
             'force': {'type': 'bool', 'required': False},
+            'ignore_prerelease_plugins': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
             'on_error': {'type': 'str', 'required': False, 'choices': ['cleanup', 'abort', 'ask', 'run-cleanup-provisioner']},
             'only': {'type': 'list', 'elements': 'str', 'required': False},
             'parallel_builds': {'type': 'int', 'required': False},
+            'skip_enforcement': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
             'timestamp_ui': {'type': 'bool', 'required': False},
+            'use_sequential_evaluation': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
             'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'elements': 'path', 'required': False},
+            'warn_on_undeclared_var': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
         },
         mutually_exclusive=[('excepts', 'only')],
         supports_check_mode=True,

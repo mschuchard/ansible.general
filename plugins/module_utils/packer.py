@@ -12,7 +12,11 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
     'build': {
         'debug': '-debug',
         'force': '-force',
+        'ignore_prerelease_plugins': '-ignore-prerelease-plugins',
+        'skip_enforcement': '-skip-enforcement',
         'timestamp_ui': '-timestamp-ui',
+        'use_sequential_evaluation': '-use-sequential-evaluation',
+        'warn_on_undeclared_var': '-warn-on-undeclared-var',
     },
     'fmt': {
         'check': '-check',
