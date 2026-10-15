@@ -26,8 +26,10 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
     'init': {'force': '-force', 'upgrade': '-upgrade'},
     'validate': {
         'evaluate_datasources': '-evaluate-datasources',
+        'ignore_prerelease_plugins': '-ignore-prerelease-plugins',
         'syntax_only': '-syntax-only',
         'no_warn_undeclared_var': '-no-warn-undeclared-var',
+        'use_sequential_evaluation': '-use-sequential-evaluation',
     },
 }
 

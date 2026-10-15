@@ -1,3 +1,7 @@
+### 1.4.4 (Next)
+- Add new parameters for `packer` plugin modules.
+- Fix `terraform_import` during `check` mode.
+
 ### 1.4.3
 - Prevent import to existing state address in `terraform_import` module.
 - Validate `faas` function existence in `remove` module.

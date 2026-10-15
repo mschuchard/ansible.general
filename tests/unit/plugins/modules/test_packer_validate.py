@@ -78,3 +78,21 @@ def test_packer_validate_var_varfile(capfd):
     assert f'-var-file={utils.fixtures_dir()}/foo.pkrvars.hcl' in info['cmd']
     assert 'ui,error,Warning: Undefined variable' in info['stdout']
     assert str(utils.fixtures_dir()) == info['cmd'][-1]
+
+
+def test_packer_validate_prerelease_sequential(capfd):
+    """test packer validate with ignore_prerelease_plugins and use_sequential_evaluation"""
+    utils.set_module_args({'config_dir': str(utils.fixtures_dir()), 'ignore_prerelease_plugins': True, 'syntax_only': True, 'use_sequential_evaluation': True})
+    with pytest.raises(SystemExit, match='0'):
+        packer_validate.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert not info['changed']
+    assert '-ignore-prerelease-plugins' in info['command']
+    assert '-use-sequential-evaluation' in info['command']
+    assert '-syntax-only' in info['command']
+    assert str(utils.fixtures_dir()) == info['command'][-1]
+    assert 'ui,say,Syntax-only check passed. Everything looks okay.' in info['stdout']

@@ -21,7 +21,7 @@ options:
         default: cwd
         type: str
     evaluate_datasources:
-        description: Evaluate data sources during validation (>= 1.8.5)
+        description: description: Evaluate data sources during validation (>= 1.8.5). HCL2 only, and may incur costs.
         required: false
         default: false
         type: bool
@@ -30,6 +30,12 @@ options:
         required: false
         type: list
         elements: str
+    ignore_prerelease_plugins:
+        description: Disable the loading of prerelease plugin binaries (x.y.z-dev).
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     only:
         description: Validate only these builds.
         required: false
@@ -40,6 +46,12 @@ options:
         required: false
         default: false
         type: bool
+    use_sequential_evaluation:
+        description: Fallback to using a sequential approach for local/datasource evaluation.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     var:
         description: Variables for templates.
         required: false
@@ -93,6 +105,13 @@ EXAMPLES = r"""
     var_file:
     - one.pkrvars.hcl
     - two.pkrvars.hcl
+
+# validate the packer files without prerelease plugins and with sequential evaluation
+- name: Validate the packer files without prerelease plugins and with sequential evaluation
+  mschuchard.general.packer_validate:
+    config_dir: /path/to/packer_dir
+    ignore_prerelease_plugins: true
+    use_sequential_evaluation: true
 """
 
 RETURN = r"""
@@ -116,8 +135,10 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'evaluate_datasources': {'type': 'bool', 'required': False},
             'excepts': {'type': 'list', 'elements': 'str', 'required': False},
+            'ignore_prerelease_plugins': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
             'only': {'type': 'list', 'elements': 'str', 'required': False},
             'syntax_only': {'type': 'bool', 'required': False},
+            'use_sequential_evaluation': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
             'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'elements': 'path', 'required': False},
             'warn_undeclared_var': {'type': 'bool', 'required': False, 'default': True},
@@ -133,8 +154,12 @@ def main() -> None:
     flags: set[str] = set()
     if module.params.get('evaluate_datasources'):
         flags.add('evaluate_datasources')
+    if module.params.get('ignore_prerelease_plugins'):
+        flags.add('ignore_prerelease_plugins')
     if module.params.get('syntax_only'):
         flags.add('syntax_only')
+    if module.params.get('use_sequential_evaluation'):
+        flags.add('use_sequential_evaluation')
     if module.params.get('warn_undeclared_var') is False:
         flags.add('no_warn_undeclared_var')
 
