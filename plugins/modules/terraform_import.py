@@ -116,6 +116,10 @@ def main() -> None:
     # determine terraform command
     command: list[str] = terraform.cmd(action='import', args=args, target_dir=config_dir)
 
+    # exit early for check mode
+    if module.check_mode:
+        module.exit_json(changed=changed, command=command)
+
     # check if resource already exists in state
     return_code: int
     stdout: str
@@ -130,10 +134,6 @@ def main() -> None:
     if return_code == 0 and len(stdout) > 0:
         module.warn(f'Resource {address} already exists in Terraform state; skipping import')
         module.exit_json(changed=False, stdout=stdout, stderr=stderr, command=command)
-
-    # exit early for check mode
-    if module.check_mode:
-        module.exit_json(changed=changed, command=command)
 
     # execute terraform
     return_code, stdout, stderr = module.run_command(command, cwd=config_dir, environ_update={'TF_IN_AUTOMATION': 'true'})

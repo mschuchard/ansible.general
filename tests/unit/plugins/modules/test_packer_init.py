@@ -51,3 +51,18 @@ def test_packer_init_upgrade(capfd):
     assert '-upgrade' in info['command']
     assert str(utils.fixtures_dir()) == info['command'][-1]
     assert not info['stdout']
+
+
+def test_packer_init_force(capfd):
+    """test packer init with force"""
+    utils.set_module_args({'force': True, 'config_dir': str(utils.fixtures_dir()), '_ansible_check_mode': True})
+    with pytest.raises(SystemExit, match='0'):
+        packer_init.main()
+
+    stdout, stderr = capfd.readouterr()
+    assert not stderr
+
+    info = json.loads(stdout)
+    assert not info['changed']
+    assert '-force' in info['command']
+    assert str(utils.fixtures_dir()) == info['command'][-1]

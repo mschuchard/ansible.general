@@ -20,6 +20,12 @@ options:
         required: false
         default: cwd
         type: str
+    force:
+        description: Forces reinstallation of plugins, even if already installed.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     upgrade:
         description: Update installed plugins to the latest available version if there is a new higher one. Note that this still considers the version constraint of the config.
         required: false
@@ -48,6 +54,11 @@ EXAMPLES = r"""
   mschuchard.general.packer_init:
     config_dir: /path/to/packer_config_dir
     upgrade: true
+
+# initialize current directory and force reinstallation of plugins
+- name: Initialize current packer directory and force reinstallation of plugins
+  mschuchard.general.packer_init:
+    force: true
 """
 
 RETURN = r"""
@@ -68,7 +79,11 @@ def main() -> None:
     """primary function for packer init module"""
     # instanstiate ansible module
     module = AnsibleModule(
-        argument_spec={'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()}, 'upgrade': {'type': 'bool', 'required': False}},
+        argument_spec={
+            'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
+            'force': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
+            'upgrade': {'type': 'bool', 'required': False},
+        },
         supports_check_mode=True,
     )
 

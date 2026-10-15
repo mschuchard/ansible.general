@@ -36,7 +36,7 @@ options:
         default: false
         type: bool
     write:
-        description: Write to source files.
+        description: Write to source files. Always disabled when check is specified.
         required: false
         default: true
         type: bool

@@ -23,7 +23,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
         'diff': '-diff',
         'recursive': '-recursive',
     },
-    'init': {'upgrade': '-upgrade'},
+    'init': {'force': '-force', 'upgrade': '-upgrade'},
     'validate': {
         'evaluate_datasources': '-evaluate-datasources',
         'syntax_only': '-syntax-only',
