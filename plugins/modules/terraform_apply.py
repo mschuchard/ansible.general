@@ -15,6 +15,17 @@ version_added: "1.2.0"
 description: Creates or updates infrastructure according to Terraform configuration files in the root module directory.
 
 options:
+    backup:
+        description: Path to backup the existing state file before modifying. Defaults to the state_out path with a ".backup" extension. Set to "-" to disable backup. This is a legacy option for the local backend only.
+        required: false
+        type: path
+        new_in_version: "1.4.4"
+    compact_warnings:
+        description: If Terraform produces any warnings that are not accompanied by errors, then show them in a more compact form that includes only the summary messages.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
     config_dir:
         description: Location of the directory containing the Terraform root module config files.
         required: false
@@ -25,6 +36,24 @@ options:
         required: false
         default: false
         type: bool
+    lock:
+        description: Hold a state lock during the operation. Disabling this is dangerous if others might concurrently run commands against the same workspace.
+        required: false
+        default: true
+        type: bool
+        new_in_version: "1.4.4"
+    lock_timeout:
+        description: Duration to retry a state lock (duration string, e.g. '0s', '30s', '5m').
+        required: false
+        default: 0s
+        type: str
+        new_in_version: "1.4.4"
+    parallelism:
+        description: Limit the number of parallel resource operations.
+        required: false
+        default: 10
+        type: int
+        new_in_version: "1.4.4"
     plan_file:
         description: Location of the output file generated during a plan. Mutually exclusive with all other parameters since the parameters are all defined instead during the plan execution.
         required: false
@@ -34,6 +63,16 @@ options:
         required: false
         type: list
         elements: str
+    state:
+        description: Path to read and save state (unless state_out is specified). Defaults to "terraform.tfstate". This is a legacy option for the local backend only.
+        required: false
+        type: path
+        new_in_version: "1.4.4"
+    state_out:
+        description: Path to write state to that is different than state. This can be used to preserve the old state. This is a legacy option for the local backend only.
+        required: false
+        type: path
+        new_in_version: "1.4.4"
     target:
         description: Limit the applying operation to only the given module, resource, or resource instance, and all of its dependencies.
         required: false
@@ -80,6 +119,20 @@ EXAMPLES = r"""
     var_file:
     - one.tfvars
     - two.tfvars
+
+# apply infrastructure changes with compact warnings, a state lock retry of thirty seconds, and a parallelism limit of four
+- name: Apply infrastructure changes with compact warnings, a state lock retry of thirty seconds, and a parallelism limit of four
+  mschuchard.general.terraform_apply:
+    compact_warnings: true
+    lock_timeout: 30s
+    parallelism: 4
+
+# apply infrastructure changes with custom legacy local backend state paths, and without a state backup
+- name: Apply infrastructure changes with custom legacy local backend state paths, and without a state backup
+  mschuchard.general.terraform_apply:
+    state: /path/to/in.tfstate
+    state_out: /path/to/out.tfstate
+    backup: '-'
 """
 
 RETURN = r"""
@@ -101,27 +154,45 @@ def main() -> None:
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
+            'backup': {'type': 'path', 'required': False, 'new_in_version': '1.4.4'},
+            'compact_warnings': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'destroy': {'type': 'bool', 'required': False},
+            'lock': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.4.4'},
+            'lock_timeout': {'type': 'str', 'required': False, 'new_in_version': '1.4.4'},
+            'parallelism': {'type': 'int', 'required': False, 'new_in_version': '1.4.4'},
             'plan_file': {'type': 'path', 'required': False},
             'replace': {'type': 'list', 'elements': 'str', 'required': False},
+            'state': {'type': 'path', 'required': False, 'new_in_version': '1.4.4'},
+            'state_out': {'type': 'path', 'required': False, 'new_in_version': '1.4.4'},
             'target': {'type': 'list', 'elements': 'str', 'required': False},
             'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'elements': 'path', 'required': False},
         },
-        mutually_exclusive=[('plan_file', 'config_dir')],
+        mutually_exclusive=[
+            ('plan_file', 'config_dir'),
+            ('plan_file', 'backup'),
+            ('plan_file', 'compact_warnings'),
+            ('plan_file', 'lock_timeout'),
+            ('plan_file', 'parallelism'),
+            ('plan_file', 'state'),
+            ('plan_file', 'state_out'),
+        ],
         supports_check_mode=True,
     )
 
     # initialize
     changed: bool = True
     config_dir: Path = Path(module.params.get('config_dir'))
+    backup: str = module.params.get('backup')
+    lock_timeout: str = module.params.get('lock_timeout')
+    parallelism: int = module.params.get('parallelism')
     replace: list[str] = module.params.get('replace')
+    state: str = module.params.get('state')
+    state_out: str = module.params.get('state_out')
     target: list[str] = module.params.get('target')
     var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
-
-    command: list[str] = []
 
     # check plan arg first since all others ignored if specified
     if module.params.get('plan_file'):
@@ -131,14 +202,29 @@ def main() -> None:
     else:
         # check flags
         flags: set[str] = set()
+        if module.params.get('compact_warnings'):
+            flags.add('compact_warnings')
         if module.params.get('destroy'):
             flags.add('destroy')
+        # reminder: the flag that must be argued instead
+        if module.params.get('lock') is False:
+            flags.add('lock')
 
         # check args
         args: dict = {}
         # ruff complains so default should protect against falsey with None
+        if backup:
+            args.update({'backup': backup})
+        if lock_timeout:
+            args.update({'lock_timeout': lock_timeout})
+        if parallelism:
+            args.update({'parallelism': parallelism})
         if replace:
             args.update({'replace': replace})
+        if state:
+            args.update({'state': state})
+        if state_out:
+            args.update({'state_out': state_out})
         if target:
             args.update({'target': target})
         if var:

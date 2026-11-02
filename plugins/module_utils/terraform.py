@@ -11,7 +11,9 @@ from ansible_collections.mschuchard.general.plugins.module_utils import universa
 # dictionary that maps input args to terraform flags
 FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
     'apply': {
+        'compact_warnings': '-compact-warnings',
         'destroy': '-destroy',
+        'lock': '-lock=false',
     },
     'fmt': {
         'check': '-check',
@@ -35,7 +37,12 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
 # dictionary that maps input args to terraform args
 ARGS_MAP: Final[dict[str, dict[str, str]]] = {
     'apply': {
+        'backup': '-backup=',
+        'lock_timeout': '-lock-timeout=',
+        'parallelism': '-parallelism=',
         'replace': '',
+        'state': '-state=',
+        'state_out': '-state-out=',
         'target': '',
         'var': '',
         'var_file': '',
@@ -207,3 +214,6 @@ def ansible_to_terraform(args: dict) -> None:
             case 'var_file':
                 # assign converted value to var_file key
                 args['var_file'] = universal.var_files_converter(arg_value)
+            # int to str
+            case 'parallelism':
+                args['parallelism'] = str(arg_value)
