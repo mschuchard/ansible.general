@@ -42,6 +42,10 @@ def test_terraform_cmd_errors():
     with pytest.raises(RuntimeError, match="Unexpected issue with argument name 'plugin_dir' and argument value 'foo'"):
         terraform.cmd(action='init', args={'plugin_dir': 'foo'})
 
+    # test fails on parallelism arg with unconverted int type
+    with pytest.raises(RuntimeError, match="Unexpected issue with argument name 'parallelism' and argument value '4'"):
+        terraform.cmd(action='apply', args={'parallelism': 4})
+
 
 def test_terraform_cmd():
     """test various cmd returns"""
