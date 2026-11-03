@@ -43,6 +43,8 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
     },
     'validate': {
         'json': '-json',
+        'no_tests': '-no-tests',
+        'query': '-query',
     },
 }
 
