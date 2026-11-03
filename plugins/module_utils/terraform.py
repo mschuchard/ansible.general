@@ -31,7 +31,12 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
         'reconfigure': '-reconfigure',
         'upgrade': '-upgrade',
     },
-    'plan': {'destroy': '-destroy', 'refresh_only': '-refresh-only'},
+    'plan': {
+        'compact_warnings': '-compact-warnings',
+        'destroy': '-destroy',
+        'detailed_exitcode': '-detailed-exitcode',
+        'refresh_only': '-refresh-only',
+    },
     'test': {
         'json': '-json',
     },
@@ -76,7 +81,11 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
     },
     'plan': {
         'generate_config': '-generate-config-out=',
+        'lock': '-lock=',
+        'lock_timeout': '-lock-timeout=',
         'out': '-out=',
+        'parallelism': '-parallelism=',
+        'refresh': '-refresh=',
         'replace': '',
         'target': '',
         'var': '',
