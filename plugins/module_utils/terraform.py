@@ -25,7 +25,10 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
     },
     'init': {
         'force_copy': '-force-copy',
+        'ignore_remote_version': '-ignore-remote-version',
+        'json': '-json',
         'migrate_state': '-migrate-state',
+        'reconfigure': '-reconfigure',
         'upgrade': '-upgrade',
     },
     'plan': {'destroy': '-destroy', 'refresh_only': '-refresh-only'},
@@ -56,7 +59,13 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
     'init': {
         'backend': '-backend=',
         'backend_config': '',
+        'from_module': '-from-module=',
+        'get': '-get=',
+        'lock': '-lock=',
+        'lock_timeout': '-lock-timeout=',
+        'lockfile': '-lockfile=',
         'plugin_dir': '',
+        'test_dir': '-test-directory=',
     },
     'import': {
         'lock': '-lock=',
