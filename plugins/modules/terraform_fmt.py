@@ -12,7 +12,7 @@ short_description: Module to manage Terraform automatic canonical formatting.
 
 version_added: "1.1.0"
 
-description: Rewrites all Terraform configuration files to a canonical format. All configuration files (.tf), variables files (.tfvars), and testing files (.tftest.hcl) are updated. JSON files (.tf.json, .tfvars.json, or .tftest.json) are not modified.
+description: Rewrites all Terraform configuration files to a canonical format. All configuration files (.tf), variables files (.tfvars), and testing files (.tftest.hcl) are updated. JSON files (.tf.json, .tfvars.json, or .tftest.json) are not modified. By default, the config directory is scanned for configuration files. If target paths are provided, then those directories or files are processed instead. The content must be in the Terraform language native syntax; JSON is not supported.
 
 options:
     check:
@@ -31,12 +31,18 @@ options:
         default: false
         type: bool
     recursive:
-        description: Also process files in subdirectories.
+        description: Also process files in subdirectories. By default, only the given directory (or current directory) is processed.
         required: false
         default: false
         type: bool
+    target_path:
+        description: Directories or files to format instead of scanning the config directory. Relative paths are resolved from the config directory.
+        required: false
+        type: list
+        elements: path
+        new_in_version: "1.4.4"
     write:
-        description: Write to source files.
+        description: Write to source files. Always disabled when check is specified.
         required: false
         default: true
         type: bool
@@ -61,6 +67,15 @@ EXAMPLES = r"""
   mschuchard.general.terraform_fmt:
     check: true
     recursive: true
+
+# check format of one file and one directory relative to /path/to/terraform_config_dir
+- name: Check format of one file and one directory relative to /path/to/terraform_config_dir
+  mschuchard.general.terraform_fmt:
+    config_dir: /path/to/terraform_config_dir
+    target_path:
+    - main.tf
+    - modules/network
+    check: true
 """
 
 RETURN = r"""
@@ -86,6 +101,7 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'diff': {'type': 'bool', 'required': False},
             'recursive': {'type': 'bool', 'required': False},
+            'target_path': {'type': 'list', 'elements': 'path', 'required': False, 'new_in_version': '1.4.4'},
             'write': {'type': 'bool', 'required': False, 'default': True},
         },
         mutually_exclusive=[('check', 'write')],
@@ -94,6 +110,7 @@ def main() -> None:
 
     # initialize
     config_dir: Path = Path(module.params.get('config_dir'))
+    target_path: list[str] | None = module.params.get('target_path')
     changed: bool = True
 
     # check flags
@@ -119,6 +136,10 @@ def main() -> None:
 
     # determine terraform command
     command: list[str] = terraform.cmd(action='fmt', flags=flags, args=args, target_dir=config_dir)
+
+    # target paths are positional arguments to terraform fmt, so they must follow all flags and args
+    if target_path:
+        command.extend(target_path)
 
     # exit early for check mode
     if module.check_mode:
