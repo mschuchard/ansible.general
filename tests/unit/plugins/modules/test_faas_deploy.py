@@ -144,8 +144,8 @@ def test_faas_deploy_tag(capfd):
 
 
 def test_faas_deploy_direct_params(capfd):
-    """test faas deploy with direct image and name parameters"""
-    utils.set_module_args({'image': 'alexellis/faas-url-ping', 'name': 'url-ping', 'gateway': 'http://remote-site.com:8080'})
+    """test faas deploy with direct image and name parameters in ansible check mode"""
+    utils.set_module_args({'image': 'alexellis/faas-url-ping', 'name': 'url-ping', 'gateway': 'http://remote-site.com:8080', '_ansible_check_mode': True})
     with pytest.raises(SystemExit, match='0'):
         faas_deploy.main()
 
@@ -153,12 +153,15 @@ def test_faas_deploy_direct_params(capfd):
     assert not stderr
 
     info = json.loads(stdout)
+    assert not info['changed']
     assert '--image' in info['command']
     assert 'alexellis/faas-url-ping' in info['command']
     assert '--name' in info['command']
     assert 'url-ping' in info['command']
     assert '-g' in info['command']
     assert 'http://remote-site.com:8080' in info['command']
+    # ansible check mode exits before faas-cli executes, so no request reaches the gateway host
+    assert 'stdout' not in info
 
 
 def test_faas_deploy_constraint_readonly(capfd):
