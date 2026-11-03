@@ -20,7 +20,7 @@ options:
         required: true
         type: str
     config_dir:
-        description: Location of the directory containing the Terraform root module config files.
+        description: Location of the directory containing the Terraform root module config files. This is also the directory used to configure the provider. If no config files are present, then provider configuration must be provided via environment variables.
         required: false
         default: cwd
         type: path
@@ -28,6 +28,24 @@ options:
         description: The object identifier value.
         required: true
         type: str
+    ignore_remote_version:
+        description: A rare option used for the remote backend only. See the remote backend documentation for more information.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
+    lock:
+        description: Hold a state lock during the operation. Disabling this is dangerous if others might concurrently run commands against the same workspace.
+        required: false
+        default: true
+        type: bool
+        new_in_version: "1.4.4"
+    lock_timeout:
+        description: Duration to retry a state lock (duration string, e.g. '30s', '5m').
+        required: false
+        default: 0s
+        type: str
+        new_in_version: "1.4.4"
     var:
         description: Set values for one or more of the input variables in the root module of the configuration.
         required: false
@@ -63,6 +81,21 @@ EXAMPLES = r"""
     var_file:
     - one.tfvars
     - two.tfvars
+
+# import resource while retrying the state lock for up to one minute
+- name: Import resource while retrying the state lock for up to one minute
+  mschuchard.general.terraform_import:
+    address: aws_instance.this
+    id: i-1234567890
+    lock_timeout: 1m
+
+# import resource without holding a state lock and while ignoring the remote backend version
+- name: Import resource without holding a state lock and while ignoring the remote backend version
+  mschuchard.general.terraform_import:
+    address: aws_instance.this
+    id: i-1234567890
+    lock: false
+    ignore_remote_version: true
 """
 
 RETURN = r"""
@@ -80,13 +113,16 @@ from ansible_collections.mschuchard.general.plugins.module_utils import terrafor
 
 
 def main() -> None:
-    """primary function for terraform validate module"""
+    """primary function for terraform import module"""
     # instanstiate ansible module
     module = AnsibleModule(
         argument_spec={
             'address': {'type': 'str', 'required': True},
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'id': {'type': 'str', 'required': True},
+            'ignore_remote_version': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
+            'lock': {'type': 'bool', 'required': False, 'default': True, 'new_in_version': '1.4.4'},
+            'lock_timeout': {'type': 'str', 'required': False, 'new_in_version': '1.4.4'},
             'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'elements': 'path', 'required': False},
         },
@@ -98,11 +134,23 @@ def main() -> None:
     config_dir: Path = Path(module.params.get('config_dir'))
     address: str = module.params.get('address')
     id: str = module.params.get('id')
+    lock_timeout: str | None = module.params.get('lock_timeout')
     var: dict = module.params.get('var')
     var_file: list[Path] = module.params.get('var_file')
 
+    # check flags
+    flags: set[str] = set()
+    if module.params.get('ignore_remote_version'):
+        flags.add('ignore_remote_version')
+
     # check args
     args: dict = {}
+    # reminder: the flag that must be argued instead
+    # ruff complains so default should protect against falsey with None
+    if module.params.get('lock') is False:
+        args.update({'lock': 'false'})
+    if lock_timeout:
+        args.update({'lock_timeout': lock_timeout})
     if var:
         args.update({'var': var})
     if var_file:
@@ -114,7 +162,7 @@ def main() -> None:
     terraform.ansible_to_terraform(args)
 
     # determine terraform command
-    command: list[str] = terraform.cmd(action='import', args=args, target_dir=config_dir)
+    command: list[str] = terraform.cmd(action='import', flags=flags, args=args, target_dir=config_dir)
 
     # exit early for check mode
     if module.check_mode:

@@ -20,6 +20,9 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
         'diff': '-diff',
         'recursive': '-recursive',
     },
+    'import': {
+        'ignore_remote_version': '-ignore-remote-version',
+    },
     'init': {
         'force_copy': '-force-copy',
         'migrate_state': '-migrate-state',
@@ -56,6 +59,8 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
         'plugin_dir': '',
     },
     'import': {
+        'lock': '-lock=',
+        'lock_timeout': '-lock-timeout=',
         'resource': '',
         'var': '',
         'var_file': '',
