@@ -16,7 +16,7 @@ description: Executes automated integration tests against the current Terraform 
 
 options:
     cloud_run:
-        description: Terraform will execute this test run remotely using HCP Terraform or Terraform Enterpise. You must specify the source of a module registered in a private module registry as the argument to this parameter. This allows Terraform to associate the cloud run with the correct HCP Terraform or Terraform Enterprise module and organization.
+        description: Terraform will execute this test run remotely using HCP Terraform or Terraform Enterpise. You must specify the source of a module registered in a private module registry as the argument to this parameter. This allows Terraform to associate the cloud run with the correct HCP Terraform or Terraform Enterprise module and organization. This is incompatible with the junit_xml parameter.
         required: false
         type: str
     config_dir:
@@ -34,6 +34,17 @@ options:
         required: false
         default: false
         type: bool
+    junit_xml:
+        description: Saves a test report in JUnit XML format to the specified file. This is currently incompatible with remote test execution using the cloud_run parameter. A relative path is resolved from the config directory.
+        required: false
+        type: path
+        new_in_version: "1.4.4"
+    parallelism:
+        description: Limit the number of concurrent operations within the plan/apply operation of a test run.
+        required: false
+        default: 10
+        type: int
+        new_in_version: "1.4.4"
     test_dir:
         description: Set the Terraform test directory.
         required: false
@@ -48,6 +59,12 @@ options:
         required: false
         type: list
         elements: path
+    verbose:
+        description: Print the plan or state for each test run block as it executes.
+        required: false
+        default: false
+        type: bool
+        new_in_version: "1.4.4"
 
 
 requirements:
@@ -73,6 +90,13 @@ EXAMPLES = r"""
     var_file:
     - one.tfvars
     - two.tfvars
+
+# execute tests for current directory with verbose output, limited concurrency, and a JUnit XML report
+- name: Execute tests for current directory with verbose output, limited concurrency, and a JUnit XML report
+  mschuchard.general.terraform_test:
+    verbose: true
+    parallelism: 4
+    junit_xml: report.xml
 """
 
 RETURN = r"""
@@ -98,18 +122,28 @@ def main() -> None:
             'config_dir': {'type': 'path', 'required': False, 'default': Path.cwd()},
             'filter': {'type': 'list', 'elements': 'path', 'required': False},
             'json': {'type': 'bool', 'required': False},
+            'junit_xml': {'type': 'path', 'required': False, 'new_in_version': '1.4.4'},
+            'parallelism': {'type': 'int', 'required': False, 'new_in_version': '1.4.4'},
             'test_dir': {'type': 'path', 'required': False},
             'var': {'type': 'dict', 'required': False},
             'var_file': {'type': 'list', 'elements': 'path', 'required': False},
+            'verbose': {'type': 'bool', 'required': False, 'new_in_version': '1.4.4'},
         },
+        mutually_exclusive=[('cloud_run', 'junit_xml')],
         supports_check_mode=True,
     )
 
     # initialize
     config_dir: Path = Path(module.params.pop('config_dir'))
+    # terraform.cmd only accepts str values for args, so pop the int to convert it manually
+    parallelism: int | None = module.params.pop('parallelism')
 
     # check optional params
     flags_args: tuple[set[str], dict] = universal.params_to_flags_args(module.params, module.argument_spec)
+
+    # only protect against None so that a falsey zero is still passed through for terraform to validate
+    if parallelism is not None:
+        flags_args[1].update({'parallelism': str(parallelism)})
 
     # convert ansible params to terraform args
     terraform.ansible_to_terraform(flags_args[1])

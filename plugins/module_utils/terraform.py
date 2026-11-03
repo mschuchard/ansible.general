@@ -39,6 +39,7 @@ FLAGS_MAP: Final[dict[str, dict[str, str]]] = {
     },
     'test': {
         'json': '-json',
+        'verbose': '-verbose',
     },
     'validate': {
         'json': '-json',
@@ -94,6 +95,8 @@ ARGS_MAP: Final[dict[str, dict[str, str]]] = {
     'test': {
         'cloud_run': '-cloud-run=',
         'filter': '',
+        'junit_xml': '-junit-xml=',
+        'parallelism': '-parallelism=',
         'test_dir': '-test-directory=',
         'var': '',
         'var_file': '',
