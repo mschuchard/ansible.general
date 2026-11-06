@@ -15,7 +15,7 @@ Documentation is generated from Python docstrings with expected Ansible plugin f
 
 ## Requirements
 
-This collection requires Ansible `>= 2.12`, and Python `>= 3.10`.
+This collection requires Ansible `>= 2.16`, and Python `>= 3.10`.
 
 Each module plugin also requires a functioning installation on the target system of the tool with which it is interfacing. This collection functionality does not include the software tool installation.
 

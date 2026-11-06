@@ -21,7 +21,7 @@ options:
         default: cwd
         type: str
     evaluate_datasources:
-        description: description: Evaluate data sources during validation (>= 1.8.5). HCL2 only, and may incur costs.
+        description: Evaluate data sources during validation (>= 1.8.5). HCL2 only, and may incur costs.
         required: false
         default: false
         type: bool
