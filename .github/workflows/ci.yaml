@@ -34,3 +34,6 @@ jobs:
     - name: ansible acceptance tests
       run: /bin/sh tests/acceptance/test.sh
       working-directory: ./ansible_collections/mschuchard/general
+    - name: ansible documentation validation
+      run: ansible-doc --type module --json $(find plugins/modules -maxdepth 1 -name '*.py' -printf 'mschuchard.general.%f\n' | sed 's/\.py$//') > /dev/null
+      working-directory: ./ansible_collections/mschuchard/general
