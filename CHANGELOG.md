@@ -1,4 +1,4 @@
-### 1.4.4 (Next)
+### 1.4.4
 - Add new parameters for `packer` plugin modules.
 - Add new parameters for `terraform` plugin modules.
 - Fix `terraform_import` during `check` mode.
